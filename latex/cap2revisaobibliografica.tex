@@ -1,14 +1,3 @@
-% open pretrained transformer (OPT)
-% Gabriel Goh et al. Multimodal Neurons in Artificial Neural Networks. https://openai.com/blog/multimodal-neurons/. 2021.
-
-% https://paperswithcode.com/paper/exploring-contrastive-learning-for-multimodal
-
-% thesis https://rizavelioglu.github.io/files/RizaVelioglu-MScThesis.pdf
-
-% visualBERT é gratuito? não tenho certeza
-% ajuste fino é feito a cada atualização? que atualização é essa?
-% taxa de aprendizado explicar
-
 \chapter{Revisão Bibliográfica}
 \label{cap:02}
 
@@ -26,30 +15,13 @@ A IA é um campo multidisciplinar que combina conhecimentos da ciência da compu
 
 O aprendizado de máquina é uma aplicação na qual os sistemas são treinados com grandes conjuntos de dados para reconhecer padrões, fazer previsões e tomar decisões com base nesses padrões \cite{HoschMachineLearning}. Trata-se de um método de análise de dados que utiliza uma abordagem estatística e computacional, permitindo que os sistemas aprendam com os dados disponíveis e com o mínimo de intervenção humana necessária, um exemplo é a moderação do conteúdo postado em redes sociais, com a finalidade de classificar se um determinado conteúdo é ofensivo ou não.
 
-% Nesse cenário, o treinamento e o pré-treinamento são etapas cruciais no processo de desenvolvimento de modelos capazes de aprender a partir dos dados.
-
-% O treinamento refere-se à fase em que um modelo de aprendizado de máquina é alimentado com um conjunto de dados, onde é exposto a exemplos e realiza iterações para ajustar seus parâmetros internos, de modo que seja capaz de fazer previsões ou tomar decisões com base nos dados de entrada, aprendendo padrões e relações, a fim de realizar tarefas específicas.
-
-% Por outro lado, o pré-treinamento adota uma abordagem em que o modelo é inicialmente treinado em um grande conjunto de dados não rotulados, onde não há informações explícitas ou respostas corretas. Isso permiti que o modelo aprenda a capturar características gerais e relevantes dos dados, estabelecendo uma base inicial de conhecimento antes de passar pelo treinamento convencional com os dados rotulados. Em seguida, o modelo é refinado através do processo de ajuste fino (do inglês, \textit{fine-tuning}), utilizando um conjunto menor de dados rotulados para adaptar-se a uma tarefa específica.
-
 Existem várias abordagens de aprendizado de máquina, sendo o aprendizado supervisionado, as redes neurais, o \textit{deep learning} e o aprendizado por conjuntos de grande importância para a execução deste trabalho.
 
 \subsection{Aprendizado supervisionado}
 
 O aprendizado supervisionado utiliza um conjuntos de dados rotulados para treinar algoritmos com o objetivo de aprender a classificar os dados ou prever resultados com precisão com base nas informações fornecidas nos rótulos dos dados de treinamento. O modelo realiza ajustes finos (do inglês, \textit{fine-tuning}) à medida que os dados de entrada são inseridos, visando aprender a mapear corretamente os dados para as saídas desejadas. Isso permite a previsão ou classificação de novos exemplos não rotulados com base no aprendizado adquirido \cite{RussellNorvig1995}.
 
-% Durante o ajuste fino, os parâmetros do modelo são atualizados para se adaptarem aos dados rotulados e melhorarem o desempenho em relação à tarefa específica.
-
-%O processo de fine-tuning permite que o modelo se beneficie do conhecimento prévio adquirido durante o pré-treinamento, enquanto se adapta aos dados específicos da tarefa atual. Isso pode resultar em um modelo mais eficiente e preciso na detecção de discurso de ódio em memes, pois combina a capacidade de generalização do modelo pré-treinado com a especialização nos dados rotulados relevantes para a tarefa específica.
-
-% \footnote{\textit{What is machine learning?}. 2016. Disponível em: \url{https://www.ibm.com/topics/machine-learning}. Acesso em: 30 de mai. de 2023.}.
-
-% O papel dos algoritmos de aprendizado supervisionado é procurar em um espaço de hipóteses [10] uma hipótese adequada que permita boas previsões para um problema específico. Mesmo que o espaço de hipóteses inclua hipóteses adequadas a um problema específico, pode ser difícil encontrar uma que seja boa. Para formar uma hipótese mais forte, os ensembles combinam várias hipóteses. O termo “conjunto” refere-se a abordagens que usam o mesmo aprendiz básico para produzir várias hipóteses. Em outras palavras, o aprendizado conjunto visa aumentar a capacidade de generalização e a robustez em um único modelo, combinando as previsões de vários modelos básicos. Especificamente, usamos a técnica de votação majoritária (também conhecida como votação forte ou classificador de votação4), que combina vários classificadores e prevê rótulos de classe usando um voto majoritário. O classificador resultante costuma ser usado para equilibrar as deficiências de vários modelos com desempenho igualmente bom. Como resultado, ele tem um desempenho melhor do que qualquer outro modelo usado no conjunto.
-
 \subsection{Redes Neurais}
-
-% redes neurais profundas
-% redes neurais recorrentes ou convolucionais complexas
 
 As redes neurais são uma analogia neurobiológica inspirada no funcionamento do sistema nervoso do cérebro humano, capazes de adquirir conhecimento através de um processo de aprendizagem a partir de dados de entrada, com ou sem supervisão. Essas redes são capazes de armazenar o conhecimento adquirido interligando células computacionais simples denominadas ``neurônios'' ou ``unidades de processamento''. Com essa estrutura interconectada, e com o treinamento apropriado, são capazes de modelar, analisar e reconhecer padrões, resultando na produção de conhecimento de maneira distribuída \cite{Haykin2007}.
 
@@ -59,19 +31,11 @@ As redes neurais são uma analogia neurobiológica inspirada no funcionamento do
     \caption {Arquitetura de uma Rede Neural Artificial \cite{RedeNeuralImagem}.}
 \end{figure*}
 
-% autor da imagem: https://www.researchgate.net/figure/Artificial-neural-network-architecture-ANN-i-h-1-h-2-h-n-o_fig1_321259051
-
 Elas são compostas por um conjunto interconectado de neurônios artificiais, ou ``nós'', que são organizados em várias camadas, sendo a de entrada responsável por receber os dados, as intermediárias (também conhecidas como camadas ocultas) responsáveis por processar as informações e a de saída responsável por produzir as saídas finais com os resultados da rede neural.
 
 Cada neurônio artificial possui pesos e um valor de viés, sendo o primeiro representando a importância da conexão entre os neurônios, enquanto o segundo é uma medida flexível que facilita a ativação do neurônio de acordo com as preferências incorporadas. Durante o treinamento, os pesos e vieses são ajustados para otimizar o desempenho da rede. A rede funciona por meio de dois processos principais, a propagação direta (do inglês, \textit{forward propagation}), e a retropropagação do erro (do inglês, \textit{backpropagation}). Na propagação direta, os dados de entrada são alimentados na rede neural, passando pelos neurônios e pelas camadas, e resultando em uma saída. Cada neurônio combina linearmente os valores de entrada ponderados pelos pesos, aplica uma função de ativação e repassa o resultado para os neurônios da próxima camada. O erro é calculado em relação aos valores desejados, e a retropropagação do erro ajusta os pesos e vieses dos neurônios para minimizar o erro. Esse processo é repetido até que os pesos sejam ajustados para produzir resultados desejáveis.
 
 Elas são amplamente utilizadas em áreas como visão computacional e processamento de linguagem natural devido à sua capacidade de aprender a partir dos dados e fornecer soluções complexas para problemas desafiadores, capazes de extrair características relevantes dos dados e realizar tarefas como classificação e reconhecimento de padrões.
-
-% Redes neurais recorrentes (RNNs), nas quais os dados podem fluir em qualquer direção, são usadas para aplicações como modelagem de linguagem.[141][142][143][144][145]
-
-% Redes neurais profundas convolucionais (CNNs) são usadas em visão computacional.[147]
-
-% No contexto da detecção de discurso de ódio em memes, pode-se utilizar um modelo pré-treinado, como uma rede neural convolucional (CNN) ou uma rede neural de transformador (por exemplo, BERT), que foi treinado em um grande conjunto de dados em uma tarefa relacionada, como classificação de imagens ou processamento de linguagem natural. Em seguida, o modelo pré-treinado é ajustado com dados rotulados específicos para a detecção de discurso de ódio em memes, refinando seus parâmetros por meio do aprendizado supervisionado.
 
 \subsection{Aprendizado profundo}
 
@@ -81,26 +45,13 @@ O aprendizado profundo e as redes neurais tem impulsionado significativamente o 
 
 \subsection{Aprendizado por conjuntos}
 
-% qual é a diferencia entre ensemble e clustering?
-% o ensemble learning envolve a combinação de modelos para melhorar a precisão das previsões, enquanto o clustering visa agrupar dados com base em suas similaridades. Enquanto o ensemble learning lida com tarefas de previsão, o clustering se concentra na descoberta de estruturas e padrões nos dados.
-
 O aprendizado por conjuntos (do inglês, \textit{ensemble learning}) é uma técnica que combina múltiplos modelos de aprendizado de máquina para melhorar o desempenho e a precisão das previsões \cite{OPITZEnsemble}. Ao invés de depender de um único modelo, o aprendizado por conjuntos aproveita a diversidade e a opinião coletiva dos modelos individuais para tomar decisões mais precisas, pois os erros cometidos por um modelo podem ser compensados por outros mais precisos. 
 
 Uma abordagem comum no \textit{ensemble learning} é o \textbf{voto majoritário}, em que cada modelo do conjunto faz uma previsão para uma determinada instância de dados, conhecida como classe, e a classe mais frequente entre os modelos é escolhida como a previsão final. O voto majoritário é simples e eficaz, especialmente quando os modelos individuais têm uma taxa de acerto significativa. Outras estratégias também podem ser utilizadas, como a combinação de probabilidades ou o uso de pesos para ponderar as previsões dos modelos individuais. Essas abordagens levam em consideração a confiança ou a qualidade dos modelos, o que contribui para um aumento geral na precisão das previsões.
 
 Outra abordagem importante de destacar é o uso dos \textbf{hiperparâmetros}, que são parâmetros configuráveis que afetam o desempenho e o comportamento do modelo, influenciando fatores como a complexidade, a velocidade de treinamento e a capacidade de generalização. No \textit{ensemble learning}, os hiperparâmetros são usados para selecionar os modelos de melhor desempenho para o conjunto por meio da busca em grade, que envolve uma grade de valores de hiperparâmetros onde é feita a pesquisa de todas as combinações possíveis desses valores. A seleção adequada dos hiperparâmetros é fundamental para otimizar o desempenho do \textit{ensemble learning} e obter os melhores resultados, da qual requer ajustes dos valores dos hiperparâmetros e avaliação do desempenho do modelo usando métricas apropriadas. Tais métricas são essenciais para avaliar e mensurar os resultados obtidos, sendo elas a acurácia e a AUROC.
 
-% levando em conta o número de modelos no conjunto, o tipo de modelo utilizado, os critérios de combinação dos modelos, os pesos atribuídos a cada modelo, entre outros.
-
-% uma pesquisa de grade é realizada em uma faixa de valores para a taxa de aprendizado, tamanho do lote, aquecimento e número de iterações. Os resultados do ajuste de hiperparâmetros são então calculados sobre três sementes aleatórias, juntamente com seu desvio padrão, para obter uma estimativa mais robusta do desempenho do modelo.
-
-% o processo de aprendizado do conjunto, uma pesquisa de hiperparâmetro é realizada para encontrar a melhor configuração para os parâmetros, incluindo taxa de aprendizado, etapas de aquecimento, tipo de aquecimento, fator de aquecimento e iterações de aquecimento. 
-
-% Exemplos comuns de hiperparâmetros incluem a taxa de aprendizado, o número de camadas ocultas em uma rede neural, o tamanho do lote de treinamento.
-
 A \textbf{acurácia} é uma métrica que avalia a performance de um modelo de aprendizado de máquina, representando a proporção de previsões corretas em relação ao total de previsões realizadas pelo modelo. É calculada dividindo o número de previsões corretas pelo número total de exemplos no conjunto de dados. No entanto, em casos de desbalanceamento de dados, quando uma classe é mais frequente que as outras, a acurácia por si só não é a métrica mais adequada. Nesses casos, é importante considerar outras métricas que possam fornecer uma visão mais abrangente do desempenho do modelo, como a AUROC.
-
-% colocar uma imagem aqui
 
 A \textbf{AUROC} (Área sob a Curva Característica de Operação do Receptor) é uma métrica utilizada principalmente para avaliar o desempenho de modelos de classificação binária, como os utilizados em problemas de detecção de conteúdo ofensivo ou não. A curva ROC (Característica de Operação do Receptor) é construída traçando a taxa de verdadeiros positivos em relação à taxa de falsos positivos para diferentes pontos de corte de classificação. A AUROC é a área sob essa curva, variando de 0 a 1, onde um valor mais próximo de 1 indica um modelo com melhor capacidade de distinguir entre as classes. Em geral, uma AUROC de 0,5 indica um modelo com desempenho aleatório, enquanto valores acima de 0,5 indicam um desempenho melhor do que o aleatório \cite{BradleyAUROC}.
 
@@ -110,15 +61,11 @@ A \textbf{AUROC} (Área sob a Curva Característica de Operação do Receptor) �
     \caption {Curva ROC para um classificador ``melhor'' e ``pior'' \cite{RocCurveWiki}.}
 \end{figure*}
 
-% bagging, boosting e stacking
-
 O \textit{ensemble learning} é uma técnica amplamente adotada para melhorar a precisão e a estabilidade dos modelos de aprendizado de máquina, frequentemente utilizada em problemas do mundo real, onde a precisão é crucial.
 
 \section{Processamento de Linguagem Natural}
 
 O processamento de linguagem natural (PLN) é uma subárea da inteligência artificial e da linguística que estuda a compreensão e geração automática da linguagem humana. Os sistemas de geração de linguagem natural convertem informação armazenadas em bancos de dados computacionais em linguagem compreensível ao ser humano, enquanto os sistemas de compreensão de linguagem natural convertem ocorrências da linguagem humana em representações mais formais, mais facilmente manipuláveis por programas de computador. O PLN abrange uma variedade de tarefas, como a tradução e geração de respostas automáticas, sumarização de texto, reconhecimento de fala, análise de sentimento, que busca extrair qualidades subjetivas – emoções, humor, sarcasmo, ofensa, motivação, confusão – do texto e muito mais. O objetivo principal do PLN é permitir que os computadores compreendam, interpretem e gerem texto e fala de forma semelhante a linguagem humana\footnote{\textit{What is Natural Language Processing?} | IBM. Disponível em: \url{https://www.ibm.com/topics/natural-language-processing}. Acesso em: 12 de jun. de 2023.}.
-
-% O PLN envolve uma série de técnicas e algoritmos que permitem que os computadores processem, analisem e compreendam textos escritos ou falados em uma linguagem natural. Essas técnicas incluem análise morfológica (separação de palavras em radicais, prefixos e sufixos), análise sintática (identificação da estrutura gramatical de uma sentença), análise semântica (extração de significado das palavras e frases) e análise pragmática (interpretação do contexto e intenção do usuário).
 
 Atualmente, os modelos de aprendizagem profunda e as técnicas baseadas em redes neurais possibilitam sistemas de PLN serem capazes de aprender e extrair significados cada vez mais precisos de grandes quantidades de texto bruto. Esses sistemas têm a capacidade de aprimorar seu desempenho à medida que trabalham, permitindo uma compreensão mais avançada da linguagem natural, como os \textit{transformers}.
 
@@ -134,30 +81,15 @@ Por sua vez, a atenção de múltiplas cabeças permite que o modelo capture inf
 
 Por fim, a rede \textit{feed-forward} é um tipo de rede neural, composta por duas camadas lineares com uma função de ativação não linear aplicada entre elas, que é executada individualmente a cada posição na sequência de entrada de forma idêntica. Seu objetivo é fornecer uma transformação não linear que captura padrões complexos e dependências entre os elementos da sequência. Ao introduzir a não linearidade e aprender padrões não lineares, a rede \textit{feed-forward} possibilita que o \textit{transformer} capte informações contextuais e complexas em cada posição da sequência. Isso contribui para a capacidade do modelo de processar efetivamente o contexto da linguagem natural e melhorar o desempenho.
 
-%O codificador utiliza os mecanismos de autoatenção para calcular os pesos de importância de cada palavra em relação a todas as outras palavras da sequência. Essa abordagem permite que o codificador leve em consideração o contexto global ao processar a entrada. E o decodificador faz uso da atenção e da autoatenção quanto de atenção em relação à saída do codificador, para determinar a relevância das palavras durante o processo de geração da sequência de saída.
-
-%No \textbf{codificador}, cada camada possui duas subcamadas: uma de autoatenção de várias cabeças (do inglê, \textit{multi-head self-attention}) e outra por uma rede \textit{feed-forward} totalmente conectada, e cada subcamada é seguida por uma conexão residual e normalização. No \textbf{decodificador}, também há duas subcamadas por camada: uma de autoatenção \textit{multi-head} e outra de atenção \textit{multi-head} que se concentra na saída do codificador. Além disso, o decodificador possui uma subcamada com uma rede \textit{feed-forward} totalmente conectada, também seguida por conexões residuais e normalização. A saída do decodificador passa por uma camada linear e uma função \textit{softmax} para gerar a sequência de saída final. Essa estrutura em camadas permite que o \textit{transformer} capture as dependências entre as palavras em uma sequência e produza resultados precisos em tarefas de processamento de linguagem natural, como tradução, sumarização e classificação de texto.
-
 \begin{figure*}[!htbp]
 	\centering
 	\includegraphics[scale=0.6]{imagens/arch-transformers.png}
     \caption {Modelo de arquitetura de um \textit{transformer} \cite{GoogleTeamTransformers}.}
 \end{figure*}
 
-
-% No entanto, como um único vetor deve capturar toda a sequência de informações na arquitetura do codificador-decodificador, isso dificulta a retenção do conhecimento no início da série e a codificação de dependências de longo alcance. Em outras palavras, quando o codificador processa toda a sequência de entrada e comprime a informação em um vetor de contexto, ele frequentemente se esquece do início da entrada. Para resolver este problema, o mecanismo de atenção [5] foi estabelecido.
-
-% Essa arquitetura é composta por múltiplas camadas de auto-atenção (self-attention) e camadas totalmente conectadas. O mecanismo de atenção permite que cada palavra em uma sequência interaja com todas as outras palavras, permitindo que o modelo capture informações contextuais mais ricas. Isso resulta em uma representação mais poderosa do texto e melhora o desempenho em tarefas de PLN.
-
-% Transformer é composto de dois mecanismos separados: um codificador que lê o texto de entrada e um decodificador que gera a predição para a tarefa.
-
-% Os Transformers consistem em duas partes principais: o codificador e o decodificador. O codificador recebe a sequência de entrada e a transforma em representações intermediárias, enquanto o decodificador gera a sequência de saída com base nessas representações.
-
 Os \textit{transformers} têm sido amplamente adotados em várias aplicações de PLN e até mesmo em outros domínios, devido à sua capacidade de lidar com sequências de texto de comprimento variável, aprender representações contextualizadas e gerar previsões precisas. Comparados aos modelos de redes neurais, os transformadores são mais receptivos à paralelização, permitindo o treinamento em conjuntos de dados maiores. Isso levou ao desenvolvimento de sistemas pré-treinados, como o BERT e o GPT, que foram treinados com grandes conjuntos de dados de linguagem. Além disso, os \textit{transformers} têm mostrado sucesso não apenas no processamento de linguagem natural, mas também em outras áreas, como visão computacional.
 
 \subsection{BERT}
-
-% modelo pré-treinado fornecido pela biblioteca HuggingFace Transformers
 
 O BERT (do inglês, \textit{Bidirectional Encoder Representations from Transformers}) é um modelo de linguagem pré-treinado desenvolvido pela \citeonline{BERTImagem}, baseado na arquitetura do \textit{transformer}. Foi treinado em uma grande quantidade de dados não rotulados para aprender representações ricas e contextuais das palavras. O treinamento do BERT envolve duas tarefas principais: ``previsão de máscara'' e ``próxima sentença''. Na previsão de máscara, palavras em uma sequência de texto são mascaradas e o modelo é treinado para prever as palavras mascaradas com base no contexto. Na tarefa de próxima sentença, o BERT aprende a prever se duas sentenças são sequenciais ou não.
 
@@ -171,21 +103,13 @@ O BERT alcançou resultados significativos em várias tarefas de processamento d
 
 O diferencial do BERT em relação a outros modelos de linguagem pré-treinados é a sua capacidade bidirecional de compreender o contexto das palavras, considerando o contexto anterior e posterior de cada palavra ao realizar o seu processamento, o que permite ao modelo uma melhor compreensão do significado das palavras e frases em um texto, levando em conta as dependências entre elas. Os resultados mostram que modelos de linguagem treinados de forma bidirecional, como o BERT, fornecem uma compreensão mais profunda do contexto linguístico do que os modelos unidirecionais.
 
-%
-
 \section{Visão Computacional}
 
 A visão computacional é uma área de estudo e aplicação da inteligência artificial que busca capacitar os computadores a interpretarem, analisarem e compreenderem o conteúdo visual de imagens ou vídeos de maneira similar ao ser humano. Isso envolve o desenvolvimento de algoritmos e técnicas que permitem que os sistemas computacionais obtenham informações úteis a partir de dados visuais, e realizem tarefas como reconhecimento facial e de objetos, detecção de padrões, análise de expressões faciais, classificação automática de imagens em redes sociais entre outros\footnote{\textit{What is Computer Vision?} | IBM. Disponível em: \url{https://www.ibm.com/topics/computer-vision}. Acesso em: 12 jun. 2023.}.
 
 A integração de técnicas de visão computacional com outros campos, como processamento de linguagem natural, tem impulsionado pesquisas e avanços significativos na análise e compreensão de dados visuais. Essa integração tem permitido a aplicação de técnicas avançadas de processamento de linguagem natural no campo da visão computacional, resultando em melhorias nas tarefas relacionadas à interpretação e compreensão de informações visuais, como o \textit{VisualBERT}.
 
-% A informação visual é processada usando técnicas de visão computacional, como detecção de objetos e extração de recursos. O modelo é então treinado para prever se um determinado meme contém discurso de ódio ou não, com base nas informações textuais e visuais.
-
-% dada a grande melhoria nas tarefas de PNL, seu uso se estendeu à visão computacional [105] e pesquisas adicionais sobre atenção lançaram uma luz sobre diferentes mecanismos de atenção
-
 \subsection{\textit{VisualBERT}}
-
-% pré-treinamento
 
 O \textit{VisualBERT} é um modelo de linguagem pré-treinado que combina processamento de linguagem natural e a visão computacional para entender e interpretar informações visuais e textuais simultaneamente, baseado na arquitetura do BERT, ao contrário dos modelos que se baseiam apenas em texto, ele incorpora também representações visuais das imagens para melhorar o desempenho em tarefas que envolvem texto e contexto visual. O modelo é treinado em um grande conjunto de dados multimodais que combina texto descritivo e imagens correspondentes, tal abordagem permite que o \textit{VisualBERT} capture informações visuais relevantes, permitindo uma melhor compreensão de textos relacionados a imagens e aprimorando o desempenho em tarefas como descrição de imagens, geração de legendas entre outros. O \textit{VisualBERT} representa uma extensão dos modelos de linguagem pré-treinados, integrando efetivamente a visão computacional ao processamento de linguagem natural para uma análise mais completa e precisa de conteúdos multimodais \cite{VisualBERTArt}.
 
@@ -193,17 +117,11 @@ O \textit{VisualBERT} é pré-treinado usando dois objetivos semelhantes aos usa
 
 A arquitetura do \textit{VisualBERT} utiliza uma camada de entrada compartilhada para codificar tanto o texto quanto as representações visuais. Utilizando técnicas de codificação de palavras e redes neurais, essa camada captura informações contextuais das palavras e das representações visuais por meio de várias camadas do codificador do \textit{transformer}, assim como o BERT. Cada camada do codificador possui subcamadas de atenção \textit{multi-head} e redes \textit{feed-forward}, permitindo a captura de interações e padrões entre palavras e informações visuais. Os recursos visuais extraídos das propostas de objetos são tratados como \textit{tokens} de entrada não ordenados e incorporados no \textit{VisualBERT} juntamente com o texto. Essa abordagem permite que o modelo capture e relacione informações tanto textuais quanto visuais, permitindo uma compreensão mais completa dos dados multimodais.
 
-% Durante o pré-treinamento, o VisualBERT é treinado em tarefas de máscara de palavras e previsão de sentença seguintes. Essa abordagem permite que o modelo aprenda representações ricas e contextuais para texto e imagens. Além disso, o modelo é ajustado para diferentes tarefas específicas, capturando informações contextuais entre texto e imagem e permitindo uma compreensão completa dos dados multimodais.
-
 \begin{figure*}[!htbp]
 	\centering
 	\includegraphics[scale=0.35]{imagens/visualBERT.png}
     \caption {Arquitetura do \textit{VisualBERT} \cite{VisualBERTArt}.}
 \end{figure*}
-
-% Ele utiliza uma representação compartilhada que incorpora características visuais e contextos linguísticos, permitindo que o modelo compreenda a relação entre palavras e elementos visuais presentes em uma imagem.
-
-% discute o processo de treinamento para modelos de aprendizado profundo multimodal. A seção então descreve o esquema de treinamento para modelos multimodais, que envolve pré-treinamento em tarefas multimodais intermediárias ou proxy antes do ajuste fino na tarefa multimodal em questão. A seção menciona vários modelos pré-treinados que foram propostos, incluindo ViLBERT, VisualBERT, LXMERT, VL-BERT, OSCAR e UNITER. Esses modelos têm esquemas de treinamento muito semelhantes, que envolvem pré-treinamento em grandes conjuntos de dados de legendas de imagens. A seção conclui destacando a importância do pré-treinamento e do ajuste fino no aprendizado profundo multimodal, que permite que os modelos aprendam representações ricas de dados visuais e textuais.
 
 \section{Multimodalidade}
 
@@ -211,11 +129,7 @@ A multimodalidade refere-se à capacidade de combinar e integrar múltiplas moda
 
 Ao lidar com a multimodalidade, os sistemas computacionais buscam interpretar e extrair informações de diferentes modalidades, permitindo que os usuários se envolvam de maneira mais natural e efetiva com a tecnologia. Essa abordagem é amplamente aplicada em áreas como processamento de linguagem natural, visão computacional, interação humano-computador e aprendizado de máquina, onde a combinação de modalidades permite uma compreensão mais rica e abrangente dos dados. Ao combinar informações de várias modalidades, é possível melhorar o desempenho de uma variedade de tarefas, resultando em soluções mais eficazes para uma ampla gama de desafios.
 
-% Houve uma onda de interesse em problemas multimodais desde 2015 em resposta a perguntas visuais [5, 6], legendas de imagens [7, 8], reconhecimento de fala [9, 10] e além. https://arxiv.org/pdf/2012.12975.pdf
-
 \section{Trabalhos Relacionados}
-
-% apresentar antes de iniciar os tópicos
 
 \subsection{Desafio dos Memes Odiosos (\textit{The Hateful Memes Challenge})} 
 
