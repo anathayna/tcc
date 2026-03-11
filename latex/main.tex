@@ -32,7 +32,7 @@
 	% -- opções da classe memoir --
 	12pt,				% tamanho da fonte
 	openright,			% capítulos começam em pág ímpar (insere página vazia caso preciso)
-	twoside,			% para impressão em verso e anverso. Oposto a oneside
+	oneside,			% para impressão em verso e anverso. Oposto a oneside
 	a4paper,			% tamanho do papel. 
 	% -- opções da classe abntex2 --
 	%chapter=TITLE,		% títulos de capítulos convertidos em letras maiúsculas
@@ -41,10 +41,11 @@
 	%subsubsection=TITLE,% títulos de subsubseções convertidos em letras maiúsculas
 	% -- opções do pacote babel --
 	english,			% idioma adicional para hifenização
-	french,				% idioma adicional para hifenização
 	spanish,			% idioma adicional para hifenização
 	brazil				% o último idioma é o principal do documento
 	]{abntex2}
+
+    
 
 % ---
 % Pacotes básicos 
@@ -57,6 +58,11 @@
 \usepackage{color}				% Controle das cores
 \usepackage{graphicx}			% Inclusão de gráficos
 \usepackage{microtype} 			% para melhorias de justificação
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{amsmath,amssymb}
 % ---
 		
 % ---
@@ -95,21 +101,20 @@
 % ---
 % Informações de dados para CAPA e FOLHA DE ROSTO
 % ---
-\titulo{Classificação de discurso de ódio em memes com aprendizado multimodal}
+\titulo{Identificação de discurso de ódio em memes com aprendizado multimodal}
 \autor{Ana Thayna Conceição França}
-\local{SP - Brasil}
-\data{2025}
-\orientador{...}
-\coorientador{...}
+\local{São Paulo}
+\data{2026}
+\orientador{Prof. Thiago Claro}
 \instituicao{%
-  Centro Universitário Senac - Santo Amaro
+  SENAC -- Serviço Nacional de Aprendizagem Comercial
   \par
-  Bacharelado em Ciência da Computação}
-\tipotrabalho{Monografia}
-% O preambulo deve conter o tipo do trabalho, o objetivo, 
-% o nome da instituição e a área de concentração 
-\preambulo{Monografia apresentada na disciplina Trabalho de Conclusão de Curso, como parte dos
-requisitos para obtenção do título de Bacharel em Ciência da Computação.}
+  Unidade Santo Amaro
+  \par
+  Curso de Bacharelado em Ciência da Computação
+}
+\preambulo{Trabalho de Conclusão de Curso apresentado ao SENAC Santo Amaro como requisito para conclusão do curso de Bacharelado em Ciência da Computação.}
+
 % ---
 
 
@@ -126,9 +131,9 @@ requisitos para obtenção do título de Bacharel em Ciência da Computação.}
      	%pagebackref=true,
 		pdftitle={\@title}, 
 		pdfauthor={\@author},
-    	pdfsubject={\imprimirpreambulo},
+    	pdfsubject={TCC - SENAC Santo Amaro},%pdfsubject={\imprimirpreambulo},
 	    pdfcreator={LaTeX with abnTeX2},
-		pdfkeywords={abnt}{latex}{abntex}{abntex2}{trabalho acadêmico}, 
+		pdfkeywords={abnt}{latex}{abntex}{abntex2}{trabalho acadêmico}, %pdfkeywords={tcc2}{senac}{santo amaro}{trabalho de conclusão},
 		colorlinks=true,       		% false: boxed links; true: colored links
     	linkcolor=blue,          	% color of internal links
     	citecolor=blue,        		% color of links to bibliography
@@ -137,6 +142,7 @@ requisitos para obtenção do título de Bacharel em Ciência da Computação.}
 		bookmarksdepth=4
 }
 \makeatother
+
 % --- 
 
 % --- 
@@ -160,13 +166,15 @@ requisitos para obtenção do título de Bacharel em Ciência da Computação.}
 % ----
 \begin{document}
 
+\selectlanguage{brazil}
+
 % Retira espaço extra obsoleto entre as frases.
 \frenchspacing 
 
 % ----------------------------------------------------------
 % ELEMENTOS PRÉ-TEXTUAIS
 % ----------------------------------------------------------
-% \pretextual
+\pretextual 
 
 % ---
 % Capa
@@ -178,7 +186,7 @@ requisitos para obtenção do título de Bacharel em Ciência da Computação.}
 % Folha de rosto
 % (o * indica que haverá a ficha bibliográfica)
 % ---
-%\imprimirfolhaderosto*
+\imprimirfolhaderosto*
 % ---
 
 % ---

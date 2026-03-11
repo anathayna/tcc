@@ -1,65 +1,77 @@
+% open pretrained transformer (OPT)
+% Gabriel Goh et al. Multimodal Neurons in Artificial Neural Networks.
+
+% https://paperswithcode.com/paper/exploring-contrastive-learning-for-multimodal
+
 \chapter{Revisão Bibliográfica}
 \label{cap:02}
 
-Neste capítulo, apresenta-se a revisão da literatura relacionada aos principais conceitos que fundamentam este trabalho. Serão abordados temas como o discurso de ódio nas redes sociais, os memes enquanto forma de comunicação digital e o uso de técnicas de aprendizado de máquina para a detecção automática de conteúdos ofensivos. Esses conceitos são essenciais para contextualizar o problema estudado e embasar o desenvolvimento do modelo proposto neste projeto.
+Neste capítulo, apresenta-se a revisão da literatura relacionada aos principais conceitos teóricos que fundamentam este trabalho. Serão abordados temas como o discurso de ódio nas redes sociais, os memes enquanto forma de comunicação digital e o uso de técnicas de aprendizado de máquina para a moderação automática de conteúdos ofensivos. Esses conceitos são essenciais para contextualizar o problema estudado e embasar o desenvolvimento do modelo proposto neste projeto.
 
 \section{Discurso de ódio nas redes sociais}
 
-O discurso de ódio nas redes sociais é um fenômeno complexo e multidimensional, profundamente ligado às tensões sociais, políticas e culturais de cada contexto histórico. Esse tipo de discurso não se restringe a manifestações abertamente agressivas: ele pode assumir formas sutis, irônicas ou humorísticas, exigindo, muitas vezes, a consideração do contexto discursivo para ser identificado. Além disso, os indivíduos que produzem e compartilham esse tipo de conteúdo frequentemente constituem comunidades de fala com jargões e práticas próprias, o que reforça o caráter social e coletivo do fenômeno \cite{Ferrari2022}.
+O discurso de ódio nas redes sociais é um fenômeno complexo e multidimensional, moldado por tensões sociais, políticas e culturais de cada contexto histórico. Ele vai além de agressões explícitas, podendo assumir formas sutis, irônicas ou humorísticas, o que exige uma análise contextual para identificar. Além disso, os grupos que produzem e compartilham esse tipo de conteúdo frequentemente formam comunidades com jargões e práticas próprias, reforçando seu caráter social e coletivo \cite{Ferrari2022}.
 
-De acordo com Sanguinetti \cite{sanguinetti2018}, o discurso de ódio se caracteriza por ações cujo objetivo é espalhar ódio, incitar violência ou ameaçar a dignidade, liberdade ou segurança de determinados grupos sociais. Fortuna e Nunes \cite{fortuna2018} destacam que é importante diferenciá-lo de outros tipos de linguagem nociva, como discurso ofensivo, abusivo ou tóxico, embora estes possam coexistir.
+Diversos autores definem o discurso de ódio como qualquer manifestação que busca incitar hostilidade, violência ou discriminação contra determinados grupos sociais \cite{sanguinetti2018, fortuna2018}. Tem um impacto amplo, gerando estresse psicológico, exclusão social e contribuindo para a polarização de comunidades online \cite{waseem2017}. Em resposta, plataformas de redes sociais têm adotado políticas de moderação de conteúdo que envolvem detecção automática, remoção de publicações e divulgação de relatórios de transparência. Contudo, a eficácia dessas medidas tem sido limitada, pois as decisões variam conforme o tipo de conteúdo, o contexto e os critérios internos das plataformas \cite{Dergacheva2023}. 
 
-O impacto do discurso de ódio é amplo, afetando tanto indivíduos quanto coletivos, podendo gerar estresse psicológico, exclusão social e contribuir para a polarização de comunidades online \cite{waseem2017}. Em resposta a isso, plataformas como YouTube e Instagram tem implementado políticas de moderação de conteúdo que envolvem detecção automática, remoção de publicações e divulgação de relatórios de transparência. No entanto, estudos recentes mostram que a eficácia dessas medidas ainda é limitada, uma vez que as decisões de moderação variam significativamente conforme o tipo de conteúdo, o contexto e os critérios internos da plataforma \cite{Dergacheva2023}. Além disso, a sutileza, a ironia e a natureza multimodal de certos conteúdos odiosos, como memes que combinam imagem e texto, dificultam a aplicação consistente das políticas de moderação, evidenciando os desafios enfrentados pelas plataformas na conciliação entre liberdade de expressão e proteção dos usuários \cite{anImage2023}.
+Nesse contexto, formatos comunicativos como os memes, com sua ironia e sutileza, agravam o desafio, complicando a aplicação consistente de políticas de moderação e o equilíbrio entre liberdade de expressão e proteção dos usuários \cite{anImage2023}. Portanto, compreender o papel desses memes como vetores de disseminação do discurso de ódio, especialmente em expressões visuais e humorísticas, torna-se essencial.
 
-Dados da SaferNet indicam um aumento ao longo dos anos nas denúncias de crimes de ódio na internet, evidenciando a persistência e ampliação do problema \cite{saferNetIndicadores}. A presença do discurso de ódio em diferentes formatos, especialmente em expressões visuais e humorísticas, destaca a importância de compreender como os memes tem contribuído para a construção e disseminação dessas mensagens.
 
-\section{Inteligência Artificial}
+% https://indicadores.safernet.org.br/
+% Judith Butler
+% Tarcizio Silva
 
-A inteligência artificial é uma área de estudo da ciência da computação que busca compreender e simular a inteligência humana a fim de reproduzi-la artificialmente em uma máquina \cite{Haugeland1985}. Ela envolve o uso de algoritmos, sistemas e técnicas que permitem que as máquinas aprendam e realizem tarefas que normalmente exigiriam a inteligência humana.
+\section{Memes como meio de comunicação digital}
 
-Para desenvolver a IA, usamos técnicas que se associam as funções cognitivas da mente humana. Como o uso de redes neurais que buscam replicar o funcionamento dos neurônios no cérebro humano. O aprendizado de máquina, que treina computadores para desempenhar tarefas semelhantes às realizadas por seres humanos. Isso inclui as habilidades como planejamento, compreensão, aprendizado, raciocínio, resolução de problemas e tomada de decisões com base em dados e informações fornecidas.
+O termo “meme”, cunhado por Richard Dawkins em O Gene Egoísta \cite{Dawkins1976}, refere-se a unidades culturais que se replicam e se difundem na cultura humana. Inspirado por essa concepção, atualmente essas unidades se propagam principalmente no meio digital, impulsionadas pela velocidade de compartilhamento e pelo amplo alcance das redes sociais \cite{shifman2013memes}. Os memes consolidaram-se como formas distintivas de comunicação digital, combinando imagens e textos para transmitir mensagens frequentemente marcadas por humor, ironia ou sátira, cuja compreensão depende fortemente do contexto cultural e social do público \cite{horta2015meme}.
 
-A IA é um campo multidisciplinar que combina conhecimentos da ciência da computação, da matemática, da estatística, da neurociência e de outras áreas para criar programas e sistemas capazes de aprender, raciocinar, reconhecer padrões, tomar decisões e resolver problemas de forma autônoma. Existem diferentes abordagens, técnicas e aplicações da inteligência artificial, mas o aprendizado de máquina é uma das bases fundamentais para seu funcionamento e, consequentemente, para realização deste trabalho.
+Estudos recentes mostram que memes não apenas refletem tendências culturais e discursos sociais, mas também desempenham papel ativo na construção e disseminação de mensagens, inclusive aquelas de teor odioso ou discriminatório \cite{peixoto2020circulacao}. Essa capacidade de veicular múltiplos sentidos, muitas vezes de modo ambíguo, desafia mecanismos tradicionais de moderação, pois exige a análise integrada de informações visuais e textuais, bem como de seus contextos de circulação \cite{ArticleHatefulMemesChallenge2020}.
 
-\section{Aprendizado de Máquina}
+Nesse cenário, a aplicação de técnicas de aprendizado de máquina tornou-se fundamental para compreender, classificar e moderar a enorme quantidade de memes compartilhados nas redes. Modelos multimodais que integram texto e imagem têm sido desenvolvidos para detectar padrões sutis, categorizar conteúdos e identificar potenciais riscos associados a esses memes, ampliando as possibilidades de análise automatizada e interpretabilidade dos memes em larga escala \cite{ArticleHatefulMemesChallenge2020}.
 
-O aprendizado de máquina é uma aplicação na qual os sistemas são treinados com grandes conjuntos de dados para reconhecer padrões, fazer previsões e tomar decisões com base nesses padrões \cite{HoschMachineLearning}. Trata-se de um método de análise de dados que utiliza uma abordagem estatística e computacional, permitindo que os sistemas aprendam com os dados disponíveis e com o mínimo de intervenção humana necessária, um exemplo é a moderação do conteúdo postado em redes sociais, com a finalidade de classificar se um determinado conteúdo é ofensivo ou não.
 
-Existem várias abordagens de aprendizado de máquina, sendo o aprendizado supervisionado, as redes neurais, o \textit{deep learning} e o aprendizado por conjuntos de grande importância para a execução deste trabalho.
+\section{Aprendizado de máquina e moderação automatizada}
 
-\subsection{Aprendizado supervisionado}
+% - **Desafios éticos e técnicos** na moderação automática (viés, generalização, interpretabilidade).
 
-O aprendizado supervisionado utiliza um conjuntos de dados rotulados para treinar algoritmos com o objetivo de aprender a classificar os dados ou prever resultados com precisão com base nas informações fornecidas nos rótulos dos dados de treinamento. O modelo realiza ajustes finos (do inglês, \textit{fine-tuning}) à medida que os dados de entrada são inseridos, visando aprender a mapear corretamente os dados para as saídas desejadas. Isso permite a previsão ou classificação de novos exemplos não rotulados com base no aprendizado adquirido \cite{RussellNorvig1995}.
+O aprendizado de máquina (ML), especialmente o aprendizado profundo (\textit{deep learning}), revolucionou a moderação de conteúdo online, permitindo a detecção automatizada de discurso de ódio em escala massiva. Em contextos como memes, modelos de ML processam multimodalidade para identificar padrões de ódio, como estereótipos raciais ou ataques a minorias \cite{ArticleHatefulMemesChallenge2020}. Essa abordagem contrasta com métodos manuais, escalando para plataformas como redes sociais, onde bilhões de postagens diárias demandam eficiência.
 
-\subsection{Redes Neurais}
+Modelos supervisionados, como redes neurais convolucionais (CNNs) e transformers (BERT fine-tuned), dominam a detecção textual de ódio, treinados em datasets anotados como HateXplain ou MMHS150K (Basile et al., 2019). Para memes, arquiteturas multimodais integram texto e visão, como o VisualBERT ou HateMemes, alcançando F1-scores acima de 0.70 em benchmarks \cite{ArticleHatefulMemesChallenge2020}. Já métodos não supervisionados, como clustering com LDA ou autoencoders, detectam discursos emergentes sem rótulos prévios, úteis para variações culturais em memes brasileiros (Waseem \& Hovy, 2016).
 
-As redes neurais são uma analogia neurobiológica inspirada no funcionamento do sistema nervoso do cérebro humano, capazes de adquirir conhecimento através de um processo de aprendizagem a partir de dados de entrada, com ou sem supervisão. Essas redes são capazes de armazenar o conhecimento adquirido interligando células computacionais simples denominadas ``neurônios'' ou ``unidades de processamento''. Com essa estrutura interconectada, e com o treinamento apropriado, são capazes de modelar, analisar e reconhecer padrões, resultando na produção de conhecimento de maneira distribuída \cite{Haykin2007}.
+No entanto, desafios éticos e técnicos persistem. Tecnicamente, a generalização falha em memes com sarcasmo ou gírias locais, devido a vieses em datasets ocidentais, levando a falsos positivos em contextos brasileiros (Dixon et al., 2018). Éticamente, questões de interpretabilidade são cruciais para justificar banimentos, enquanto vieses amplificam desigualdades minoritárias. Hiperparâmetros como taxa de aprendizado, tamanho do batch otimizam esses modelos, mas exigem validação cruzada para mitigar overfitting em dados escassos de memes (Goodfellow et al., 2016).
 
-\begin{figure*}[!htbp]
-	\centering
-	\includegraphics[scale=0.4]{imagens/arch-rede-neural-artificial.png}
-    \caption {Arquitetura de uma Rede Neural Artificial \cite{RedeNeuralImagem}.}
-\end{figure*}
+Eticamente, o viés é o maior risco, amplificado por datasets desbalanceados — como o HateMemes, onde minorias raciais são super-representadas como "ódio" (85\% dos casos), perpetuando estereótipos e falsos positivos em conteúdos satíricos (Kiela et al., 2020). Isso levanta dilemas de privacidade, censura e equidade, especialmente em plataformas globais com usuários brasileiros sub-representados. Soluções emergentes incluem debiasing via adversarial training e auditorias éticas, mas generalização intercultural permanece um gargalo (Dixon et al., 2018; Mozafari et al., 2019).
 
-Elas são compostas por um conjunto interconectado de neurônios artificiais, ou ``nós'', que são organizados em várias camadas, sendo a de entrada responsável por receber os dados, as intermediárias (também conhecidas como camadas ocultas) responsáveis por processar as informações e a de saída responsável por produzir as saídas finais com os resultados da rede neural.
 
-Cada neurônio artificial possui pesos e um valor de viés, sendo o primeiro representando a importância da conexão entre os neurônios, enquanto o segundo é uma medida flexível que facilita a ativação do neurônio de acordo com as preferências incorporadas. Durante o treinamento, os pesos e vieses são ajustados para otimizar o desempenho da rede. A rede funciona por meio de dois processos principais, a propagação direta (do inglês, \textit{forward propagation}), e a retropropagação do erro (do inglês, \textit{backpropagation}). Na propagação direta, os dados de entrada são alimentados na rede neural, passando pelos neurônios e pelas camadas, e resultando em uma saída. Cada neurônio combina linearmente os valores de entrada ponderados pelos pesos, aplica uma função de ativação e repassa o resultado para os neurônios da próxima camada. O erro é calculado em relação aos valores desejados, e a retropropagação do erro ajusta os pesos e vieses dos neurônios para minimizar o erro. Esse processo é repetido até que os pesos sejam ajustados para produzir resultados desejáveis.
 
-Elas são amplamente utilizadas em áreas como visão computacional e processamento de linguagem natural devido à sua capacidade de aprender a partir dos dados e fornecer soluções complexas para problemas desafiadores, capazes de extrair características relevantes dos dados e realizar tarefas como classificação e reconhecimento de padrões.
+% \begin{itemize}
+% \item \textbf{Pré-treinamento}: Inicialmente, o modelo é treinado de forma não supervisionada ou auto-supervisionada em um grande volume de dados não rotulados,  capturando padrões gerais de linguagem ou imagem \cite{devlin2019bert}.
 
-\subsection{Aprendizado profundo}
+% % https://textbook.coleridgeinitiative.org/
 
-O aprendizado profundo (do inglês, \textit{deep learning}) é uma abordagem que utiliza redes neurais artificiais profundas que utilizam múltiplas camadas de processamento interconectadas para extrair representações complexas dos dados com vários níveis de abstração e reconhecimento de padrões. Essas redes neurais profundas são capazes de aprender de forma hierárquica, com cada camada representando características mais abstratas à medida que se aprofunda na rede \cite{AurelienGeron2019}. Essa abordagem permite que o aprendizado profundo seja capaz de lidar com problemas de maior complexidade e extraia automaticamente características relevantes dos dados.
+% \item \textbf{Treinamento}:  Nessa fase, o modelo pré-treinado é exposto a dados rotulados, ajustando os parâmetros para minimizar erros e melhorar seu desempenho em tarefas específicas, como classificar memes como ``ódio'' ou ``não-ódio'' \cite{mitchell1997machine}. Em resumo, o treinamento é a fase de aprender com dados para melhorar a performance em uma tarefa.
 
-O aprendizado profundo e as redes neurais tem impulsionado significativamente o avanço em áreas como a visão computacional e o processamento de linguagem natural.
+% \item \textbf{\textit{Fine-Tuning}}: Por fim, essa técnica ajusta modelos pré-treinados para tarefas específicas, por meio do treinamento supervisionado em datasets menores e rotulados. Refina os pesos, ou seja, os parâmetros numéricos internos, aproveitando o conhecimento prévio, reduzindo recursos computacionais, \textit{overfitting} (quando o modelo memoriza os dados de treino em vez de aprender padrões gerais, falhando em dados novos) e evitando treinamento do zero. Assim, adapta o modelo para classificar ou prever novos exemplos não rotulados com alta precisão \cite{GoogleTeamTransformers}.
+% \end{itemize}
 
 \subsection{Aprendizado por conjuntos}
+
+% qual é a diferencia entre ensemble e clustering?
+% o ensemble learning envolve a combinação de modelos para melhorar a precisão das previsões, enquanto o clustering visa agrupar dados com base em suas similaridades. Enquanto o ensemble learning lida com tarefas de previsão, o clustering se concentra na descoberta de estruturas e padrões nos dados.
 
 O aprendizado por conjuntos (do inglês, \textit{ensemble learning}) é uma técnica que combina múltiplos modelos de aprendizado de máquina para melhorar o desempenho e a precisão das previsões \cite{OPITZEnsemble}. Ao invés de depender de um único modelo, o aprendizado por conjuntos aproveita a diversidade e a opinião coletiva dos modelos individuais para tomar decisões mais precisas, pois os erros cometidos por um modelo podem ser compensados por outros mais precisos. 
 
 Uma abordagem comum no \textit{ensemble learning} é o \textbf{voto majoritário}, em que cada modelo do conjunto faz uma previsão para uma determinada instância de dados, conhecida como classe, e a classe mais frequente entre os modelos é escolhida como a previsão final. O voto majoritário é simples e eficaz, especialmente quando os modelos individuais têm uma taxa de acerto significativa. Outras estratégias também podem ser utilizadas, como a combinação de probabilidades ou o uso de pesos para ponderar as previsões dos modelos individuais. Essas abordagens levam em consideração a confiança ou a qualidade dos modelos, o que contribui para um aumento geral na precisão das previsões.
 
 Outra abordagem importante de destacar é o uso dos \textbf{hiperparâmetros}, que são parâmetros configuráveis que afetam o desempenho e o comportamento do modelo, influenciando fatores como a complexidade, a velocidade de treinamento e a capacidade de generalização. No \textit{ensemble learning}, os hiperparâmetros são usados para selecionar os modelos de melhor desempenho para o conjunto por meio da busca em grade, que envolve uma grade de valores de hiperparâmetros onde é feita a pesquisa de todas as combinações possíveis desses valores. A seleção adequada dos hiperparâmetros é fundamental para otimizar o desempenho do \textit{ensemble learning} e obter os melhores resultados, da qual requer ajustes dos valores dos hiperparâmetros e avaliação do desempenho do modelo usando métricas apropriadas. Tais métricas são essenciais para avaliar e mensurar os resultados obtidos, sendo elas a acurácia e a AUROC.
+
+% levando em conta o número de modelos no conjunto, o tipo de modelo utilizado, os critérios de combinação dos modelos, os pesos atribuídos a cada modelo, entre outros.
+
+% uma pesquisa de grade é realizada em uma faixa de valores para a taxa de aprendizado, tamanho do lote, aquecimento e número de iterações. Os resultados do ajuste de hiperparâmetros são então calculados sobre três sementes aleatórias, juntamente com seu desvio padrão, para obter uma estimativa mais robusta do desempenho do modelo.
+
+% o processo de aprendizado do conjunto, uma pesquisa de hiperparâmetro é realizada para encontrar a melhor configuração para os parâmetros, incluindo taxa de aprendizado, etapas de aquecimento, tipo de aquecimento, fator de aquecimento e iterações de aquecimento. 
+
+% Exemplos comuns de hiperparâmetros incluem a taxa de aprendizado, o número de camadas ocultas em uma rede neural, o tamanho do lote de treinamento.
 
 A \textbf{acurácia} é uma métrica que avalia a performance de um modelo de aprendizado de máquina, representando a proporção de previsões corretas em relação ao total de previsões realizadas pelo modelo. É calculada dividindo o número de previsões corretas pelo número total de exemplos no conjunto de dados. No entanto, em casos de desbalanceamento de dados, quando uma classe é mais frequente que as outras, a acurácia por si só não é a métrica mais adequada. Nesses casos, é importante considerar outras métricas que possam fornecer uma visão mais abrangente do desempenho do modelo, como a AUROC.
 
@@ -68,16 +80,12 @@ A \textbf{AUROC} (Área sob a Curva Característica de Operação do Receptor) �
 \begin{figure*}[!htbp]
 	\centering
 	\includegraphics[scale=0.36]{imagens/auroc.png}
-    \caption {Curva ROC para um classificador ``melhor'' e ``pior'' \cite{RocCurveWiki}.}
+    \caption {Curva ROC para um classificador ``melhor'' e ``pior'' \cite{RocCurveWiki}. - obs.: descrever a imagem}
 \end{figure*}
 
+% bagging, boosting e stacking
+
 O \textit{ensemble learning} é uma técnica amplamente adotada para melhorar a precisão e a estabilidade dos modelos de aprendizado de máquina, frequentemente utilizada em problemas do mundo real, onde a precisão é crucial.
-
-\section{Processamento de Linguagem Natural}
-
-O processamento de linguagem natural (PLN) é uma subárea da inteligência artificial e da linguística que estuda a compreensão e geração automática da linguagem humana. Os sistemas de geração de linguagem natural convertem informação armazenadas em bancos de dados computacionais em linguagem compreensível ao ser humano, enquanto os sistemas de compreensão de linguagem natural convertem ocorrências da linguagem humana em representações mais formais, mais facilmente manipuláveis por programas de computador. O PLN abrange uma variedade de tarefas, como a tradução e geração de respostas automáticas, sumarização de texto, reconhecimento de fala, análise de sentimento, que busca extrair qualidades subjetivas – emoções, humor, sarcasmo, ofensa, motivação, confusão – do texto e muito mais. O objetivo principal do PLN é permitir que os computadores compreendam, interpretem e gerem texto e fala de forma semelhante a linguagem humana\footnote{\textit{What is Natural Language Processing?} | IBM. Disponível em: \url{https://www.ibm.com/topics/natural-language-processing}. Acesso em: 12 de jun. de 2023.}.
-
-Atualmente, os modelos de aprendizagem profunda e as técnicas baseadas em redes neurais possibilitam sistemas de PLN serem capazes de aprender e extrair significados cada vez mais precisos de grandes quantidades de texto bruto. Esses sistemas têm a capacidade de aprimorar seu desempenho à medida que trabalham, permitindo uma compreensão mais avançada da linguagem natural, como os \textit{transformers}.
 
 \subsection{\textit{Transformers}}
 
@@ -91,15 +99,30 @@ Por sua vez, a atenção de múltiplas cabeças permite que o modelo capture inf
 
 Por fim, a rede \textit{feed-forward} é um tipo de rede neural, composta por duas camadas lineares com uma função de ativação não linear aplicada entre elas, que é executada individualmente a cada posição na sequência de entrada de forma idêntica. Seu objetivo é fornecer uma transformação não linear que captura padrões complexos e dependências entre os elementos da sequência. Ao introduzir a não linearidade e aprender padrões não lineares, a rede \textit{feed-forward} possibilita que o \textit{transformer} capte informações contextuais e complexas em cada posição da sequência. Isso contribui para a capacidade do modelo de processar efetivamente o contexto da linguagem natural e melhorar o desempenho.
 
+%O codificador utiliza os mecanismos de autoatenção para calcular os pesos de importância de cada palavra em relação a todas as outras palavras da sequência. Essa abordagem permite que o codificador leve em consideração o contexto global ao processar a entrada. E o decodificador faz uso da atenção e da autoatenção quanto de atenção em relação à saída do codificador, para determinar a relevância das palavras durante o processo de geração da sequência de saída.
+
+%No \textbf{codificador}, cada camada possui duas subcamadas: uma de autoatenção de várias cabeças (do inglê, \textit{multi-head self-attention}) e outra por uma rede \textit{feed-forward} totalmente conectada, e cada subcamada é seguida por uma conexão residual e normalização. No \textbf{decodificador}, também há duas subcamadas por camada: uma de autoatenção \textit{multi-head} e outra de atenção \textit{multi-head} que se concentra na saída do codificador. Além disso, o decodificador possui uma subcamada com uma rede \textit{feed-forward} totalmente conectada, também seguida por conexões residuais e normalização. A saída do decodificador passa por uma camada linear e uma função \textit{softmax} para gerar a sequência de saída final. Essa estrutura em camadas permite que o \textit{transformer} capture as dependências entre as palavras em uma sequência e produza resultados precisos em tarefas de processamento de linguagem natural, como tradução, sumarização e classificação de texto.
+
 \begin{figure*}[!htbp]
 	\centering
 	\includegraphics[scale=0.6]{imagens/arch-transformers.png}
     \caption {Modelo de arquitetura de um \textit{transformer} \cite{GoogleTeamTransformers}.}
 \end{figure*}
 
+
+% No entanto, como um único vetor deve capturar toda a sequência de informações na arquitetura do codificador-decodificador, isso dificulta a retenção do conhecimento no início da série e a codificação de dependências de longo alcance. Em outras palavras, quando o codificador processa toda a sequência de entrada e comprime a informação em um vetor de contexto, ele frequentemente se esquece do início da entrada. Para resolver este problema, o mecanismo de atenção [5] foi estabelecido.
+
+% Essa arquitetura é composta por múltiplas camadas de auto-atenção (self-attention) e camadas totalmente conectadas. O mecanismo de atenção permite que cada palavra em uma sequência interaja com todas as outras palavras, permitindo que o modelo capture informações contextuais mais ricas. Isso resulta em uma representação mais poderosa do texto e melhora o desempenho em tarefas de PLN.
+
+% Transformer é composto de dois mecanismos separados: um codificador que lê o texto de entrada e um decodificador que gera a predição para a tarefa.
+
+% Os Transformers consistem em duas partes principais: o codificador e o decodificador. O codificador recebe a sequência de entrada e a transforma em representações intermediárias, enquanto o decodificador gera a sequência de saída com base nessas representações.
+
 Os \textit{transformers} têm sido amplamente adotados em várias aplicações de PLN e até mesmo em outros domínios, devido à sua capacidade de lidar com sequências de texto de comprimento variável, aprender representações contextualizadas e gerar previsões precisas. Comparados aos modelos de redes neurais, os transformadores são mais receptivos à paralelização, permitindo o treinamento em conjuntos de dados maiores. Isso levou ao desenvolvimento de sistemas pré-treinados, como o BERT e o GPT, que foram treinados com grandes conjuntos de dados de linguagem. Além disso, os \textit{transformers} têm mostrado sucesso não apenas no processamento de linguagem natural, mas também em outras áreas, como visão computacional.
 
 \subsection{BERT}
+
+% modelo pré-treinado fornecido pela biblioteca HuggingFace Transformers
 
 O BERT (do inglês, \textit{Bidirectional Encoder Representations from Transformers}) é um modelo de linguagem pré-treinado desenvolvido pela \citeonline{BERTImagem}, baseado na arquitetura do \textit{transformer}. Foi treinado em uma grande quantidade de dados não rotulados para aprender representações ricas e contextuais das palavras. O treinamento do BERT envolve duas tarefas principais: ``previsão de máscara'' e ``próxima sentença''. Na previsão de máscara, palavras em uma sequência de texto são mascaradas e o modelo é treinado para prever as palavras mascaradas com base no contexto. Na tarefa de próxima sentença, o BERT aprende a prever se duas sentenças são sequenciais ou não.
 
@@ -113,13 +136,18 @@ O BERT alcançou resultados significativos em várias tarefas de processamento d
 
 O diferencial do BERT em relação a outros modelos de linguagem pré-treinados é a sua capacidade bidirecional de compreender o contexto das palavras, considerando o contexto anterior e posterior de cada palavra ao realizar o seu processamento, o que permite ao modelo uma melhor compreensão do significado das palavras e frases em um texto, levando em conta as dependências entre elas. Os resultados mostram que modelos de linguagem treinados de forma bidirecional, como o BERT, fornecem uma compreensão mais profunda do contexto linguístico do que os modelos unidirecionais.
 
-\section{Visão Computacional}
 
-A visão computacional é uma área de estudo e aplicação da inteligência artificial que busca capacitar os computadores a interpretarem, analisarem e compreenderem o conteúdo visual de imagens ou vídeos de maneira similar ao ser humano. Isso envolve o desenvolvimento de algoritmos e técnicas que permitem que os sistemas computacionais obtenham informações úteis a partir de dados visuais, e realizem tarefas como reconhecimento facial e de objetos, detecção de padrões, análise de expressões faciais, classificação automática de imagens em redes sociais entre outros\footnote{\textit{What is Computer Vision?} | IBM. Disponível em: \url{https://www.ibm.com/topics/computer-vision}. Acesso em: 12 jun. 2023.}.
+\section{Modelos multimodais}
 
-A integração de técnicas de visão computacional com outros campos, como processamento de linguagem natural, tem impulsionado pesquisas e avanços significativos na análise e compreensão de dados visuais. Essa integração tem permitido a aplicação de técnicas avançadas de processamento de linguagem natural no campo da visão computacional, resultando em melhorias nas tarefas relacionadas à interpretação e compreensão de informações visuais, como o \textit{VisualBERT}.
 
-\subsection{\textit{VisualBERT}}
+% \{Conceitos de multimodalidade e estratégias de fusão}
+% \{Modelos visão–linguagem (VisualBERT, CLIP, BLIP, etc.)}
+% \{Detecção multimodal de discurso de ódio em memes}
+% \{Interpretabilidade em modelos multimodais para hateful memes}
+
+\subsection{\textit{VisualBERT} - obs.: descrever os modelos usados no CLIP}
+
+% pré-treinamento
 
 O \textit{VisualBERT} é um modelo de linguagem pré-treinado que combina processamento de linguagem natural e a visão computacional para entender e interpretar informações visuais e textuais simultaneamente, baseado na arquitetura do BERT, ao contrário dos modelos que se baseiam apenas em texto, ele incorpora também representações visuais das imagens para melhorar o desempenho em tarefas que envolvem texto e contexto visual. O modelo é treinado em um grande conjunto de dados multimodais que combina texto descritivo e imagens correspondentes, tal abordagem permite que o \textit{VisualBERT} capture informações visuais relevantes, permitindo uma melhor compreensão de textos relacionados a imagens e aprimorando o desempenho em tarefas como descrição de imagens, geração de legendas entre outros. O \textit{VisualBERT} representa uma extensão dos modelos de linguagem pré-treinados, integrando efetivamente a visão computacional ao processamento de linguagem natural para uma análise mais completa e precisa de conteúdos multimodais \cite{VisualBERTArt}.
 
@@ -127,11 +155,17 @@ O \textit{VisualBERT} é pré-treinado usando dois objetivos semelhantes aos usa
 
 A arquitetura do \textit{VisualBERT} utiliza uma camada de entrada compartilhada para codificar tanto o texto quanto as representações visuais. Utilizando técnicas de codificação de palavras e redes neurais, essa camada captura informações contextuais das palavras e das representações visuais por meio de várias camadas do codificador do \textit{transformer}, assim como o BERT. Cada camada do codificador possui subcamadas de atenção \textit{multi-head} e redes \textit{feed-forward}, permitindo a captura de interações e padrões entre palavras e informações visuais. Os recursos visuais extraídos das propostas de objetos são tratados como \textit{tokens} de entrada não ordenados e incorporados no \textit{VisualBERT} juntamente com o texto. Essa abordagem permite que o modelo capture e relacione informações tanto textuais quanto visuais, permitindo uma compreensão mais completa dos dados multimodais.
 
+% Durante o pré-treinamento, o VisualBERT é treinado em tarefas de máscara de palavras e previsão de sentença seguintes. Essa abordagem permite que o modelo aprenda representações ricas e contextuais para texto e imagens. Além disso, o modelo é ajustado para diferentes tarefas específicas, capturando informações contextuais entre texto e imagem e permitindo uma compreensão completa dos dados multimodais.
+
 \begin{figure*}[!htbp]
 	\centering
 	\includegraphics[scale=0.35]{imagens/visualBERT.png}
     \caption {Arquitetura do \textit{VisualBERT} \cite{VisualBERTArt}.}
 \end{figure*}
+
+% Ele utiliza uma representação compartilhada que incorpora características visuais e contextos linguísticos, permitindo que o modelo compreenda a relação entre palavras e elementos visuais presentes em uma imagem.
+
+% discute o processo de treinamento para modelos de aprendizado profundo multimodal. A seção então descreve o esquema de treinamento para modelos multimodais, que envolve pré-treinamento em tarefas multimodais intermediárias ou proxy antes do ajuste fino na tarefa multimodal em questão. A seção menciona vários modelos pré-treinados que foram propostos, incluindo ViLBERT, VisualBERT, LXMERT, VL-BERT, OSCAR e UNITER. Esses modelos têm esquemas de treinamento muito semelhantes, que envolvem pré-treinamento em grandes conjuntos de dados de legendas de imagens. A seção conclui destacando a importância do pré-treinamento e do ajuste fino no aprendizado profundo multimodal, que permite que os modelos aprendam representações ricas de dados visuais e textuais.
 
 \section{Multimodalidade}
 
@@ -139,12 +173,21 @@ A multimodalidade refere-se à capacidade de combinar e integrar múltiplas moda
 
 Ao lidar com a multimodalidade, os sistemas computacionais buscam interpretar e extrair informações de diferentes modalidades, permitindo que os usuários se envolvam de maneira mais natural e efetiva com a tecnologia. Essa abordagem é amplamente aplicada em áreas como processamento de linguagem natural, visão computacional, interação humano-computador e aprendizado de máquina, onde a combinação de modalidades permite uma compreensão mais rica e abrangente dos dados. Ao combinar informações de várias modalidades, é possível melhorar o desempenho de uma variedade de tarefas, resultando em soluções mais eficazes para uma ampla gama de desafios.
 
+% Houve uma onda de interesse em problemas multimodais desde 2015 em resposta a perguntas visuais [5, 6], legendas de imagens [7, 8], reconhecimento de fala [9, 10] e além. https://arxiv.org/pdf/2012.12975.pdf
+
+\section{Lógica Fuzzy e classificação gradual} % tópico de métricas
+
+% \subsection{Fundamentos de lógica fuzzy}
+% \subsection{Classificação gradual e graus de pertencimento}
+% \subsection{Aplicações de lógica fuzzy em moderação de conteúdo}
+
 \section{Trabalhos Relacionados}
+
+% apresentar antes de iniciar os tópicos
 
 \subsection{Desafio dos Memes Odiosos (\textit{The Hateful Memes Challenge})} 
 
-Este trabalho realizado pela equipe da Meta AI \cite{ArticleHatefulMemesChallenge2021} propôs um desafio para a classificação multimodal, com foco na detecção de discurso de ódio em memes multimodais. Fornecem modelos multimodais com diferentes níveis de sofisticação e ilustram como foi feita a criação do banco de dados com os memes odiosos e os memes categorizados como “confundidores benignos”. Esses confundidores foram adicionados ao conjunto de dados para aumentar a dificuldade do desafio, pois usam as mesmas imagens e frases que os memes odiosos, mas em contextos que não se enquadram como discurso de ódio. O objetivo deste desafio foi estimular a inovação e impulsionar o progresso no raciocínio e compreensão multimodal, que podem ter impactos positivos em várias tarefas e aplicações, ao mesmo tempo em que facilita o progresso da detecção de discurso de ódio e seu combate por meio de métodos automáticos.
+Este trabalho realizado pela equipe da Meta AI \cite{ArticleHatefulMemesChallenge2020} propôs um desafio para a classificação multimodal, com foco na detecção de discurso de ódio em memes multimodais. Fornecem modelos multimodais com diferentes níveis de sofisticação e ilustram como foi feita a criação do banco de dados com os memes odiosos e os memes categorizados como “confundidores benignos”. Esses confundidores foram adicionados ao conjunto de dados para aumentar a dificuldade do desafio, pois usam as mesmas imagens e frases que os memes odiosos, mas em contextos que não se enquadram como discurso de ódio. O objetivo deste desafio foi estimular a inovação e impulsionar o progresso no raciocínio e compreensão multimodal, que podem ter impactos positivos em várias tarefas e aplicações, ao mesmo tempo em que facilita o progresso da detecção de discurso de ódio e seu combate por meio de métodos automáticos.
 
-\subsection{Detectando Discurso de Ódio em Memes Usando Abordagens de Aprendizado Profundo Multimodal} 
+\subsection{\textit{Hate-CLIPper}: Classificação multimodal de memes odiosos com interação multimodal explícita das características CLIP} 
 
-Os participantes do desafio proposto pela Meta IA adotaram uma abordagem que consistiu, primeiramente, em expandir o conjunto de treinamento por meio da busca por conjuntos de dados semelhantes na web. Em seguida, foram extraídas características das imagens utilizando algoritmos de detecção de objetos (\textit{Detectron}), o que permitiu aprimorar o modelo pré-treinado (\textit{VisualBERT}). Por fim, foi realizada a pesquisa de hiperparâmetros e aplicada a técnica de voto majoritário, atingindo 0,811 AUROC com uma precisão de 0,765 no conjunto de teste do desafio \cite{velioglu2020hateful}.
