@@ -1,0 +1,56 @@
+% Vision Models Are More Robust And Fair When Pretrained On Uncurated Images Without Supervision: https://arxiv.org/pdf/2202.08360v2.pdf
+
+% Metodologia: Explicação detalhada do método de pesquisa utilizado (quantitativa, qualitativa, estudo de caso, revisão sistemática etc.).
+
+% Contextualização: Apresentação do contexto ou cenário relacionado ao tema (histórico, cultural, social, econômico, entre outros).
+
+% Treinamento, Classificação
+
+% Análise de Dados/Resultados: Apresentação, descrição e interpretação dos dados coletados ou das análises realizadas.
+
+% Discussão: Comparação dos resultados com a literatura existente, reflexões e implicações teóricas ou práticas.
+
+% Limitações da Pesquisa: Identificação de possíveis limitações no estudo, como escopo, recursos ou tempo.
+
+% O Google Colab é um serviço do Jupyter Notebook hospedado que oferece acesso gratuito a recursos de computação, incluindo GPUs e TPUs. Ele é adequado principalmente para aprendizado de máquina, ciência de dados e educação. 
+
+\chapter{Desenvolvimento}
+\label{cap:03}
+
+\section{Modelagem e arquitetura}
+% Apresente diagramas (UML, blocos ou fluxogramas) que mostram como os módulos se relacionam, identificando componentes críticos e como eles atendem ao problema e à metodologia.
+
+A arquitetura proposta neste trabalho baseia-se no modelo multimodal CLIP (\textit{Contrastive Language-Image Pretraining}), desenvolvido pela OpenAI. O modelo escolhido foi a variante ViT-B/32, que oferece um equilíbrio adequado entre eficiência computacional (151 milhões de parâmetros) e precisão, utilizando imagens com resolução de entrada de 224x224 pixels e um contexto textual máximo de 77 tokens.
+
+A modelagem do sistema divide-se em três etapas principais: 
+1) \textbf{Codificação Multimodal:} A imagem do meme e o texto (no caso, os \textit{prompts} estáticos "isso é ódio" e "isso não é ódio") são processados separadamente. A imagem passa pelo codificador visual (\textit{Vision Transformer}) e o texto passa por um codificador textual (\textit{Transformer}), gerando vetores de características (\textit{embeddings}) num mesmo espaço semântico.
+2) \textbf{Cálculo de Similaridade:} Os vetores são normalizados e é calculada a similaridade do cosseno entre as características da imagem e as representações dos \textit{prompts}.
+3) \textbf{Classificação e Lógica Fuzzy:} O resultado do produto escalar passa por uma função \textit{softmax}, transformando as similaridades em probabilidades. Uma camada adicional de lógica fuzzy foi modelada para interpretar essas probabilidades em categorias linguísticas ("Pouco ou Nenhum Ódio", "Ódio Moderado / Ambiguidade" e "Alto Grau de Ódio"), permitindo lidar com a subjetividade inerente à classificação de discurso de ódio.
+
+\section{Detalhes de implementação}
+% Explique escolhas tecnológicas, estruturas de dados e integrações. Inclua trechos de código relevantes ou pseudoexemplos se esclarecerem decisões de pesquisa.
+
+O projeto foi implementado e executado na plataforma em nuvem Google Colab, configurado com aceleração de hardware via GPU (NVIDIA Tesla T4) e suporte nativo ao CUDA (Compute Unified Device Architecture) versão 12.8, garantindo a eficiência no processamento dos tensores do modelo.
+
+A linguagem de programação utilizada foi Python, ancorada no ecossistema de aprendizado profundo do framework PyTorch (versão 2.10.0). Para o carregamento e uso do modelo CLIP, utilizou-se a implementação oficial disponibilizada via repositório no GitHub. As dependências adicionais incluíram bibliotecas como \texttt{pandas} para estruturação de dados tabulares, \texttt{jsonlines} para leitura dos metadados, \texttt{Pillow (PIL)} para o processamento de imagens e \texttt{scikit-learn} para extração das métricas de avaliação.
+
+Um componente crítico da implementação foi a função de inferência \textit{zero-shot}, onde o pré-processamento nativo do CLIP redimensiona e normaliza as imagens. A classificação final ocorre sem qualquer etapa de treinamento, avaliando apenas a probabilidade máxima entre os vetores codificados no trecho `(100.0 * image_features @ text_features.T).softmax(dim=-1)`.
+
+\section{Experimentos e cenários de teste}
+% Descreva os cenários planejados, parâmetros testados e por que cada experimento está alinhado aos objetivos. Liste os conjuntos de dados, variações e número de repetições.
+
+O principal experimento desta etapa consistiu na avaliação do modelo em um cenário \textit{zero-shot} (sem fine-tuning), tendo como objetivo estabelecer uma linha de base (\textit{baseline}) para a classificação de discurso de ódio multimodal.
+
+O cenário de teste aplicou o modelo sobre os registros do conjunto de treinamento da base de dados, utilizando os rótulos de predição binária ("ódio" vs "não ódio"). O desempenho foi metrificado com o apoio de uma matriz de confusão e do cálculo de Acurácia, Precisão, Revocação (\textit{Recall}) e F1-Score.
+
+Os resultados do experimento base demonstraram uma acurácia de aproximadamente 45,44\%. A análise da matriz de confusão revelou que o modelo apresentou um alto viés para a classe de "ódio" (elevado número de falsos positivos, totalizando 3.813 amostras classificadas incorretamente como ódio), embora tenha conseguido identificar corretamente 2.194 exemplos de verdadeiro ódio. Esse cenário justificou a experimentação complementar com limites difusos (lógica fuzzy), revelando a ambiguidade em casos limítrofes, característicos da presença de confundidores benignos.
+
+
+\section{Coleta e tratamento de dados}
+% Explique como os dados foram coletados (logs, sensores, APIs), armazenados e preparados (limpeza, normalização, anonimização). Registre ferramentas usadas no pré-processamento.
+
+Os dados utilizados na pesquisa provêm do \textit{Hateful Memes Dataset}, criado pela Meta e disponibilizado para competições no DrivenData. O acesso aos dados foi realizado através do repositório secundário hospedado na plataforma Kaggle, devido à indisponibilidade do domínio oficial.
+
+O banco de dados totaliza mais de 10.000 amostras (especificamente 12.140 imagens de formato .png), divididas estrategicamente em 40\% de ódio multimodal, 10\% unimodal, 10\% de exemplos aleatórios não-odiosos e 40\% de "confundidores benignos" (textos ou imagens manipuladas para alterar o sentido agressivo do meme). 
+
+O armazenamento dos dados foi realizado em uma conta do Google Drive, conectada diretamente ao ambiente do Colab via \texttt{google.colab.drive}. Durante a etapa de pré-processamento, os dados brutos compactados (.zip) foram extraídos para diretórios de trabalho temporários. Os metadados, armazenados no formato JSON Lines (.jsonl), continham as anotações essenciais: um identificador numérico, o caminho do arquivo de imagem, uma transcrição literal do texto inserido no meme e a \textit{label} de classificação (0 para não odioso, 1 para odioso). Esses dados foram consolidados em um DataFrame estruturado, garantindo que o modelo pudesse iterar sistematicamente sobre os pares imagem-texto de forma íntegra e eficiente.
