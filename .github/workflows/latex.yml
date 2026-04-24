@@ -7,7 +7,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: xu-cheng/latex-action@v3
         with:
-          root_file: main.tex
+          root_file: latex/main.tex
           args: -pdf -file-line-error -interaction=nonstopmode
       - uses: actions/upload-artifact@v4
         with:
