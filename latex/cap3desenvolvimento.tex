@@ -1,10 +1,4 @@
-% Vision Models Are More Robust And Fair When Pretrained On Uncurated Images Without Supervision: https://arxiv.org/pdf/2202.08360v2.pdf
-
 % Metodologia: Explicação detalhada do método de pesquisa utilizado (quantitativa, qualitativa, estudo de caso, revisão sistemática etc.).
-
-% Contextualização: Apresentação do contexto ou cenário relacionado ao tema (histórico, cultural, social, econômico, entre outros).
-
-% Treinamento, Classificação
 
 % Análise de Dados/Resultados: Apresentação, descrição e interpretação dos dados coletados ou das análises realizadas.
 
@@ -12,14 +6,11 @@
 
 % Limitações da Pesquisa: Identificação de possíveis limitações no estudo, como escopo, recursos ou tempo.
 
-% O Google Colab é um serviço do Jupyter Notebook hospedado que oferece acesso gratuito a recursos de computação, incluindo GPUs e TPUs. Ele é adequado principalmente para aprendizado de máquina, ciência de dados e educação. 
-
 \chapter{Desenvolvimento}
 \label{cap:03}
 
 \section{Modelagem e arquitetura}
 % Apresente diagramas (UML, blocos ou fluxogramas) que mostram como os módulos se relacionam, identificando componentes críticos e como eles atendem ao problema e à metodologia.
-
 
 A arquitetura central desta pesquisa baseia-se no \textit{Contrastive Language-Image Pretraining} (CLIP), desenvolvido pela OpenAI~\cite{clip2021}, que emprega aprendizado contrastivo para alinhar representações visuais e textuais em um espaço latente compartilhado, tornando-o especialmente adequado para tarefas multimodais como a detecção de discurso de ódio em memes.
 
@@ -80,7 +71,7 @@ O formato JSONL (JSON Lines) significa que cada linha representa um objeto JSON 
 O processo de preparação envolveu as seguintes etapas:
 \begin{enumerate}
     \item \textbf{Extração e Estruturação}: os arquivos JSONL foram convertidos para DataFrames Pandas, permitindo o mapeamento direto entre os caminhos das imagens e suas respectivas legendas textuais, além de facilitar a limpeza e manipulação dos dados;
-    \item \textbf{Normalização Visual}: as imagens foram redimensionadas para 224x224 pixels e normalizadas com base na distribuição de cores da ImageNet, conforme exigido pela arquitetura ViT do CLIP;
+    \item \textbf{Normalização Visual}: as imagens foram redimensionadas para 336x336 pixels e normalizadas com base na distribuição de cores da ImageNet, conforme exigido pela arquitetura ViT do CLIP;
     \item \textbf{Tokenização}: os textos foram processados com contexto máximo de 77 tokens, garantindo compatibilidade semântica com o espaço vetorial do modelo.
 \end{enumerate}
 
@@ -105,8 +96,6 @@ Um componente crítico desenvolvido foi o Classificador Fuzzy Unificado, criado 
     \item \textbf{Defuzzificação via Centroide}: calcula um score final que pondera a confiança do modelo, reduzindo o impacto de falsos positivos em memes com alta tensão semântica.
 \end{enumerate}
 
-Do ponto de vista da estrutura de dados, foram criadas as colunas \texttt{cluster\_text\_idx} e \texttt{cluster\_img\_idx} no DataFrame, que funcionam como \textit{features} categóricas injetadas na rede via camadas de \texttt{nn.Embedding} de 64 dimensões.
-
 \section{Experimentos e cenários de teste}
 % Descreva os cenários planejados, parâmetros testados e por que cada experimento está alinhado aos objetivos. Liste os conjuntos de dados, variações e número de repetições.
 
@@ -122,5 +111,5 @@ Os experimentos foram desenhados para avaliar a capacidade de generalização do
     \item \textbf{Teste de Campo (Interface)}: integração com as APIs EasyOCR para extração de texto de novos memes e Google Translator para suporte multilíngue, simulando o uso real da ferramenta em cenários externos.
 \end{enumerate}
 
-As métricas de avaliação adotadas foram Acurácia, Precisão, Revocação e F1-Score, complementadas pela análise detalhada via Matriz de Confusão.
+As métricas de avaliação adotadas foram Acurácia, Precisão, Revocação e F1-Score, complementadas pela análise detalhada na Matriz de Confusão.
 

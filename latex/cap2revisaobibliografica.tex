@@ -51,7 +51,8 @@ No contexto da moderação de memes, o aprendizado multimodal é indispensável.
 % .pkl pickle
 % yolov8
 
-O VisualBERT \cite{visualbert2019} foi um marco ao fundir representações visuais e textuais num único \textit{encoder}\footnote{Componente responsável por transformar dados brutos em representações vetoriais densas, capturando relações semânticas entre os elementos \cite{GoogleTeamTransformers}.}, permitindo raciocínio multimodal. Como ilustrado na Figura~\ref{fig:visualbert-arch}, regiões de imagem e \textit{tokens} de linguagem são combinados em um único \textit{Transformer}\footnote{Arquitetura de rede neural baseada no mecanismo de atenção, que modela dependências entre todos os elementos de uma sequência simultaneamente, sem recorrência \cite{GoogleTeamTransformers}.}, permitindo que  o mecanismo de autoatenção descubra alinhamentos implícitos entre as duas  modalidades. O modelo é pré-treinado com duas tarefas: modelagem de linguagem mascarada (Objetivo 1), em que \textit{tokens} de texto são ocultados e preditos com base no contexto visual e linguístico, e previsão de alinhamento entre frase e imagem (Objetivo 2), que verifica se uma legenda corresponde à imagem fornecida. Após o pré-treinamento com dados de legendas, o modelo é ajustado para diferentes tarefas específicas. Uma limitação relevante do VisualBERT é sua dependência de detectores de objetos pré-computados para extrair as regiões visuais, o que torna o pipeline mais rígido e computacionalmente custoso.
+O VisualBERT \cite{visualbert2019} foi um marco ao fundir representações visuais e textuais num único \textit{encoder}\footnote{Componente responsável por transformar dados brutos em representações vetoriais densas, capturando relações semânticas entre os elementos \cite{GoogleTeamTransformers}.}, permitindo raciocínio multimodal. Como ilustrado na Figura~\ref{fig:visualbert-arch}, regiões de imagem e \textit{tokens} de linguagem são combinados em um único \textit{Transformer}\footnote{Arquitetura de rede neural baseada no mecanismo de atenção, que modela dependências entre todos os elementos de uma sequência simultaneamente, sem recorrência \cite{GoogleTeamTransformers}.}, permitindo que o mecanismo de autoatenção descubra alinhamentos implícitos entre as duas  modalidades. O modelo é pré-treinado com duas tarefas: modelagem de linguagem mascarada (Objetivo 1), em que \textit{tokens} de texto são ocultados e preditos com base no contexto visual e linguístico, e previsão de alinhamento entre frase e imagem (Objetivo 2), que verifica se uma legenda corresponde à imagem fornecida. Após o pré-treinamento com dados de legendas, o modelo é ajustado para diferentes tarefas específicas. Uma limitação relevante do VisualBERT é sua dependência de detectores de objetos pré-computados para extrair as regiões visuais, o que torna o \textit{pipeline} mais rígido e computacionalmente custoso.
+
 
 \begin{figure*}[!htbp]
 	\centering
@@ -60,68 +61,24 @@ O VisualBERT \cite{visualbert2019} foi um marco ao fundir representações visua
     \label{fig:visualbert-arch}
 \end{figure*}
 
-Enquanto o VisualBERT utiliza a fusão precoce, integrando texto e imagem diretamente em um único \textit{Transformer}, o CLIP (\textit{Contrastive Language-Image Pre-training}) \cite{clip2021} adota uma abordagem diferente, processando cada modalidade separadamente antes de alinhar suas representações. 
+Enquanto o VisualBERT utiliza a fusão precoce, integrando texto e imagem diretamente em um único \textit{Transformer}, o CLIP (\textit{Contrastive Language-Image Pre-training}) \cite{clip2021} adota a fusão tardia, processando cada modalidade separadamente antes de alinhar suas representações. O CLIP não é um modelo único, mas sim um \textit{framework} de aprendizado multimodal, com dois \textit{encoders} independentes, um visual em arquiteturas como ResNet-50 ou ViT-L/14 (\textit{Vision Transformer}), e outro textual, fixo e similar ao GPT-2. Foi treinado com aproximadamente 400 milhões de pares de imagem e texto extraídos da internet, e a sua principal inovação está no aprendizado contrastivo
 
-O CLIP não é um modelo único, mas sim um \textit{framework} de aprendizado multimodal, define um objetivo de treinamento contrastivo e uma arquitetura de dois \textit{encoders} independentes, um para imagem e outro para texto, podendo ser instanciado com diferentes arquiteturas para o \textit{encoder} visual. A OpenAI disponibiliza o CLIP com nove variantes: cinco baseadas em ResNet (RN50, RN101, RN50x4, RN50x16, RN50x64) e quatro baseadas em \textit{Vision Transformer} (ViT-B/32, ViT-B/16, ViT-L/14, ViT-L/14@336px), cada uma com diferentes relações de custo-benefício entre capacidade e custo computacional. O \textit{encoder} de texto, por sua vez, é mantido fixo em todas as variantes: um Transformer similar ao GPT-2. 
-
-Diferente de modelos de visão tradicionais treinados para reconhecer um conjunto fixo de categorias, o CLIP foi treinado com aproximadamente 400 milhões de pares de imagem e texto extraídos da internet, tal estratégia permite que o modelo alinhe representações visuais e linguísticas em um espaço vetorial comum, conseguindo compreender conceitos complexos, tendo uma capacidade notável de generalização.
-
-A principal inovação do CLIP está no aprendizado contrastivo. Durante o treinamento, o \textit{framework} aprende a mapear imagens e textos para um mesmo espaço vetorial, aproximando as representações matemáticas de uma imagem e sua respectiva descrição textual, enquanto afasta as representações de pares que não correspondem. Essa característica permite ao CLIP uma capacidade notável de generalização e de \textit{zero-shot learning} (aprendizado com zero exemplos), tornando-o uma ferramenta robusta para extrair características, capturando nuances semânticas complexas que seriam difíceis de obter com modelos treinados separadamente.
+Durante o treinamento, o \textit{framework} aprende a mapear imagens e textos para um mesmo espaço vetorial, aproximando as representações matemáticas de uma imagem e sua respectiva descrição textual, enquanto afasta as representações de pares que não correspondem. Essa característica permite ao CLIP uma capacidade de generalização e de \textit{zero-shot learning} (aprendizado com zero exemplos), tornando-o uma ferramenta robusta para extrair características, capturando nuances semânticas complexas que seriam difíceis de obter com modelos treinados separadamente.
 
 \begin{figure*}[!htbp]
 	\centering
-	\includegraphics[scale=0.21]{imagens/CLIP.png}
+	\includegraphics[scale=0.1]{imagens/CLIP.png}
     \caption {Pipeline de treinamento e uso do CLIP \cite{clip2021}.}
     \label{fig:clip-pipeline}
 \end{figure*}
 
 A Figura~\ref{fig:clip-pipeline} ilustra o pipeline do CLIP em duas fases. Na \textbf{Fase 1 (Pré-treinamento Contrastivo)}, pares de imagem e texto são processados simultaneamente: as imagens passam pelo \textit{Image Encoder}, que as converte em vetores de representação, enquanto as descrições textuais associadas passam pelo \textit{Text Encoder}, produzindo vetores no mesmo espaço latente (também chamados de \textit{embeddings}). O treinamento otimiza a similaridade cosseno dos pares corretos, maximizando-a na diagonal da matriz de similaridade, enquanto penaliza os pares incorretos fora dela. Na \textbf{Fase 2 (Classificação \textit{Zero-Shot})}, uma nova imagem é codificada pelo \textit{Image Encoder} e seu vetor é comparado aos \textit{embeddings} de rótulos textuais candidatos, como \textit{``a photo of a dog''}, gerados pelo \textit{Text Encoder}. Sem nenhum treinamento adicional, o modelo seleciona a classe cuja representação textual apresenta maior similaridade com a representação visual da imagem, como ilustrado pelo exemplo do cachorro na figura. 
 
-Assim, o CLIP usa a estratégia de fusão tardia para alinhar imagens e texto, processando cada modalidade separadamente e comparando \textit{embeddings} no espaço compartilhado via perda contrastiva. Embora modelos como CLIP capturem bem essas similaridades, o ``contraste de ódio'' em memes com ironia que varia de sutil a explícita, exige modelagem de graus intermediários, não apenas binários como odioso e não odioso.
+Assim, enquanto VisualBERT integra modalidades cedo via \textit{Transformer} compartilhado, CLIP alinha via contraste em espaço separado, capturando nuances semânticas complexas. No entanto, para memes com ``contraste de ódio'' irônico (de sutil a explícito), esses modelos binários (odioso e não odioso) demandam modelagem de graus intermediários.
 
 \section{Lógica Fuzzy e classificação gradual}
 
-A lógica fuzzy é uma ferramenta usada na avaliação de geração de soluções precisas, a partir de informações exatas ou aproximadas \cite{Zadeh1965}. Se baseia no superconjunto da lógica \textit{booleana}, mas com o conceito de verdade parcial, com valores-verdade indo desde o “completamente falso”, ou mais próximo de zero, até o “completamente verdadeiro”, mais próximo de um.
-
-\definecolor{corFalso}{HTML}{B22222}   % Vermelho
-\definecolor{corNeutro}{HTML}{808080}  % Cinza
-\definecolor{corVerdade}{HTML}{006400} % Verde Escuro
-
-\begin{tikzpicture}
-\begin{axis}[
-    title={Representação Fuzzy: Três Estados de Verdade},
-    xlabel={Valor Numérico de Entrada ($x$)},
-    ylabel={Grau de Pertinência $\mu(x)$},
-    width=13cm, 
-    height=7cm,
-    ymin=0, ymax=1.2,
-    xmin=0, xmax=1,
-    xtick={0, 0.25, 0.5, 0.75, 1},
-    ytick={0, 0.5, 1},
-    yticklabels={0, 0.5, 1.0},
-    tick label style={font=\small},
-    grid=major,
-    grid style={dashed, gray!30},
-    axis lines=left,
-    line width=1pt,
-    enlargelimits=false
-]
-
-\addplot[color=corFalso, line width=2.5pt] 
-coordinates {(0,1) (0.2,1) (0.5,0)};
-
-\addplot[color=corNeutro, line width=2.5pt] 
-coordinates {(0.2,0) (0.5,1) (0.8,0)};
-
-\addplot[color=corVerdade, line width=2.5pt] 
-coordinates {(0.5,0) (0.8,1) (1,1)};
-
-\node[anchor=south, font=\large\bfseries, color=corFalso] at (axis cs:0.1,1.05) {Falso};
-\node[anchor=south, font=\large\bfseries, color=corNeutro] at (axis cs:0.5,1.05) {Neutro};
-\node[anchor=south, font=\large\bfseries, color=corVerdade] at (axis cs:0.86,1.05) {Verdadeiro};
-
-\end{axis}
-\end{tikzpicture}
+A lógica fuzzy \cite{Zadeh1965} estende a lógica booleana ao permitir verdades parciais, com graus de pertinência $\mu(x) \in [0,1]$ --- de ``completamente falso'' (0) a ``completamente verdadeiro'' (1). Essa abordagem é ideal para modelar fenômenos ambíguos, como ironia em memes, onde o ódio varia de sutil a explícito, superando classificações binárias rígidas.
 
 A matriz de confusão é uma ferramenta essencial para a avaliação de modelos de classificação em aprendizado de máquina \cite{fawcett2006}. Estruturada como uma tabela, ela correlaciona as predições do modelo aos rótulos reais, discriminando quantitativamente os resultados em quatro categorias: verdadeiros positivos (VP), verdadeiros negativos (VN), falsos positivos (FP) e falsos negativos (FN). Essa organização permite identificar padrões de erro específicos entre classes e serve como base para o cálculo de métricas de desempenho, como acurácia e precisão.
 
@@ -153,19 +110,28 @@ O trabalho realizado pelos pesquisadores da Meta AI \cite{ArticleHatefulMemesCha
 
 \subsection{\textit{Hate-CLIPper}: Classificação multimodal de memes odiosos com interação multimodal explícita das características CLIP}
 
-O modelo \textit{Hate-CLIPper}~\cite{kumar2022} supera as limitações das arquiteturas de fusão tardia, como o CLIP original, que falham em capturar nuances semânticas em memes onde texto e imagem isoladamente são inofensivos, mas sua combinação é odiosa. Para isso, os autores introduzem um módulo de fusão intermediária explícita, promovendo interação cruzada profunda entre modalidades.
+O modelo \textit{Hate-CLIPper}~\cite{kumar2022} supera as limitações das arquiteturas de fusão tardia, como do CLIP, que falham em capturar nuances semânticas em memes onde texto e imagem isoladamente são inofensivos, mas sua combinação é odiosa. Para isso, os autores introduzem um módulo de fusão intermediária explícita, promovendo interação cruzada profunda entre modalidades.
 
 Como mostrado na Figura~\ref{fig:hateclipper-arch}, a arquitetura processa o meme pelos encoders de imagem e texto do CLIP congelados para preservar as representações pré-treinadas e focar o aprendizado na fusão multimodal. As saídas são projetadas por camadas treináveis para um espaço comum de dimensionalidade reduzida. A principal inovação é a \textit{Feature Interaction Matrix} (FIM), gerada pelo produto externo entre vetores de representação textual e visual. Essa matriz revela co-ativações e correlações cruzadas entre dimensões modais, capturando alinhamentos semânticos sutis ignorados em fusões simples, como concatenação. A FIM é aprimorada por dois mecanismos complementares: \textit{align-fusion}, que alinha projeções independentes dos \textit{embeddings} globais do CLIP antes do produto externo; e \textit{cross-fusion}, que promove interação precoce via atenção ou projeções cruzadas.
 
 \begin{figure*}[!htbp]
-\centering
-\includegraphics[scale=0.45]{imagens/hateclipper.png}
-\caption{Arquitetura do \textit{Hate-CLIPper}~\cite{kumar2022}.}
-\label{fig:hateclipper-arch}
+    \centering
+    \includegraphics[scale=0.45]{imagens/hateclipper.png}
+    \caption{Arquitetura do \textit{Hate-CLIPper}~\cite{kumar2022}.}
+    \label{fig:hateclipper-arch}
 \end{figure*}
 
-Por fim, a FIM é achatada em um vetor unidimensional e processada por camadas densas de pré-saída. Em desempenho, o modelo alcança AUROC de 85,8\% no \textit{Hateful Memes Challenge}, superando o VisualBERT e CLIP \textit{zero-shot}.
+Por fim, a FIM é achatada em um vetor unidimensional e processada por camadas densas de pré-saída. Em desempenho, o modelo alcança AUROC de 85,8, superando o VisualBERT e CLIP \textit{zero-shot}.
 
-% Improving Hateful Meme Detection through Retrieval-Guided Contrastive Learning (RGCL)
-% Improving Multimodal Hateful Meme Detection Exploiting LMM-Generated Knowledge (LMM-CLIP-meme)
-% Demystifying Hateful Content: Leveraging Large Multimodal Models for Hateful Meme Detection with Explainable Decisions (IntMeme)
+
+\subsection{\textit{RGCL}: aprendizado contrastivo guiado por recuperação para a detecção de memes de ódio}
+
+O método \textit{Retrieval-Guided Contrastive Learning} (\textit{RGCL})~\cite{RGCL2024} propõe uma abordagem para detecção de memes de ódio baseada em aprendizado contrastivo orientado por recuperação de exemplos. Modelos baseados em CLIP ainda apresentam dificuldades para distinguir memes com diferenças visuais ou textuais sutis, mas significados semânticos opostos, como os confundidores benignos. Para contornar essa limitação, o método recupera dinamicamente exemplos positivos e negativos difíceis durante o treinamento, refinando o espaço de representação sensível às variações relevantes e alcançando AUROC de 87,0.
+
+\begin{figure*}[!htbp]
+\centering
+\includegraphics[scale=0.085]{imagens/RGCL_Model.png}
+\caption{Arquitetura do \textit{RGCL}~\cite{RGCL2024}. O método utiliza um codificador multimodal CLIP congelado para gerar embeddings dos memes, armazena essas representações em um banco de recuperação e, durante o treinamento, seleciona exemplos positivos e negativos difíceis por busca aproximada de vizinhos mais próximos. Na inferência, a predição pode ser feita por regressão logística ou por votação majoritária entre os \(K\) vizinhos mais próximos.}
+\label{fig:rgcl-model}
+\end{figure*}
+
