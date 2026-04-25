@@ -1,0 +1,7 @@
+\babel@toc {brazil}{}\relax 
+\babel@toc {brazil}{}\relax 
+\contentsline {figure}{\numberline {1}{\ignorespaces Arquitetura do VisualBERT \cite {visualbert2019}.}}{12}{figure.2.1}%
+\contentsline {figure}{\numberline {2}{\ignorespaces Pipeline de treinamento e uso do CLIP \cite {clip2021}.}}{12}{figure.2.2}%
+\contentsline {figure}{\numberline {3}{\ignorespaces Exemplo ilustrativo de memes multimodais odiosos (esquerda), confounders de imagem benigna (centro) e confounders de texto benigno (direita). No meme odioso, o texto \textit {``love the way you smell today''} com imagem de gambá implica insulto; no confounder de imagem, uma rosa torna-o inofensivo; no confounder de texto, \textit {``skunks smell''} remove o sarcasmo. Adaptado de \cite {ArticleHatefulMemesChallenge2020}.}}{14}{figure.2.3}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Arquitetura do \textit {Hate-CLIPper}~\cite {kumar2022}.}}{15}{figure.2.4}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Arquitetura do \textit {RGCL}~\cite {RGCL2024}. O método utiliza um codificador multimodal CLIP congelado para gerar embeddings dos memes, armazena essas representações em um banco de recuperação e, durante o treinamento, seleciona exemplos positivos e negativos difíceis por busca aproximada de vizinhos mais próximos. Na inferência, a predição pode ser feita por regressão logística ou por votação majoritária entre os \(K\) vizinhos mais próximos.}}{16}{figure.2.5}%
