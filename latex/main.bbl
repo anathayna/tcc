@@ -1,0 +1,179 @@
+\providecommand{\abntreprintinfo}[1]{%
+ \citeonline{#1}}
+\setlength{\labelsep}{0pt}\begin{thebibliography}{}
+\providecommand{\abntrefinfo}[3]{}
+\providecommand{\abntbstabout}[1]{}
+\abntbstabout{v-1.9.7 }
+
+\bibitem[Ackermann 2020]{Ackermann2020}
+\abntrefinfo{Ackermann}{ACKERMANN}{2020}
+{ACKERMANN, K.
+\textbf{The Old Puppet Masters: Content Moderation on Computer Bulletin Board Systems}.
+Disserta\c{c}\~{a}o (Master's thesis) --- Georgetown University, 2020.}
+
+\bibitem[BURKE 2004]{Burke2004}
+\abntrefinfo{BURKE}{BURKE}{2004}
+{BURKE, P. \textbf{Testemunha Ocular: história e imagem}. Bauru, SP: EDUSC, 2004.}
+
+\bibitem[Dawkins 1976]{Dawkins1976}
+\abntrefinfo{Dawkins}{DAWKINS}{1976}
+{DAWKINS, R. \textbf{O gene egoísta}. [S.l.]: Companhia das Letras, 1976.}
+
+\bibitem[Dergacheva et al. 2023]{Dergacheva2023}
+\abntrefinfo{Dergacheva et al.}{DERGACHEVA et al.}{2023}
+{DERGACHEVA, D. et al. \textbf{One Day in Content Moderation: Analyzing 24h of Social Media Platforms' Content Decisions through the DSA Transparency Database}. 2023. ZeMKI, University of Bremen.
+Acesso em: 16 out. 2025.
+Dispon{\'\i}vel em: \url{https://platform-governance.org/wp-content/uploads/2023/12/Dergacheva-et-al-2023-One-Day-in-Content-Moderation.pdf}.}
+
+\bibitem[Fawcett 2006]{fawcett2006}
+\abntrefinfo{Fawcett}{FAWCETT}{2006}
+{FAWCETT, T. An introduction to {ROC} analysis.
+\textbf{Pattern Recognition Letters}, Elsevier, 2006.}
+
+\bibitem[Fortuna e Nunes 2018]{fortuna2018}
+\abntrefinfo{Fortuna e Nunes}{FORTUNA; NUNES}{2018}
+{FORTUNA, P.; NUNES, S. A survey on automatic detection of hate speech in text.
+\textbf{ACM Computing Surveys (CSUR)}, 2018.}
+
+\bibitem[Gillespie 2018]{gillespie2018}
+\abntrefinfo{Gillespie}{GILLESPIE}{2018}
+{GILLESPIE, T. \textbf{Custodians of the Internet: Platforms, Content Moderation, and the Hidden Decisions That Shape Social Media}. [S.l.]: Yale University Press, 2018.}
+
+\bibitem[Gillespie 2020]{gillespie2020}
+\abntrefinfo{Gillespie}{GILLESPIE}{2020}
+{GILLESPIE, T. Content moderation, ai, and the question of scale.
+\textbf{Big Data \& Society}, 2020.
+Dispon{\'\i}vel em: \url{https://journals.sagepub.com/doi/10.1177/2053951720943234}.}
+
+\bibitem[{Google} 2024]{googlecolab}
+\abntrefinfo{{Google}}{{Google}}{2024}
+{{Google}. \textbf{Google Colaboratory}. 2024.
+Acessado em: 16 abr. 2026.
+Dispon{\'\i}vel em: \url{https://colab.research.google.com/}.}
+
+\bibitem[Gray e Suri 2019]{gray2019}
+\abntrefinfo{Gray e Suri}{GRAY; SURI}{2019}
+{GRAY, M.~L.; SURI, S. \textbf{Ghost Work: How to Stop Silicon Valley from Building a New Global Underclass}. Boston, MA: Houghton Mifflin Harcourt, 2019.}
+
+\bibitem[Guide 2022]{Ferrari2022}
+\abntrefinfo{Guide}{GUIDE}{2022}
+{GUIDE, B.~F.
+\textbf{Detecção automática de discurso de ódio punitivista em redes sociais}.
+Tese (Tese de Doutorado) --- Universidade de São Paulo, Faculdade de Filosofia, Letras e Ciências Humanas, São Paulo, 2022. Orientador: Marcos Lopes.
+Dispon{\'\i}vel em: \url{https://teses.usp.br/teses/disponiveis/8/8139/tde-12102022-100938/}.}
+
+\bibitem[Horta 2015]{horta2015meme}
+\abntrefinfo{Horta}{HORTA}{2015}
+{HORTA, N.~B.
+\textbf{O meme como linguagem da internet: uma perspectiva semiótica}.
+Disserta\c{c}\~{a}o (Mestrado) --- Universidade de Bras{\'i}lia, 2015.}
+
+\bibitem[Kemp 2025]{DataReportal2026}
+\abntrefinfo{Kemp}{KEMP}{2025}
+{KEMP, S. \textbf{Digital 2026: Global Overview Report}. DataReportal, 2025.
+Dispon{\'\i}vel em: \url{https://datareportal.com/reports/digital-2026-global-overview-report}. Acesso em: mar. de 2026.}
+
+\bibitem[Kiela et al. 2021]{ArticleHatefulMemesChallenge2020}
+\abntrefinfo{Kiela et al.}{KIELA et al.}{2021}
+{KIELA, D. et al. \textbf{The Hateful Memes Challenge: Detecting Hate Speech in Multimodal Memes}. 2021.
+Dispon{\'\i}vel em: \url{https://arxiv.org/abs/2005.04790}.}
+
+\bibitem[Kumar e Nandakumar 2022]{kumar2022}
+\abntrefinfo{Kumar e Nandakumar}{KUMAR; NANDAKUMAR}{2022}
+{KUMAR, G.~K.; NANDAKUMAR, K. \textbf{Hate-CLIPper: Multimodal Hateful Meme Classification based on Cross-modal Interaction of CLIP Features}. 2022.
+Dispon{\'\i}vel em: \url{https://arxiv.org/abs/2210.05916}.}
+
+\bibitem[Li et al. 2019]{visualbert2019}
+\abntrefinfo{Li et al.}{LI et al.}{2019}
+{LI, L.~H. et al. \textbf{VisualBERT: A Simple and Performant Baseline for Vision and Language}. 2019.
+Dispon{\'\i}vel em: \url{https://arxiv.org/abs/1908.03557}.}
+
+\bibitem[Mei et al. 2024]{RGCL2024}
+\abntrefinfo{Mei et al.}{MEI et al.}{2024}
+{MEI, J. et al. Improving hateful meme detection through retrieval-guided contrastive learning. In:  \textbf{Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)}. Association for Computational Linguistics, 2024. p. 5333–5347. Dispon{\'\i}vel em: \url{http://dx.doi.org/10.18653/v1/2024.acl-long.291}.}
+
+\bibitem[{Meta AI} 2020]{MetaAIAdvances2020}
+\abntrefinfo{{Meta AI}}{{Meta AI}}{2020}
+{{Meta AI}. \textbf{AI advances to better detect hate speech}. 2020.
+Acesso em 24 abr. 2026.
+Dispon{\'\i}vel em: \url{https://ai.facebook.com/blog/ai-advances-to-better-detect-hate-speech/}.}
+
+\bibitem[{Meta AI Research} 2020]{hatefulmemes2020}
+\abntrefinfo{{Meta AI Research}}{{Meta AI Research}}{2020}
+{{Meta AI Research}. \textbf{Hateful Memes Challenge Dataset and Benchmark}. 2020. \url{https://ai.meta.com/tools/hatefulmemes/}.
+Acesso em: 14 out. 2025.}
+
+\bibitem[Nascimento 2017]{Nascimento2017}
+\abntrefinfo{Nascimento}{NASCIMENTO}{2017}
+{NASCIMENTO, B. L.~C. do. Intercâmbios culturais digitais: a internet como catalisadora do multiculturalismo.
+\textbf{Revista do Ministério Público do Estado do Rio de Janeiro}, v.~66, 2017.
+Dispon{\'\i}vel em: \url{https://www.mprj.mp.br/documents/20184/1246489/Barbara\_Luiza\_Coutinho\_do\_Nascimento.pdf}. Acesso em: 9 de out. de 2025.}
+
+\bibitem[Orlowski 2020]{SocialDilemma2020}
+\abntrefinfo{Orlowski}{ORLOWSKI}{2020}
+{ORLOWSKI, J. \textbf{The Social Dilemma}. [S.l.]: Netflix, 2020. Documentário.
+Lançado no Brasil como \textit{O Dilema das Redes}.}
+
+\bibitem[Peixoto, Castro e Machado 2020]{peixoto2020circulacao}
+\abntrefinfo{Peixoto, Castro e Machado}{PEIXOTO; CASTRO; MACHADO}{2020}
+{PEIXOTO, L.~F.; CASTRO, M.~C.; MACHADO, M.~F. A circulação de memes nas redes como táticas de resistências cotidianas.
+\textbf{Revista Eletrônica do Mestrado em Educação Ambiental}, v.~37, 2020.}
+
+\bibitem[POPOLIN 2018]{POPOLIN2018}
+\abntrefinfo{POPOLIN}{POPOLIN}{2018}
+{POPOLIN, G. Meme como linguagem: o reforço de estereótipos e o discurso de ódio na internet.
+\textbf{Anais do VII Seminário Internacional de Pesquisas em Mídia e Cotidiano}, 2018.}
+
+\bibitem[Radford et al. 2021]{clip2021}
+\abntrefinfo{Radford et al.}{RADFORD et al.}{2021}
+{RADFORD, A. et al. \textbf{Learning Transferable Visual Models From Natural Language Supervision}. 2021.
+Dispon{\'\i}vel em: \url{https://arxiv.org/abs/2103.00020}.}
+
+\bibitem[Raji et al. 2023]{anImage2023}
+\abntrefinfo{Raji et al.}{RAJI et al.}{2023}
+{RAJI, I.~D. et al. An image is worth a thousand toxic words: A metamorphic testing framework for content moderation software.
+\textbf{arXiv preprint arXiv:2308.09810}, 2023.
+Acesso em: 16 out. 2025.
+Dispon{\'\i}vel em: \url{https://arxiv.org/abs/2308.09810}.}
+
+\bibitem[{Safernet Brasil} 2023]{Safernet2022}
+\abntrefinfo{{Safernet Brasil}}{{Safernet Brasil}}{2023}
+{{Safernet Brasil}. \textbf{Denúncias de crimes de discurso de ódio e de imagens de abuso sexual infantil na internet}. 2023.
+Acesso em 24 abr. 2026.
+Dispon{\'\i}vel em: \url{https://new.safernet.org.br/content/denuncias-de-crimes-de-discurso-de-odio-e-de-imagens-de-abuso-sexual-infantil-na-internet}.}
+
+\bibitem[Sanguinetti et al. 2018]{sanguinetti2018}
+\abntrefinfo{Sanguinetti et al.}{SANGUINETTI et al.}{2018}
+{SANGUINETTI, M. et al. An italian twitter corpus of hate speech against immigrants. In:  \textbf{Proceedings of the Eleventh International Conference on Language Resources and Evaluation (LREC 2018)}. [S.l.: s.n.], 2018.}
+
+\bibitem[Shifman 2013]{shifman2013memes}
+\abntrefinfo{Shifman}{SHIFMAN}{2013}
+{SHIFMAN, L. \textbf{Memes in Digital Culture}. Cambridge, MA: MIT Press, 2013.}
+
+\bibitem[Trindade 2022]{Trindade2022}
+\abntrefinfo{Trindade}{TRINDADE}{2022}
+{TRINDADE, L.~V. \textbf{Discurso de ódio nas redes sociais}. São Paulo, SP: Jandaíra, 2022.}
+
+\bibitem[Vaswani et al. 2023]{GoogleTeamTransformers}
+\abntrefinfo{Vaswani et al.}{VASWANI et al.}{2023}
+{VASWANI, A. et al. \textbf{Attention Is All You Need}. 2023.
+Dispon{\'\i}vel em: \url{https://arxiv.org/abs/1706.03762}.}
+
+\bibitem[Waseem et al. 2017]{waseem2017}
+\abntrefinfo{Waseem et al.}{WASEEM et al.}{2017}
+{WASEEM, Z. et al. Understanding abuse: A typology of abusive language detection subtasks. In:  \textbf{Proceedings of the First Workshop on Abusive Language Online}. [S.l.]: Association for Computational Linguistics, 2017.}
+
+\bibitem[Wu Hu~Wang 2024]{wu2024}
+\abntrefinfo{Wu Hu~Wang}{WU HU~WANG}{2024}
+{WU HU~WANG, H.-T.~C. R. \textbf{A Comprehensive Survey on Deep Multimodal Learning with Missing Modality}. [S.l.]: arXiv, 2024.}
+
+\bibitem[Yuan et al. 2023]{yuan2023}
+\abntrefinfo{Yuan et al.}{YUAN et al.}{2023}
+{YUAN, J. et al. \textbf{Rethinking Multimodal Content Moderation from an Asymmetric Angle with Mixed-modality}. 2023.}
+
+\bibitem[Zadeh 1965]{Zadeh1965}
+\abntrefinfo{Zadeh}{ZADEH}{1965}
+{ZADEH, L.~A. Fuzzy sets.
+\textbf{Information and Control}, v.~8, 1965.}
+
+\end{thebibliography}
