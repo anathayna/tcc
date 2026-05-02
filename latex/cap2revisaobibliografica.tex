@@ -62,9 +62,26 @@ A Figura \ref{fig:attention-model} apresenta a arquitetura do \textit{Transforme
 
 \subsection{BERT: Representações Bidirecionais a partir de Transformers}
  
-Construído sobre a arquitetura Transformer, o BERT (\textit{Bidirectional Encoder Representations from Transformers}) \cite{Devlin2019} introduziu uma abordagem de pré-treinamento em larga escala que transformou o estado da arte em diversas tarefas de PLN. Diferentemente de modelos anteriores que processavam o texto da esquerda para a direita, o BERT emprega atenção bidirecional: ao construir a representação de um token, o modelo considera simultaneamente todo o contexto à esquerda e à direita, capturando dependências em ambas as direções.
+Construído sobre a arquitetura Transformer, o BERT (\textit{Bidirectional Encoder Representations from Transformers}) \cite{devlin2019bert} introduziu uma abordagem de pré-treinamento em larga escala que transformou o estado da arte em diversas tarefas de PLN. Diferentemente de modelos anteriores que processavam o texto da esquerda para a direita, o BERT emprega atenção bidirecional: ao construir a representação de um token, o modelo considera simultaneamente todo o contexto à esquerda e à direita, capturando dependências em ambas as direções.
  
-O pré-treinamento do BERT é realizado por meio de dois objetivos: a \textit{Modelagem de Linguagem Mascarada} (\textit{Masked Language Modeling}, MLM), na qual uma fração aleatória dos tokens é ocultada e o modelo é treinado para predizê-los a partir do contexto restante; e a \textit{Predição da Próxima Sentença} (\textit{Next Sentence Prediction}, NSP), que treina o modelo a determinar se dois segmentos de texto são consecutivos em um documento original \cite{Devlin2019}. Esses objetivos permitem que o BERT desenvolva representações ricas do idioma sem exigir dados rotulados. Na fase de \textit{fine-tuning}, o modelo pré-treinado é adaptado a tarefas específicas, como classificação de sentimentos, resposta a perguntas ou detecção de discurso de ódio, por meio do acréscimo de camadas de saída e do ajuste supervisionado com dados rotulados da tarefa alvo. Essa separação entre pré-treinamento em larga escala e ajuste fino em domínio específico consolidou-se como paradigma central no desenvolvimento de modelos de PLN modernos.
+O pré-treinamento do BERT é realizado por meio de dois objetivos: a \textit{Modelagem de Linguagem Mascarada} (\textit{Masked Language Modeling}, MLM), na qual uma fração aleatória dos tokens é ocultada e o modelo é treinado para predizê-los a partir do contexto restante; e a \textit{Predição da Próxima Sentença} (\textit{Next Sentence Prediction}, NSP), que treina o modelo a determinar se dois segmentos de texto são consecutivos em um documento original \cite{devlin2019bert}. Esses objetivos permitem que o BERT desenvolva representações ricas do idioma sem exigir dados rotulados. Na fase de \textit{fine-tuning}, o modelo pré-treinado é adaptado a tarefas específicas, como classificação de sentimentos, resposta a perguntas ou detecção de discurso de ódio, por meio do acréscimo de camadas de saída e do ajuste supervisionado com dados rotulados da tarefa alvo. Essa separação entre pré-treinamento em larga escala e ajuste fino em domínio específico consolidou-se como paradigma central no desenvolvimento de modelos de PLN modernos.
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[scale=0.4]{imagens/BERT.png}
+    \caption{Arquitetura do \textit{BERT} \cite{devlin2019bert}.}
+    \label{fig:bert-model}
+\end{figure*}
+
+A Figura \ref{fig:bert-model} apresenta a arquitetura do modelo BERT, destacando sua natureza bidirecional. Diferente de modelos de linguagem tradicionais que leem o texto sequencialmente (da esquerda para a direita ou vice-versa), o BERT utiliza o mecanismo de Transformer para analisar o contexto completo de uma palavra considerando ambos os lados simultaneamente.
+
+No diagrama, observa-se o processo dividido em duas etapas principais:
+
+Pré-treinamento: O modelo é treinado em um grande volume de dados não rotulados, utilizando tarefas como Masked Language Model (MLM) — onde palavras são omitidas para que o modelo as preveja — e Next Sentence Prediction (NSP).
+
+Fine-tuning (Ajuste Fino): O modelo pré-treinado é inicializado com os mesmos parâmetros e, em seguida, todos os parâmetros são ajustados usando dados rotulados de tarefas específicas (como análise de sentimentos, perguntas e respostas ou reconhecimento de entidades nomeadas).
+
+A entrada (Input) é composta por uma sequência de tokens, iniciando sempre pelo token especial [CLS] (usado para classificação) e separando sentenças com o token [SEP]. Cada token de entrada é transformado em um vetor que combina embeddings de conteúdo, de posição e de segmento.
 
 \section{Visão Computacional}
  
