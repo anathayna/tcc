@@ -16,7 +16,6 @@ Diversos autores definem o discurso de ódio como qualquer manifestação que bu
 
 Nesse contexto, formatos comunicativos como os memes, com sua ironia e sutileza, agravam o desafio, complicando a aplicação consistente de políticas de moderação e o equilíbrio entre liberdade de expressão e proteção dos usuários \cite{anImage2023}. Portanto, compreender o papel desses memes como vetores de disseminação do discurso de ódio, especialmente em expressões visuais e humorísticas, torna-se essencial.
 
-
 % https://indicadores.safernet.org.br/
 % Judith Butler
 % Tarcizio Silva
@@ -34,25 +33,26 @@ Nesse cenário, a aplicação de técnicas de aprendizado de máquina tornou-se 
 
 A moderação de conteúdo surgiu nos primórdios da internet, na década de 80, com fóruns online onde moderadores voluntários aprovavam postagens para preservar discussões civilizadas \cite{Ackermann2020}. Essa prática evoluiu para políticas privadas em plataformas modernas, impulsionada pelo combate a spam, assédio e discursos de ódio. Com o crescimento exponencial do acesso à internet, a moderação se tornou em uma operação de escala industrial, levando gigantes de tecnologia a contratar milhares de revisores para analisar denúncias, um trabalho muitas vezes invisível e marginalizado \cite{gillespie2018, gray2019}. Hoje, diante de bilhões de postagens diárias, o foco está sobre a moderação automatizada, na qual algoritmos de inteligência artificial filtram a maior parte do conteúdo proibido antes mesmo de qualquer intervenção humana \cite{gillespie2020}.
 
-As abordagens tradicionais de moderação automatizada são predominantemente baseadas em modelos unimodais, ou seja, analisavam apenas o texto por meio de \textit{Processamento de Linguagem Natural} (PNL) ou apenas a imagem por meio de \textit{Visão Computacional}. Embora eficazes para conteúdos explícitos, esses sistemas apresentam lacunas na interpretação de conteúdos onde o significado reside na interação entre diferentes formatos, evidenciando a necessidade de abordagens mais sofisticadas \cite{yuan2023}.
+As abordagens tradicionais de moderação automatizada de conteúdo são predominantemente unimodais, ou seja, baseadas na análise isolada de um único tipo de modalidade. Elas utilizam predominantemente o Processamento de Linguagem Natural (PLN), que aplica técnicas computacionais para analisar e compreender o texto humano, como extração de palavras-chave, análise semântica e detecção de padrões linguísticos. Também utilizam a Visão Computacional, campo da inteligência artificial dedicado à interpretação de imagens e vídeos por meio de algoritmos que identificam objetos, formas, cores e padrões visuais. Exemplos de tecnica de moderação incluem o modelo \textit{Bag-of-Words}, que representa o texto como uma coleção desordenada de palavras, ignorando contexto ou estrutura gramatical, e o \textit{Support Vector Machine} (SVM), um classificador supervisionado que separa classes de dados em espaço vetorial para detectar discursos tóxicos ou imagens explícitas. Apesar de eficazes para conteúdos explícitos e diretos, esses sistemas apresentam lacunas significativas na interpretação de materiais multimodais, como memes, onde o significado ofensivo surge da interação entre texto e imagem, evidenciando a necessidade de abordagens mais sofisticadas \cite{yuan2023}.
 
-\subsection{Aprendizado Multimodal}
+\section{Processamento de Linguagem Natural}
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[scale=0.45]{imagens/attention_model.png}
+    \caption{.}
+    \label{fig:attention-model}
+\end{figure*}
+
+\section{Aprendizado Multimodal}
 
 O aprendizado multimodal é uma subárea do aprendizado de máquina que busca construir modelos capazes de processar e relacionar informações provenientes de múltiplas modalidades, como texto, imagem, áudio e vídeo. O princípio fundamental dessa abordagem é que o mundo ao nosso redor é inerentemente multimodal, portanto, para que as máquinas alcancem um nível de compreensão mais próximo ao humano, elas devem ser capazes de integrar sinais de diferentes fontes \cite{wu2024}.
 
 No contexto da moderação de memes, o aprendizado multimodal é indispensável. Muitas vezes, um meme considerado odioso utiliza uma imagem inofensiva e um texto que, isoladamente, também não viola diretrizes da comunidade, o discurso de ódio só se concretiza na combinação de ambos \cite{ArticleHatefulMemesChallenge2020}. Modelos multimodais procuram extrair representações conjuntas dessas diferentes entradas, permitindo que o modelo compreenda o contexto cruzado entre modalidades, o que a imagem quer dizer em relação àquele texto específico e alcance classificações mais precisas em cenários ambíguos \cite{yuan2023}. Para viabilizar essa integração entre modalidades, são necessários modelos capazes de alinhar representações visuais e linguísticas em um espaço comum.
 
-\subsection{Modelos de linguagem e visão}
-
-% https://www.gradio.app/
-% https://solara.dev/
-% https://streamlit.io/
-
-% .pkl pickle
-% yolov8
+\section{Modelos de linguagem e visão}
 
 O VisualBERT \cite{visualbert2019} foi um marco ao fundir representações visuais e textuais num único \textit{encoder}\footnote{Componente responsável por transformar dados brutos em representações vetoriais densas, capturando relações semânticas entre os elementos \cite{GoogleTeamTransformers}.}, permitindo raciocínio multimodal. Como ilustrado na Figura~\ref{fig:visualbert-arch}, regiões de imagem e \textit{tokens} de linguagem são combinados em um único \textit{Transformer}\footnote{Arquitetura de rede neural baseada no mecanismo de atenção, que modela dependências entre todos os elementos de uma sequência simultaneamente, sem recorrência \cite{GoogleTeamTransformers}.}, permitindo que o mecanismo de autoatenção descubra alinhamentos implícitos entre as duas  modalidades. O modelo é pré-treinado com duas tarefas: modelagem de linguagem mascarada (Objetivo 1), em que \textit{tokens} de texto são ocultados e preditos com base no contexto visual e linguístico, e previsão de alinhamento entre frase e imagem (Objetivo 2), que verifica se uma legenda corresponde à imagem fornecida. Após o pré-treinamento com dados de legendas, o modelo é ajustado para diferentes tarefas específicas. Uma limitação relevante do VisualBERT é sua dependência de detectores de objetos pré-computados para extrair as regiões visuais, o que torna o \textit{pipeline} mais rígido e computacionalmente custoso.
-
 
 \begin{figure*}[!htbp]
 	\centering
@@ -75,6 +75,15 @@ Durante o treinamento, o \textit{framework} aprende a mapear imagens e textos pa
 A Figura~\ref{fig:clip-pipeline} ilustra o pipeline do CLIP em duas fases. Na \textbf{Fase 1 (Pré-treinamento Contrastivo)}, pares de imagem e texto são processados simultaneamente: as imagens passam pelo \textit{Image Encoder}, que as converte em vetores de representação, enquanto as descrições textuais associadas passam pelo \textit{Text Encoder}, produzindo vetores no mesmo espaço latente (também chamados de \textit{embeddings}). O treinamento otimiza a similaridade cosseno dos pares corretos, maximizando-a na diagonal da matriz de similaridade, enquanto penaliza os pares incorretos fora dela. Na \textbf{Fase 2 (Classificação \textit{Zero-Shot})}, uma nova imagem é codificada pelo \textit{Image Encoder} e seu vetor é comparado aos \textit{embeddings} de rótulos textuais candidatos, como \textit{``a photo of a dog''}, gerados pelo \textit{Text Encoder}. Sem nenhum treinamento adicional, o modelo seleciona a classe cuja representação textual apresenta maior similaridade com a representação visual da imagem, como ilustrado pelo exemplo do cachorro na figura. 
 
 Assim, enquanto VisualBERT integra modalidades cedo via \textit{Transformer} compartilhado, CLIP alinha via contraste em espaço separado, capturando nuances semânticas complexas. No entanto, para memes com ``contraste de ódio'' irônico (de sutil a explícito), esses modelos binários (odioso e não odioso) demandam modelagem de graus intermediários.
+
+O método \textit{Retrieval-Guided Contrastive Learning} (\textit{RGCL})~\cite{RGCL2024} propõe uma abordagem para detecção de memes de ódio baseada em aprendizado contrastivo orientado por recuperação de exemplos. Modelos baseados em CLIP ainda apresentam dificuldades para distinguir memes com diferenças visuais ou textuais sutis, mas significados semânticos opostos, como os confundidores benignos. Para contornar essa limitação, o método recupera dinamicamente exemplos positivos e negativos difíceis durante o treinamento, refinando o espaço de representação sensível às variações relevantes e alcançando AUROC de 87,0.
+
+\begin{figure*}[!htbp]
+\centering
+\includegraphics[scale=0.085]{imagens/RGCL_Model.png}
+\caption{Arquitetura do \textit{RGCL}~\cite{RGCL2024}. O método utiliza um codificador multimodal CLIP congelado para gerar embeddings dos memes, armazena essas representações em um banco de recuperação e, durante o treinamento, seleciona exemplos positivos e negativos difíceis por busca aproximada de vizinhos mais próximos. Na inferência, a predição pode ser feita por regressão logística ou por votação majoritária entre os \(K\) vizinhos mais próximos.}
+\label{fig:rgcl-model}
+\end{figure*}
 
 \section{Lógica Fuzzy e classificação gradual}
 
@@ -102,6 +111,8 @@ O conjunto é balanceado com as seguintes proporções:
 
 Os \textbf{confundidores benignos} são alterações mínimas (texto ou imagem) em memes odiosos que invertem a classificação para não odioso, forçando modelos a raciocinar multimodalmente e evitando vieses unimodais. Isso garante que classificadores puramente textuais ou visuais falhem.
 
+\section{Métricas de Avaliação}
+
 \section{Trabalhos Relacionados}
 
 \subsection{\textit{The Hateful Memes Challenge}: Detecção de discurso de ódio em memes multimodais} 
@@ -122,16 +133,4 @@ Como mostrado na Figura~\ref{fig:hateclipper-arch}, a arquitetura processa o mem
 \end{figure*}
 
 Por fim, a FIM é achatada em um vetor unidimensional e processada por camadas densas de pré-saída. Em desempenho, o modelo alcança AUROC de 85,8, superando o VisualBERT e CLIP \textit{zero-shot}.
-
-
-\subsection{\textit{RGCL}: aprendizado contrastivo guiado por recuperação para a detecção de memes de ódio}
-
-O método \textit{Retrieval-Guided Contrastive Learning} (\textit{RGCL})~\cite{RGCL2024} propõe uma abordagem para detecção de memes de ódio baseada em aprendizado contrastivo orientado por recuperação de exemplos. Modelos baseados em CLIP ainda apresentam dificuldades para distinguir memes com diferenças visuais ou textuais sutis, mas significados semânticos opostos, como os confundidores benignos. Para contornar essa limitação, o método recupera dinamicamente exemplos positivos e negativos difíceis durante o treinamento, refinando o espaço de representação sensível às variações relevantes e alcançando AUROC de 87,0.
-
-\begin{figure*}[!htbp]
-\centering
-\includegraphics[scale=0.085]{imagens/RGCL_Model.png}
-\caption{Arquitetura do \textit{RGCL}~\cite{RGCL2024}. O método utiliza um codificador multimodal CLIP congelado para gerar embeddings dos memes, armazena essas representações em um banco de recuperação e, durante o treinamento, seleciona exemplos positivos e negativos difíceis por busca aproximada de vizinhos mais próximos. Na inferência, a predição pode ser feita por regressão logística ou por votação majoritária entre os \(K\) vizinhos mais próximos.}
-\label{fig:rgcl-model}
-\end{figure*}
 
