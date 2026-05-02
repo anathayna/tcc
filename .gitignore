@@ -219,3 +219,12 @@ __marimo__/
 *.cb
 *.cb2
 .*.lb
+.*.gz
+.*.ind
+.*.ilg
+.*.idx
+.*.fls
+.*.fdb_latexmk
+.*.brf
+.*.blg
+.*.bbl
