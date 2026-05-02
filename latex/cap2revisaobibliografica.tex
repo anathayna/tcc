@@ -29,13 +29,33 @@ Estudos recentes mostram que memes não apenas refletem tendências culturais e 
 Nesse cenário, a aplicação de técnicas de aprendizado de máquina tornou-se fundamental para compreender, classificar e moderar a enorme quantidade de memes compartilhados nas redes. Modelos multimodais que integram texto e imagem têm sido desenvolvidos para detectar padrões sutis, categorizar conteúdos e identificar potenciais riscos associados a esses memes, ampliando as possibilidades de análise automatizada e interpretabilidade dos memes em larga escala \cite{ArticleHatefulMemesChallenge2020}.
 
 
-\section{Aprendizado de máquina e moderação automatizada}
+\section{Moderação de conteúdo automatizada}
 
 A moderação de conteúdo surgiu nos primórdios da internet, na década de 80, com fóruns online onde moderadores voluntários aprovavam postagens para preservar discussões civilizadas \cite{Ackermann2020}. Essa prática evoluiu para políticas privadas em plataformas modernas, impulsionada pelo combate a spam, assédio e discursos de ódio. Com o crescimento exponencial do acesso à internet, a moderação se tornou em uma operação de escala industrial, levando gigantes de tecnologia a contratar milhares de revisores para analisar denúncias, um trabalho muitas vezes invisível e marginalizado \cite{gillespie2018, gray2019}. Hoje, diante de bilhões de postagens diárias, o foco está sobre a moderação automatizada, na qual algoritmos de inteligência artificial filtram a maior parte do conteúdo proibido antes mesmo de qualquer intervenção humana \cite{gillespie2020}.
 
-As abordagens tradicionais de moderação automatizada de conteúdo são predominantemente unimodais, ou seja, baseadas na análise isolada de um único tipo de modalidade. Elas utilizam predominantemente o Processamento de Linguagem Natural (PLN), que aplica técnicas computacionais para analisar e compreender o texto humano, como extração de palavras-chave, análise semântica e detecção de padrões linguísticos. Também utilizam a Visão Computacional, campo da inteligência artificial dedicado à interpretação de imagens e vídeos por meio de algoritmos que identificam objetos, formas, cores e padrões visuais. Exemplos de tecnica de moderação incluem o modelo \textit{Bag-of-Words}, que representa o texto como uma coleção desordenada de palavras, ignorando contexto ou estrutura gramatical, e o \textit{Support Vector Machine} (SVM), um classificador supervisionado que separa classes de dados em espaço vetorial para detectar discursos tóxicos ou imagens explícitas. Apesar de eficazes para conteúdos explícitos e diretos, esses sistemas apresentam lacunas significativas na interpretação de materiais multimodais, como memes, onde o significado ofensivo surge da interação entre texto e imagem, evidenciando a necessidade de abordagens mais sofisticadas \cite{yuan2023}.
+As abordagens tradicionais de moderação automatizada são predominantemente baseadas em modelos unimodais que analisam apenas o texto por meio de \textit{Processamento de Linguagem Natural} (PNL) ou apenas a imagem por meio de \textit{Visão Computacional}.
 
 \section{Processamento de Linguagem Natural}
+
+O \textit{Processamento de Linguagem Natural} (PLN) é o campo da inteligência artificial dedicado a capacitar computadores a compreender, interpretar e gerar linguagem humana \cite{Jurafsky2023}. Um dos desafios centrais dessa área é a representação do texto em formatos numéricos que preservem informações semânticas e sintáticas relevantes para a tarefa em questão.
+ 
+Abordagens tradicionais como \textit{bag-of-words} e TF-IDF tratam palavras como símbolos discretos e independentes, ignorando relações semânticas entre termos. Uma inflexão importante ocorreu com a introdução dos modelos de \textit{word embeddings}, que representam palavras como vetores densos em um espaço vetorial contínuo \cite{Bengio2003}. O modelo Word2Vec \cite{Mikolov2013}, treinado por meio de objetivos preditivos sobre grandes corpora de texto, demonstrou que operações algébricas simples sobre esses vetores refletem relações semânticas e analógicas: vetores semanticamente próximos correspondem a palavras de significados similares. Complementarmente, o GloVe \cite{Pennington2014} obtém representações a partir de estatísticas globais de co-ocorrência no corpus, capturando padrões de uso em escala mais ampla.
+ 
+Embora os \textit{word embeddings} representem um avanço significativo, eles são estáticos: cada palavra possui um único vetor, independentemente do contexto em que aparece. Essa limitação é especialmente problemática em linguagem ambígua e irônica, como a dos memes, motivando o desenvolvimento de representações contextualizadas baseadas em arquiteturas mais expressivas, como os Transformers \cite{Vaswani2017}.
+
+\subsection{\textit{Transformer}}
+ 
+Antes dos Transformers, as arquiteturas predominantes para modelagem sequencial de linguagem eram as redes recorrentes (\textit{Recurrent Neural Networks}, RNNs). Apesar de sua capacidade de processar sequências, essas redes sofriam de dificuldades em capturar dependências de longo alcance, devido ao problema do desaparecimento do gradiente ao longo de sequências longas, além de serem inerentemente sequenciais, o que limitava sua paralelização durante o treinamento.
+ 
+O mecanismo de atenção foi proposto inicialmente para superar essas limitações em modelos \textit{encoder-decoder} para tradução automática \cite{Bahdanau2015}: ao gerar cada palavra da tradução, o modelo aprende a atribuir pesos diferentes a cada posição da sequência de entrada, focando nas partes mais relevantes para aquele momento. Esse mecanismo mostrou-se tão poderoso que Vaswani et al.\ \cite{Vaswani2017} propuseram eliminar completamente a recorrência e as convoluções, construindo uma arquitetura baseada exclusivamente em atenção: o Transformer.
+ 
+A arquitetura Transformer é composta por blocos de \textit{atenção multi-cabeça} (\textit{multi-head attention}), nos quais múltiplas projeções paralelas da atenção permitem ao modelo capturar simultaneamente diferentes tipos de relações entre os tokens da sequência \cite{Vaswani2017}. A \textit{atenção ao próprio contexto} (\textit{self-attention}) permite que cada posição da sequência considere todas as demais ao construir sua representação, capturando dependências independentemente da distância. Como a arquitetura não possui estrutura sequencial intrínseca, informações sobre a posição relativa dos tokens são injetadas por meio de \textit{codificações posicionais}. Redes de alimentação direta por posição (\textit{feedforward}) e operações de normalização de camada complementam cada bloco. Essa combinação resultou em ganhos expressivos de qualidade em tradução automática e rapidamente se tornou a base de modelos estado da arte em linguagem natural.
+
+\subsection{BERT: Representações Bidirecionais a partir de Transformers}
+ 
+Construído sobre a arquitetura Transformer, o BERT (\textit{Bidirectional Encoder Representations from Transformers}) \cite{Devlin2019} introduziu uma abordagem de pré-treinamento em larga escala que transformou o estado da arte em diversas tarefas de PLN. Diferentemente de modelos anteriores que processavam o texto da esquerda para a direita, o BERT emprega atenção bidirecional: ao construir a representação de um token, o modelo considera simultaneamente todo o contexto à esquerda e à direita, capturando dependências em ambas as direções.
+ 
+O pré-treinamento do BERT é realizado por meio de dois objetivos: a \textit{Modelagem de Linguagem Mascarada} (\textit{Masked Language Modeling}, MLM), na qual uma fração aleatória dos tokens é ocultada e o modelo é treinado para predizê-los a partir do contexto restante; e a \textit{Predição da Próxima Sentença} (\textit{Next Sentence Prediction}, NSP), que treina o modelo a determinar se dois segmentos de texto são consecutivos em um documento original \cite{Devlin2019}. Esses objetivos permitem que o BERT desenvolva representações ricas do idioma sem exigir dados rotulados. Na fase de \textit{fine-tuning}, o modelo pré-treinado é adaptado a tarefas específicas, como classificação de sentimentos, resposta a perguntas ou detecção de discurso de ódio, por meio do acréscimo de camadas de saída e do ajuste supervisionado com dados rotulados da tarefa alvo. Essa separação entre pré-treinamento em larga escala e ajuste fino em domínio específico consolidou-se como paradigma central no desenvolvimento de modelos de PLN modernos.
 
 \begin{figure*}[!htbp]
     \centering
@@ -43,6 +63,14 @@ As abordagens tradicionais de moderação automatizada de conteúdo são predomi
     \caption{.}
     \label{fig:attention-model}
 \end{figure*}
+
+\section{Visão Computacional}
+ 
+A visão computacional é o campo da inteligência artificial dedicado a extrair informações estruturadas a partir de dados visuais, como imagens e vídeos \cite{Szeliski2022}. Suas tarefas fundamentais incluem classificação de imagens, detecção de objetos, segmentação semântica e extração de características visuais, que formam a base para sistemas de reconhecimento e compreensão visual.
+ 
+As CNNs, já introduzidas na seção de redes neurais, são a espinha dorsal da visão computacional moderna. O sucesso de arquiteturas como a AlexNet \cite{Krizhevsky2012} no desafio ImageNet inaugurou a era do aprendizado profundo em visão, ao demonstrar ganhos dramáticos sobre abordagens tradicionais baseadas em extração manual de características. Arquiteturas subsequentes como VGG \cite{Simonyan2014}, Inception \cite{Szegedy2015} e ResNet \cite{He2016} aprofundaram progressivamente as redes e refinaram técnicas de treinamento, estabelecendo representações visuais pré-treinadas que podem ser transferidas para outras tarefas com dados limitados.
+ 
+Mais recentemente, os \textit{Vision Transformers} (ViT) \cite{Dosovitskiy2021} transpuseram a arquitetura Transformer para o domínio visual. Em vez de processar pixels localmente por convoluções, o ViT divide a imagem em \textit{patches} retangulares de tamanho fixo, lineariza cada \textit{patch} em um vetor e os trata como tokens de uma sequência, aplicando atenção multi-cabeça sobre eles. Pré-treinado em conjuntos massivos de imagens, o ViT atingiu desempenho comparável ou superior às CNNs em diversas tarefas de visão, ao mesmo tempo que produzia representações visuais mais alinhadas com as estruturas de tokens usadas por modelos de linguagem — facilitando, assim, a integração entre as modalidades de texto e imagem.
 
 \section{Aprendizado Multimodal}
 
@@ -85,11 +113,93 @@ O método \textit{Retrieval-Guided Contrastive Learning} (\textit{RGCL})~\cite{R
 \label{fig:rgcl-model}
 \end{figure*}
 
+\subsection{Modelos Multimodais para Detecção de Discurso de Ódio em Memes}
+ 
+O Hate-CLIPper \cite{Kumar2022} é um modelo especializado na detecção de discurso de ódio em memes, construído sobre os \textit{embeddings} do CLIP. O modelo introduz módulos de interação cruzada (\textit{cross-modal interaction}) que, em vez de simplesmente comparar os vetores de imagem e texto por similaridade de cosseno, aprendem explicitamente padrões de interação entre as duas modalidades relevantes para a classificação de conteúdo odioso. Para isso, o Hate-CLIPper projeta os \textit{embeddings} visuais e textuais do CLIP em matrizes de interação cruzada, nas quais cada elemento captura a co-ativação entre uma dimensão do espaço visual e uma dimensão do espaço textual \cite{Kumar2022}. Essa representação de produto externo permite ao modelo capturar nuances combinatórias que se perdem em abordagens de fusão por concatenação ou soma ponderada.
+ 
+Ao ser avaliado nos \textit{benchmarks} do \textit{Hateful Memes Challenge} e conjuntos de dados derivados, o Hate-CLIPper demonstrou ganhos consistentes sobre \textit{baselines} que utilizam os \textit{embeddings} do CLIP com fusão simples, evidenciando que a modelagem explícita das interações entre modalidades é fundamental para a detecção de ódio em memes \cite{Kumar2022}.
+ 
+O RGCL (\textit{Regional Graph Contrastive Learning}) \cite{rgcl2023} adota uma perspectiva diferente ao modelar as relações entre regiões visuais e segmentos textuais por meio de grafos. Em vez de tratar a imagem como um único vetor global, o RGCL constrói um grafo cujos nós representam regiões visuais detectadas e tokens textuais salientes, e cujas arestas capturam relações de co-referência, relevância semântica e proximidade contextual entre eles. Operações de \textit{graph convolution} propagam informação ao longo dessas conexões, construindo representações dos nós enriquecidas pelo contexto dos vizinhos na estrutura do grafo.
+ 
+O componente contrastivo do RGCL utiliza pares de memes similares e dissimilares para refinar as representações aprendidas: memes com conteúdo odioso análogo são aproximados no espaço de \textit{embeddings}, enquanto memes de classes distintas são separados \cite{rgcl2023}. Essa combinação entre modelagem relacional por grafos e aprendizado contrastivo permite ao modelo capturar tanto as interações locais entre regiões específicas da imagem e trechos do texto quanto padrões globais de similaridade semântica entre memes, abordando de forma mais granular a complexidade semântica característica do discurso de ódio expresso nesse formato multimodal.
+
+\section{Métricas de Avaliação}
+
+A escolha das métricas de avaliação é uma decisão metodológica fundamental em qualquer tarefa de classificação, pois diferentes métricas capturam aspectos distintos do comportamento do modelo e podem levar a conclusões contraditórias sobre sua qualidade \cite{Sokolova2009}. No contexto da detecção de discurso de ódio em memes, essa escolha é ainda mais crítica: os conjuntos de dados disponíveis são tipicamente desbalanceados, com amostras odiosas em proporção consideravelmente menor do que amostras benignas, o que torna métricas agregadas pouco informativas e potencialmente enganosas \cite{ArticleHatefulMemesChallenge2020}. Esta seção apresenta as principais métricas utilizadas na literatura, desde as fundadas na matriz de confusão até a área sob a curva ROC, discutindo suas propriedades e adequação ao problema em questão.
+
+A matriz de confusão é uma representação tabular que sintetiza os resultados de um classificador binário ao cruzar as classes reais dos exemplos com as classes preditas pelo modelo \cite{Fawcett2006}. Para um problema de classificação binária, ela é composta por quatro células, conforme apresentado na Tabela~\ref{tab:confusion_matrix}.
+ 
+\begin{table}[ht]
+\centering
+\caption{Matriz de confusão para classificação binária.}
+\label{tab:confusion_matrix}
+\begin{tabular}{llcc}
+\hline
+ & & \multicolumn{2}{c}{\textbf{Classe Predita}} \\
+\cline{3-4}
+ & & \textbf{Positivo} & \textbf{Negativo} \\
+\hline
+\multirow{2}{*}{\textbf{Classe Real}} 
+  & \textbf{Positivo} & Verdadeiro Positivo (VP) & Falso Negativo (FN) \\
+  & \textbf{Negativo} & Falso Positivo (FP) & Verdadeiro Negativo (VN) \\
+\hline
+\end{tabular}
+\end{table}
+ 
+No contexto da detecção de memes odiosos, a classe positiva corresponde ao meme classificado como odioso. Um \textit{Verdadeiro Positivo} (VP) ocorre quando o modelo identifica corretamente um meme odioso; um \textit{Verdadeiro Negativo} (VN), quando classifica corretamente um meme não odioso. Os erros são de dois tipos: o \textit{Falso Positivo} (FP), em que um conteúdo inofensivo é incorretamente sinalizado como odioso — implicando censura indevida —, e o \textit{Falso Negativo} (FN), em que um meme efetivamente odioso passa sem detecção, perpetuando seu alcance nocivo \cite{Fawcett2006}. A distinção entre esses dois tipos de erro tem implicações práticas distintas para sistemas de moderação, e a matriz de confusão fornece a base para o cálculo das demais métricas descritas a seguir.
+
+A \textbf{acurácia} é a métrica mais intuitiva de avaliação, expressa pela proporção de exemplos classificados corretamente sobre o total de exemplos:
+ 
+\begin{equation}
+\text{Acurácia} = \frac{VP + VN}{VP + VN + FP + FN}
+\label{eq:accuracy}
+\end{equation}
+ 
+Apesar de sua simplicidade, a acurácia é uma métrica inadequada para conjuntos de dados desbalanceados. Em um conjunto em que 90\% dos memes são não odiosos, um classificador trivial que sempre prediz a classe negativa obteria 90\% de acurácia sem aprender qualquer padrão discriminativo — resultado numericamente satisfatório, porém praticamente inútil para a tarefa de moderação \cite{He2009}.
+ 
+A \textbf{precisão} mede, dentre todos os exemplos classificados como positivos, a proporção que de fato pertence à classe positiva:
+ 
+\begin{equation}
+\text{Precisão} = \frac{VP}{VP + FP}
+\label{eq:precision}
+\end{equation}
+ 
+A \textbf{revocação} (\textit{recall}), também denominada sensibilidade ou taxa de verdadeiros positivos, mede a proporção de exemplos positivos reais que foram corretamente identificados pelo modelo:
+ 
+\begin{equation}
+\text{Revocação} = \frac{VP}{VP + FN}
+\label{eq:recall}
+\end{equation}
+ 
+Há uma tensão inerente entre precisão e revocação: aumentar a sensibilidade do classificador para detectar mais memes odiosos tende a elevar o número de falsos positivos, reduzindo a precisão. O ponto de equilíbrio entre essas duas métricas é capturado pelo \textbf{F1-score}, que corresponde à média harmônica entre precisão e revocação:
+ 
+\begin{equation}
+F_1 = 2 \cdot \frac{\text{Precisão} \times \text{Revocação}}{\text{Precisão} + \text{Revocação}}
+\label{eq:f1}
+\end{equation}
+ 
+A média harmônica penaliza desproporções acentuadas entre os dois termos: para que o F1 seja alto, ambas as métricas devem ser simultaneamente elevadas. Isso torna o F1-score mais robusto do que a acurácia em cenários desbalanceados e é amplamente utilizado como métrica primária em benchmarks de detecção de discurso de ódio \cite{ArticleHatefulMemesChallenge2020}. Todavia, o F1-score ainda depende de um limiar de decisão fixo aplicado à saída probabilística do modelo, o que introduz uma limitação abordada pela métrica discutida a seguir.
+
+A maioria dos classificadores modernos baseados em aprendizado profundo não produz diretamente rótulos binários, mas sim um escore de confiança contínuo — tipicamente uma probabilidade entre 0 e 1 — que é binarizado por meio de um limiar de decisão $\tau$: exemplos com escore acima de $\tau$ são classificados como positivos, e os demais, como negativos. A escolha desse limiar afeta diretamente o equilíbrio entre a taxa de verdadeiros positivos (TVP, ou revocação) e a taxa de falsos positivos (TFP), definidas como:
+ 
+\begin{equation}
+\text{TVP} = \frac{VP}{VP + FN}, \qquad \text{TFP} = \frac{FP}{FP + VN}
+\label{eq:tpr_fpr}
+\end{equation}
+ 
+A \textit{Curva ROC} (\textit{Receiver Operating Characteristic}) é construída variando $\tau$ continuamente de 1 a 0 e plotando os pares (TFP, TVP) resultantes em um espaço bidimensional \cite{Fawcett2006}. O ponto $(0, 1)$ representa o classificador perfeito, que detecta todos os positivos sem nenhum falso alarme; a diagonal principal corresponde ao desempenho de um classificador aleatório. A \textbf{AUROC} (\textit{Area Under the ROC Curve}) resume a curva ROC em um único escalar: a área sob essa curva, com valor 1,0 para o classificador perfeito e 0,5 para o aleatório \cite{Bradley1997}.
+ 
+A AUROC possui uma interpretação probabilística direta: ela corresponde à probabilidade de que, dado um par composto por um exemplo positivo e um exemplo negativo escolhidos aleatoriamente, o modelo atribua escore mais alto ao exemplo positivo \cite{Fawcett2006}. Essa propriedade torna a AUROC especialmente adequada para conjuntos de dados desbalanceados: como a métrica é calculada sobre toda a curva ROC — e não em um único limiar —, ela avalia o poder discriminativo do modelo independentemente da distribuição das classes. Em um conjunto com forte desbalanceamento, a escolha de um limiar padrão de 0,5 pode ser subótima, e a AUROC captura o desempenho relativo do modelo de forma invariante a essa escolha \cite{He2009}. Por essas razões, o \textit{Hateful Memes Challenge} adota a AUROC como métrica primária de avaliação \cite{ArticleHatefulMemesChallenge2020}.
+
 \section{Lógica Fuzzy e classificação gradual}
 
 A lógica fuzzy \cite{Zadeh1965} estende a lógica booleana ao permitir verdades parciais, com graus de pertinência $\mu(x) \in [0,1]$ --- de ``completamente falso'' (0) a ``completamente verdadeiro'' (1). Essa abordagem é ideal para modelar fenômenos ambíguos, como ironia em memes, onde o ódio varia de sutil a explícito, superando classificações binárias rígidas.
 
-A matriz de confusão é uma ferramenta essencial para a avaliação de modelos de classificação em aprendizado de máquina \cite{fawcett2006}. Estruturada como uma tabela, ela correlaciona as predições do modelo aos rótulos reais, discriminando quantitativamente os resultados em quatro categorias: verdadeiros positivos (VP), verdadeiros negativos (VN), falsos positivos (FP) e falsos negativos (FN). Essa organização permite identificar padrões de erro específicos entre classes e serve como base para o cálculo de métricas de desempenho, como acurácia e precisão.
+A análise das métricas de avaliação anteriores revela uma tensão fundamental subjacente à tarefa de detecção de discurso de ódio: a realidade do fenômeno é graduada e contínua, mas os sistemas de moderação exigem decisões binárias. Essa tensão encontra ressonância na Lógica Fuzzy, proposta por Zadeh \cite{Zadeh1965}, que formaliza a representação de conceitos com fronteiras imprecisas por meio de \textit{funções de pertinência} que mapeiam elementos a graus no intervalo $[0, 1]$, em contraste com a lógica clássica, que admite apenas os valores 0 ou 1.
+ 
+No contexto dos memes, a própria natureza do discurso de ódio não é binária: um conteúdo pode ser parcialmente odioso, depender fortemente do contexto cultural do receptor, ou situar-se em uma zona de ambiguidade entre ironia inofensiva e hostilidade velada \cite{Ferrari2022}. Os modelos de aprendizado profundo capturam implicitamente essa gradação ao produzirem escores probabilísticos contínuos, que funcionam como funções de pertinência à classe "odioso": um escore próximo de 1 indica alta pertinência, enquanto valores intermediários refletem incerteza semântica.
+ 
+A operação de \textit{defuzzificação} — o processo pelo qual um valor fuzzy contínuo é convertido em uma decisão crisp binária — corresponde, nesse enquadramento, à aplicação do limiar $\tau$ sobre o escore do classificador \cite{Klir1995}. A escolha de $\tau$ não é neutra: um limiar mais baixo prioriza revocação, aceitando mais falsos positivos para não deixar conteúdo odioso passar; um limiar mais alto prioriza precisão, reduzindo falsos alarmes ao custo de menor sensibilidade. A AUROC, ao avaliar o desempenho sobre todos os possíveis valores de $\tau$, é uma métrica coerente com a perspectiva fuzzy: ela não compromete o modelo com uma única fronteira de pertinência, mas mede sua qualidade discriminativa ao longo de todo o espectro de decisão. Assim, a adoção da AUROC como métrica primária pode ser interpretada como um reconhecimento implícito da natureza inerentemente fuzzy do conceito de discurso de ódio.
 
 \section{Banco de dados \textit{Hateful Memes}}
 
@@ -110,8 +220,6 @@ O conjunto é balanceado com as seguintes proporções:
 \end{figure}
 
 Os \textbf{confundidores benignos} são alterações mínimas (texto ou imagem) em memes odiosos que invertem a classificação para não odioso, forçando modelos a raciocinar multimodalmente e evitando vieses unimodais. Isso garante que classificadores puramente textuais ou visuais falhem.
-
-\section{Métricas de Avaliação}
 
 \section{Trabalhos Relacionados}
 
