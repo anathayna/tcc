@@ -28,16 +28,143 @@ Estudos recentes mostram que memes não apenas refletem tendências culturais e 
 
 Nesse cenário, a aplicação de técnicas de aprendizado de máquina tornou-se fundamental para compreender, classificar e moderar a enorme quantidade de memes compartilhados nas redes. Modelos multimodais que integram texto e imagem têm sido desenvolvidos para detectar padrões sutis, categorizar conteúdos e identificar potenciais riscos associados a esses memes, ampliando as possibilidades de análise automatizada e interpretabilidade dos memes em larga escala \cite{ArticleHatefulMemesChallenge2020}.
 
+\section{Aprendizado de Máquina}
+ 
+O aprendizado de máquina (\textit{Machine Learning}, ML) é uma subárea da inteligência
+artificial que desenvolve algoritmos capazes de aprender padrões a partir de dados, sem
+serem explicitamente programados para cada tarefa \cite{mitchell1997}. Em vez de seguir
+regras fixas definidas por um programador, esses algoritmos ajustam seus parâmetros
+internos com base em exemplos, generalizando o conhecimento adquirido para dados
+não vistos.
+ 
+As abordagens de aprendizado de máquina são geralmente classificadas em três paradigmas
+principais. No \textbf{aprendizado supervisionado}, o modelo é treinado com pares de
+entrada e saída rotulados — como memes e seus respectivos rótulos ``odioso'' ou ``não
+odioso'' —, aprendendo a mapear entradas a saídas corretas. No \textbf{aprendizado não
+supervisionado}, o modelo recebe apenas os dados de entrada, sem rótulos, e busca
+identificar estruturas latentes, como agrupamentos ou padrões de co-ocorrência. Já no
+\textbf{aprendizado por reforço}, um agente aprende a tomar decisões em um ambiente por
+meio de recompensas e penalidades, sem supervisão direta. Este trabalho concentra-se no
+aprendizado supervisionado, paradigma dominante nas tarefas de classificação de conteúdo.
+ 
+Um conceito central em aprendizado supervisionado é a divisão dos dados em conjuntos de
+\textbf{treinamento}, \textbf{validação} e \textbf{teste}. O modelo é ajustado sobre os
+dados de treinamento, seus hiperparâmetros são selecionados com base no desempenho de
+validação e sua qualidade final é medida no conjunto de teste, mantido isolado durante
+todo o desenvolvimento para garantir uma estimativa imparcial da capacidade de
+generalização \cite{goodfellow2016}.
+
+
+\subsection{Redes Neurais Artificiais}
+
+ 
+As redes neurais artificiais são modelos computacionais inspirados, de forma abstrata, na
+estrutura do cérebro humano \cite{rosenblatt1958}. A unidade fundamental é o
+\textbf{neurônio artificial} (ou perceptron), que recebe um conjunto de entradas
+$x_1, x_2, \ldots, x_n$, pondera cada uma por um peso $w_i$, soma os resultados com um
+viés $b$ e aplica uma \textbf{função de ativação} $f$ para produzir uma saída
+ 
+Funções de ativação como a ReLU (\textit{Rectified Linear Unit}), a sigmoide e a
+tangente hiperbólica introduzem não-linearidade ao modelo, permitindo que ele aprenda
+relações complexas nos dados. Isoladamente, um único neurônio é capaz apenas de separar
+classes linearmente. Para modelar padrões não lineares, os neurônios são organizados em
+\textbf{camadas}: uma camada de entrada, uma ou mais camadas ocultas e uma camada de
+saída. Essa estrutura em camadas é denominada \textit{Multilayer Perceptron} (MLP) ou
+rede neural de alimentação direta (\textit{feedforward}).
+ 
+O aprendizado ocorre pelo ajuste dos pesos $w_i$ e vieses $b$ por meio do algoritmo de
+\textbf{retropropagação} (\textit{backpropagation}): dado um erro entre a saída prevista
+e a saída esperada — calculado por uma função de perda como a entropia cruzada —, o
+gradiente desse erro em relação a cada parâmetro é computado pela regra da cadeia e
+utilizado pelo \textbf{gradiente descendente} para atualizar os pesos na direção que
+reduz o erro \cite{rumelhart1986}.
+
+\subsection{Aprendizado Profundo}
+ 
+O aprendizado profundo (\textit{Deep Learning}) é uma subárea do aprendizado de máquina
+que utiliza redes neurais com muitas camadas ocultas — daí o adjetivo ``profundo''
+\cite{goodfellow2016}. Cada camada aprende representações progressivamente mais abstratas
+dos dados: nas primeiras camadas de uma rede de visão computacional, por exemplo,
+detectam-se bordas e texturas simples; nas camadas mais profundas, formas e conceitos
+semânticos complexos.
+ 
+Essa capacidade de aprender representações hierárquicas automaticamente diferencia o
+aprendizado profundo das abordagens tradicionais de aprendizado de máquina, que dependiam
+de características extraídas manualmente por especialistas (\textit{feature engineering}).
+Em dados não estruturados de alta dimensionalidade --- como imagens, áudio e texto ---,
+onde o espaço de características relevantes é imenso e difícil de especificar
+manualmente, o aprendizado profundo demonstrou ganhos expressivos \cite{lecun2015}.
+ 
+O treinamento de redes profundas apresenta desafios próprios, entre os quais se destaca o
+\textbf{problema do desaparecimento do gradiente}: em redes muito profundas, os gradientes
+tendem a se tornar exponencialmente pequenos à medida que se propagam pelas camadas mais
+iniciais, impedindo que essas camadas aprendam de forma eficaz \cite{goodfellow2016}.
+Técnicas modernas como normalização de camada (\textit{layer normalization}), conexões
+residuais (\textit{skip connections}) e funções de ativação como a ReLU mitigam esse
+problema, viabilizando o treinamento de arquiteturas com dezenas ou centenas de camadas.
+
+\subsection{Redes Neurais Convolucionais}
+ 
+As Redes Neurais Convolucionais (\textit{Convolutional Neural Networks}, CNNs) são uma
+classe de arquiteturas de aprendizado profundo projetadas para processar dados com
+estrutura espacial, como imagens \cite{lecun1998}. Em vez de conectar cada neurônio a
+todos os neurônios da camada anterior --- o que seria computacionalmente proibitivo para
+imagens de alta resolução ---, as CNNs exploram a \textbf{localidade espacial}: pequenos
+filtros convolucionais deslizam sobre a entrada, detectando padrões locais (bordas,
+texturas, formas) de forma eficiente e com compartilhamento de parâmetros.
+ 
+Uma CNN típica é composta por camadas alternadas de \textbf{convolução} e
+\textbf{pooling}. As camadas de convolução aplicam múltiplos filtros aprendíveis,
+produzindo mapas de características que capturam a presença de padrões específicos em cada
+região da imagem. As camadas de pooling reduzem a dimensionalidade espacial ---
+tipicamente tomando o valor máximo em regiões locais (\textit{max pooling}) ---, conferindo
+invariância a pequenas translações e reduzindo o custo computacional das camadas
+subsequentes. Após as camadas convolucionais, camadas densas (\textit{fully connected})
+integram as características extraídas para produzir a predição final.
+ 
+O marco que consolidou as CNNs como padrão em visão computacional foi a AlexNet
+\cite{krizhevsky2012}, que venceu o desafio ImageNet em 2012 com ganhos expressivos
+sobre abordagens tradicionais. Arquiteturas subsequentes como VGG \cite{simonyan2014},
+Inception \cite{szegedy2015} e ResNet \cite{he2016} aprofundaram progressivamente as
+redes e refinaram técnicas de treinamento, estabelecendo representações visuais
+pré-treinadas que podem ser transferidas para outras tarefas com dados limitados.
+
+\subsection{Redes Neurais Recorrentes}
+ 
+As Redes Neurais Recorrentes (\textit{Recurrent Neural Networks}, RNNs) são arquiteturas
+projetadas para processar dados sequenciais, como texto, áudio e séries temporais
+\cite{elman1990}. Diferentemente das redes \textit{feedforward}, as RNNs mantêm um
+\textbf{estado oculto} que é atualizado a cada passo da sequência: ao processar o
+$t$-ésimo elemento, o modelo considera tanto a entrada atual $x_t$ quanto o estado oculto
+$h_{t-1}$ produzido pelo passo anterior, propagando informação ao longo do tempo.
+ 
+Apesar dessa capacidade de modelagem sequencial, as RNNs clássicas apresentam
+dificuldades em capturar \textbf{dependências de longo alcance} --- relações entre
+elementos distantes na sequência. A razão é que, durante a retropropagação ao longo do
+tempo (\textit{backpropagation through time}), os gradientes são multiplicados
+repetidamente pela mesma matriz de pesos, fazendo com que diminuam (ou explodam)
+exponencialmente para sequências longas \cite{hochreiter1991}.
+ 
+A arquitetura \textit{Long Short-Term Memory} (LSTM) \cite{hochreiter1997} foi proposta
+para mitigar esse problema, introduzindo \textbf{mecanismos de porta} (\textit{gates})
+--- de entrada, esquecimento e saída --- que controlam seletivamente quais informações são
+retidas, descartadas ou transmitidas no estado da célula. Embora as LSTMs tenham
+representado um avanço significativo, ambas as arquiteturas permanecem inerentemente
+sequenciais: cada passo depende do anterior, o que limita a paralelização durante o
+treinamento e dificulta a captura de contextos muito longos. Essa limitação motivou o
+desenvolvimento de uma abordagem radicalmente diferente, baseada exclusivamente em
+atenção: o \textit{Transformer}.
+
 
 \section{Moderação de conteúdo automatizada}
 
 A moderação de conteúdo surgiu nos primórdios da internet, na década de 80, com fóruns online onde moderadores voluntários aprovavam postagens para preservar discussões civilizadas \cite{Ackermann2020}. Essa prática evoluiu para políticas privadas em plataformas modernas, impulsionada pelo combate a spam, assédio e discursos de ódio. Com o crescimento exponencial do acesso à internet, a moderação se tornou em uma operação de escala industrial, levando gigantes de tecnologia a contratar milhares de revisores para analisar denúncias, um trabalho muitas vezes invisível e marginalizado \cite{gillespie2018, gray2019}. Hoje, diante de bilhões de postagens diárias, o foco está sobre a moderação automatizada, na qual algoritmos de inteligência artificial filtram a maior parte do conteúdo proibido antes mesmo de qualquer intervenção humana \cite{gillespie2020}.
 
-As abordagens tradicionais de moderação automatizada são predominantemente baseadas em modelos unimodais que analisam apenas o texto por meio de \textit{Processamento de Linguagem Natural} (PNL) ou apenas a imagem por meio de \textit{Visão Computacional}.
+As abordagens tradicionais de moderação automatizada são predominantemente baseadas em modelos unimodais que analisam apenas o texto por meio de \textit{Processamento de Linguagem Natural} (PLN) ou apenas a imagem por meio de \textit{Visão Computacional}.
 
 \section{Processamento de Linguagem Natural}
 
-O \textit{Processamento de Linguagem Natural} (PLN) é uma subárea da inteligência artificial dedicado a capacitar computadores a compreender, interpretar e gerar linguagem humana de forma natural \cite{jurafsky2026}. Um desafio central nessa área está na representação de textos em formatos numéricos que preservem informações semânticas e sintáticas relevantes para tarefas específicas.
+O \textit{Processamento de Linguagem Natural} (PLN) é uma subárea da inteligência artificial dedicada a capacitar computadores a compreender, interpretar e gerar linguagem humana de forma natural \cite{jurafsky2026}. Um desafio central nessa área está na representação de textos em formatos numéricos que preservem informações semânticas e sintáticas relevantes para tarefas específicas.
  
 Abordagens tradicionais, como \textit{bag-of-words}, tratam palavras como símbolos discretos e independentes, desconsiderando relações semânticas entre termos. Um marco importante foi a introdução dos \textit{word embeddings}, que representam palavras como vetores densos em um espaço vetorial contínuo \cite{Bengio2003}. O modelo \textit{Word2Vec} \cite{Mikolov2013}, treinado com objetivos preditivos em grandes corpora textuais, demonstrou que operações algébricas simples nesses vetores capturam relações semânticas e analógicas, como vetores semanticamente próximos correspondem a palavras com significados similares.
 
@@ -47,7 +174,18 @@ Apesar desse avanço, os \textit{word embeddings} são estáticos onde cada pala
  
 Antes dos \textit{Transformer}, as arquiteturas predominantes para modelagem sequencial de linguagem eram as redes recorrentes (\textit{Recurrent Neural Networks}, RNNs). Embora fossem capazes de processar sequências, essas redes apresentavam dificuldades em capturar dependências de longo alcance, devido ao problema do desaparecimento do gradiente ao longo de sequências longas, além de serem inerentemente sequenciais, o que limitava sua paralelização durante o treinamento.
  
-O mecanismo de atenção foi proposto inicialmente como uma forma de contornar essas limitações em modelos \textit{encoder-decoder} para tradução automática \cite{bahdanau2015}, que ao gerar cada palavra da tradução, o modelo aprende a atribuir pesos diferentes a cada posição da sequência de entrada, focando nas partes mais relevantes em cada etapa. A eficácia desse mecanismo motivou Vaswani et al.\ \cite{GoogleTeamTransformers} propuseram eliminar completamente a recorrência e as convoluções, construindo uma arquitetura baseada exclusivamente em atenção: o Transformer.
+O mecanismo de atenção foi proposto inicialmente como uma forma de contornar essas limitações em modelos \textit{encoder-decoder} para tradução automática \cite{bahdanau2015}, que ao gerar cada palavra da tradução, o modelo aprende a atribuir pesos diferentes a cada posição da sequência de entrada, focando nas partes mais relevantes em cada etapa. A eficácia desse mecanismo fez com que propuseram eliminar completamente a recorrência e as convoluções, construindo uma arquitetura baseada exclusivamente em atenção: o Transformer.
+
+O mecanismo de atenção foi proposto inicialmente como forma de contornar
+essas limitações em modelos \textit{encoder-decoder} para tradução automática
+\cite{bahdanau2015}. Em vez de comprimir toda a sequência de entrada em um
+único vetor de contexto, o modelo aprende a atribuir pesos diferentes a cada
+posição da entrada ao gerar cada palavra da tradução, focando dinamicamente
+nas partes mais relevantes em cada etapa.
+
+A eficácia desse mecanismo motivou o desenvolvimento de uma arquitetura que
+eliminasse completamente a recorrência e as convoluções, construindo um modelo
+baseado exclusivamente em atenção: o \textit{Transformer} \cite{GoogleTeamTransformers}.
  
 A arquitetura Transformer é composta por blocos de \textit{atenção multi-cabeça} (\textit{multi-head attention}), nos quais múltiplas projeções paralelas da atenção permitem ao modelo capturar simultaneamente diferentes tipos de relações entre os \textit{tokens} da sequência \cite{GoogleTeamTransformers}. A \textit{autoatenção} (\textit{self-attention}) permite que cada posição da sequência considere todas as demais ao construir sua representação, independentemente da distância entre elas. Como a arquitetura não possui estrutura sequencial intrínseca, informações sobre a posição relativa dos \textit{tokens} são incorporadas por meio de \textit{codificações posicionais}. Cada bloco também inclui redes de alimentação direta por posição (\textit{feedforward}) e operações de normalização de camada complementam cada bloco. Essa combinação resultou em ganhos expressivos de qualidade e desempenho em tradução automática e rapidamente se tornou a base de modelos estado da arte em linguagem natural.
 
@@ -58,36 +196,53 @@ A arquitetura Transformer é composta por blocos de \textit{atenção multi-cabe
     \label{fig:attention-model}
 \end{figure*}
 
-A Figura \ref{fig:attention-model} apresenta a arquitetura do \textit{Transformer}, composta por um codificador (\textit{encoder}) e um decodificador (\textit{decoder}) organizados em camadas empilhadas. O \textit{encoder} é responsável por ler e representar a sequência de entrada. Cada \textit{token} é uma unidade mínima em que o texto é segmentado, o que correspondente a uma palavra ou subpalavra, onde é convertido em um vetor numérico denso (\textit{embedding}), que captura relações semânticas em um espaço de alta dimensão. Esses vetores recebem uma codificação posicional e percorrem blocos de atenção e redes \textit{feed-forward}, produzindo uma representação contextualizada da entrada. O \textit{decoder}, por sua vez, consome essa representação para gerar a saída de forma autorregressiva: a cada passo, produz um \textit{token} com base nos já gerados por meio de atenção mascarada e no estado do \textit{encoder}, por meio de atenção cruzada, aplicando ao final uma camada linear seguida de \textit{softmax}, função que converte os valores em uma distribuição de probabilidades sobre o vocabulário para determinar o \textit{token} mais provável.
+A Figura~\ref{fig:attention-model} apresenta a arquitetura do \textit{Transformer}, composta por um codificador (\textit{encoder}) e um decodificador (\textit{decoder}) organizados em camadas empilhadas. O \textit{encoder} é responsável por ler e representar a sequência de entrada. Cada \textit{token} é uma unidade mínima em que o texto é segmentado, o que corresponde a uma palavra ou subpalavra, onde é convertido em um vetor numérico denso (\textit{embedding}), que captura relações semânticas em um espaço de alta dimensão. Esses vetores recebem uma codificação posicional e percorrem blocos de atenção e redes \textit{feed-forward}, produzindo uma representação contextualizada da entrada. O \textit{decoder}, por sua vez, consome essa representação para gerar a saída de forma autorregressiva: a cada passo, produz um \textit{token} com base nos já gerados por meio de atenção mascarada e no estado do \textit{encoder}, por meio de atenção cruzada, aplicando ao final uma camada linear seguida de \textit{softmax}, função que converte os valores em uma distribuição de probabilidades sobre o vocabulário para determinar o \textit{token} mais provável.
 
 \subsection{BERT: Representações Bidirecionais a partir de Transformers}
- 
-Construído sobre a arquitetura Transformer, o BERT (\textit{Bidirectional Encoder Representations from Transformers}) \cite{devlin2019bert} introduziu uma abordagem de pré-treinamento em larga escala que transformou o estado da arte em diversas tarefas de PLN. Diferentemente de modelos anteriores que processavam o texto da esquerda para a direita, o BERT emprega atenção bidirecional: ao construir a representação de um token, o modelo considera simultaneamente todo o contexto à esquerda e à direita, capturando dependências em ambas as direções.
- 
-O pré-treinamento do BERT é realizado por meio de dois objetivos: a \textit{Modelagem de Linguagem Mascarada} (\textit{Masked Language Modeling}, MLM), na qual uma fração aleatória dos tokens é ocultada e o modelo é treinado para predizê-los a partir do contexto restante; e a \textit{Predição da Próxima Sentença} (\textit{Next Sentence Prediction}, NSP), que treina o modelo a determinar se dois segmentos de texto são consecutivos em um documento original \cite{devlin2019bert}. Esses objetivos permitem que o BERT desenvolva representações ricas do idioma sem exigir dados rotulados. Na fase de \textit{fine-tuning}, o modelo pré-treinado é adaptado a tarefas específicas, como classificação de sentimentos, resposta a perguntas ou detecção de discurso de ódio, por meio do acréscimo de camadas de saída e do ajuste supervisionado com dados rotulados da tarefa alvo. Essa separação entre pré-treinamento em larga escala e ajuste fino em domínio específico consolidou-se como paradigma central no desenvolvimento de modelos de PLN modernos.
+
+Construído sobre a arquitetura Transformer, o BERT (\textit{Bidirectional Encoder
+Representations from Transformers}) \cite{devlin2019bert} introduziu uma abordagem de
+pré-treinamento em larga escala que transformou o estado da arte em diversas tarefas de
+PLN. Diferentemente de modelos anteriores que processavam o texto da esquerda para a
+direita, o BERT emprega atenção bidirecional, ao construir a representação de um token,
+o modelo considera simultaneamente todo o contexto à esquerda e à direita, capturando
+dependências em ambas as direções.
+
+O pré-treinamento do BERT é realizado por meio de dois objetivos, com a Modelagem
+de Linguagem Mascarada (\textit{Masked Language Modeling}, MLM), na qual uma fração
+aleatória dos tokens é ocultada e o modelo é treinado para predizê-los a partir do
+contexto restante, e a Predição da Próxima Sentença (\textit{Next Sentence
+Prediction}, NSP), que treina o modelo a determinar se dois segmentos de texto são
+consecutivos em um documento original \cite{devlin2019bert}. Esses objetivos permitem
+que o BERT desenvolva representações ricas do idioma sem exigir dados rotulados. Na fase
+de \textit{fine-tuning}, o modelo pré-treinado é adaptado a tarefas específicas, como
+classificação de sentimentos, resposta a perguntas ou detecção de discurso de ódio,
+por meio do acréscimo de camadas de saída e do ajuste supervisionado com dados rotulados
+da tarefa-alvo. Essa separação entre pré-treinamento em larga escala e ajuste fino em
+domínio específico consolidou-se como paradigma central no desenvolvimento de modelos de
+PLN modernos.
 
 \begin{figure*}[!htbp]
     \centering
-    \includegraphics[scale=0.4]{imagens/BERT.png}
-    \caption{Arquitetura do \textit{BERT} \cite{devlin2019bert}.}
+    \includegraphics[scale=0.45]{imagens/BERT.png}
+    \caption{Arquitetura do BERT \cite{devlin2019bert}.}
     \label{fig:bert-model}
 \end{figure*}
 
-A Figura \ref{fig:bert-model} apresenta a arquitetura do modelo BERT, destacando sua natureza bidirecional. Diferente de modelos de linguagem tradicionais que leem o texto sequencialmente (da esquerda para a direita ou vice-versa), o BERT utiliza o mecanismo de Transformer para analisar o contexto completo de uma palavra considerando ambos os lados simultaneamente.
-
-No diagrama, observa-se o processo dividido em duas etapas principais:
-
-Pré-treinamento: O modelo é treinado em um grande volume de dados não rotulados, utilizando tarefas como Masked Language Model (MLM) — onde palavras são omitidas para que o modelo as preveja — e Next Sentence Prediction (NSP).
-
-Fine-tuning (Ajuste Fino): O modelo pré-treinado é inicializado com os mesmos parâmetros e, em seguida, todos os parâmetros são ajustados usando dados rotulados de tarefas específicas (como análise de sentimentos, perguntas e respostas ou reconhecimento de entidades nomeadas).
-
-A entrada (Input) é composta por uma sequência de tokens, iniciando sempre pelo token especial [CLS] (usado para classificação) e separando sentenças com o token [SEP]. Cada token de entrada é transformado em um vetor que combina embeddings de conteúdo, de posição e de segmento.
+A Figura~\ref{fig:bert-model} ilustra as duas etapas do ciclo de vida do BERT. No
+pré-treinamento, a entrada é composta por sequências de tokens iniciadas pelo marcador
+especial \texttt{[CLS]} e delimitadas pelo marcador \texttt{[SEP]}, sendo cada token
+representado por um vetor que combina \textit{embeddings} de conteúdo, de posição e de
+segmento. No \textit{fine-tuning}, os parâmetros obtidos no pré-treinamento são
+utilizados como ponto de partida e ajustados de forma supervisionada para tarefas
+específicas, como análise de sentimentos, resposta a perguntas e reconhecimento de
+entidades nomeadas.
 
 \section{Visão Computacional}
  
 A visão computacional é o campo da inteligência artificial dedicado a extrair informações estruturadas a partir de dados visuais, como imagens e vídeos \cite{szeliski2022}. Suas tarefas fundamentais incluem classificação de imagens, detecção de objetos, segmentação semântica e extração de características visuais, que formam a base para sistemas de reconhecimento e compreensão visual.
  
-As CNNs, já introduzidas na seção de redes neurais, são a espinha dorsal da visão computacional moderna. O sucesso de arquiteturas como a AlexNet \cite{krizhevsky2012} no desafio ImageNet inaugurou a era do aprendizado profundo em visão, ao demonstrar ganhos dramáticos sobre abordagens tradicionais baseadas em extração manual de características. Arquiteturas subsequentes como VGG \cite{simonyan2014}, Inception \cite{szegedy2015} e ResNet \cite{he2016} aprofundaram progressivamente as redes e refinaram técnicas de treinamento, estabelecendo representações visuais pré-treinadas que podem ser transferidas para outras tarefas com dados limitados.
+As CNNs (Redes Neurais Convolucionais) são a espinha dorsal da visão computacional moderna. O sucesso de arquiteturas como a AlexNet \cite{krizhevsky2012} no desafio ImageNet inaugurou a era do aprendizado profundo em visão, ao demonstrar ganhos dramáticos sobre abordagens tradicionais baseadas em extração manual de características. Arquiteturas subsequentes como VGG \cite{simonyan2014}, Inception \cite{szegedy2015} e ResNet \cite{he2016} aprofundaram progressivamente as redes e refinaram técnicas de treinamento, estabelecendo representações visuais pré-treinadas que podem ser transferidas para outras tarefas com dados limitados.
  
 Mais recentemente, os \textit{Vision Transformers} (ViT) \cite{dosovitskiy2021} transpuseram a arquitetura Transformer para o domínio visual. Em vez de processar pixels localmente por convoluções, o ViT divide a imagem em \textit{patches} retangulares de tamanho fixo, lineariza cada \textit{patch} em um vetor e os trata como tokens de uma sequência, aplicando atenção multi-cabeça sobre eles. Pré-treinado em conjuntos massivos de imagens, o ViT atingiu desempenho comparável ou superior às CNNs em diversas tarefas de visão, ao mesmo tempo que produzia representações visuais mais alinhadas com as estruturas de tokens usadas por modelos de linguagem — facilitando, assim, a integração entre as modalidades de texto e imagem.
 
@@ -97,25 +252,35 @@ O aprendizado multimodal é uma subárea do aprendizado de máquina que busca co
 
 No contexto da moderação de memes, o aprendizado multimodal é indispensável. Muitas vezes, um meme considerado odioso utiliza uma imagem inofensiva e um texto que, isoladamente, também não viola diretrizes da comunidade, o discurso de ódio só se concretiza na combinação de ambos \cite{ArticleHatefulMemesChallenge2020}. Modelos multimodais procuram extrair representações conjuntas dessas diferentes entradas, permitindo que o modelo compreenda o contexto cruzado entre modalidades, o que a imagem quer dizer em relação àquele texto específico e alcance classificações mais precisas em cenários ambíguos \cite{yuan2023}. Para viabilizar essa integração entre modalidades, são necessários modelos capazes de alinhar representações visuais e linguísticas em um espaço comum.
 
-\section{Modelos de linguagem e visão}
+\subsection{Modelos de linguagem e visão}
 
-O VisualBERT \cite{visualbert2019} foi um marco ao fundir representações visuais e textuais num único \textit{encoder}, permitindo que o mecanismo de autoatenção descubra alinhamentos implícitos entre as duas  modalidades. O modelo é pré-treinado com duas tarefas: modelagem de linguagem mascarada (Objetivo 1), em que \textit{tokens} de texto são ocultados e preditos com base no contexto visual e linguístico, e previsão de alinhamento entre frase e imagem (Objetivo 2), que verifica se uma legenda corresponde à imagem fornecida. Após o pré-treinamento com dados de legendas, o modelo é ajustado para diferentes tarefas específicas. Uma limitação relevante do VisualBERT é sua dependência de detectores de objetos pré-computados para extrair as regiões visuais, o que torna o \textit{pipeline} mais rígido e computacionalmente custoso.
+O VisualBERT \cite{visualbert2019} foi um marco ao fundir representações visuais e textuais em um único \textit{encoder}, permitindo que o mecanismo de autoatenção descubra alinhamentos implícitos entre as duas  modalidades. O modelo é pré-treinado com duas tarefas: modelagem de linguagem mascarada (Objetivo 1), em que \textit{tokens} de texto são ocultados e preditos com base no contexto visual e linguístico, e previsão de alinhamento entre frase e imagem (Objetivo 2), que verifica se uma legenda corresponde à imagem fornecida. Após o pré-treinamento com dados de legendas, o modelo é ajustado para diferentes tarefas específicas. Uma limitação relevante do VisualBERT é sua dependência de detectores de objetos pré-computados para extrair as regiões visuais, o que torna o \textit{pipeline} mais rígido e computacionalmente custoso.
 
 \begin{figure*}[!htbp]
 	\centering
 	\includegraphics[scale=0.32]{imagens/visualbert.png}
-    \caption {Arquitetura do VisualBERT \cite{visualbert2019}.}
+    \caption{Arquitetura do VisualBERT \cite{visualbert2019}.}
     \label{fig:visualbert-arch}
 \end{figure*}
 
-Enquanto o VisualBERT utiliza a fusão precoce, integrando texto e imagem diretamente em um único \textit{Transformer}, o CLIP (\textit{Contrastive Language-Image Pre-training}) \cite{clip2021} adota a fusão tardia, processando cada modalidade separadamente antes de alinhar suas representações. O CLIP não é um modelo único, mas sim um \textit{framework} de aprendizado multimodal, com dois \textit{encoders} independentes, um visual em arquiteturas como ResNet-50 ou ViT-L/14 (\textit{Vision Transformer}), e outro textual, fixo e similar ao GPT-2. Foi treinado com aproximadamente 400 milhões de pares de imagem e texto extraídos da internet, e a sua principal inovação está no aprendizado contrastivo
+Enquanto o VisualBERT utiliza a fusão precoce, integrando texto e imagem diretamente em um único \textit{Transformer}, o CLIP (\textit{Contrastive Language-Image Pre-training}) \cite{clip2021} adota a fusão tardia, processando cada modalidade separadamente antes de alinhar suas representações. O CLIP não é um modelo único, mas sim um \textit{framework} de aprendizado multimodal, com dois \textit{encoders} independentes, um visual em arquiteturas como ResNet-50 ou ViT-L/14 (\textit{Vision Transformer}), e outro textual, fixo e similar ao GPT-2.
+
+Foi treinado com aproximadamente 400 milhões de pares de imagem e texto
+extraídos da internet, e sua principal inovação está no \textbf{aprendizado
+contrastivo}: uma estratégia de treinamento em que o modelo aprende a
+aproximar, em um espaço vetorial comum, as representações de pares
+semanticamente relacionados, como uma imagem e sua descrição correta,
+enquanto afasta as representações de pares não correspondentes. Em vez de
+classificar categorias fixas, o modelo aprende por comparação, o que lhe
+confere capacidade de generalização para conceitos não vistos durante o
+treinamento.
 
 Durante o treinamento, o \textit{framework} aprende a mapear imagens e textos para um mesmo espaço vetorial, aproximando as representações matemáticas de uma imagem e sua respectiva descrição textual, enquanto afasta as representações de pares que não correspondem. Essa característica permite ao CLIP uma capacidade de generalização e de \textit{zero-shot learning} (aprendizado com zero exemplos), tornando-o uma ferramenta robusta para extrair características, capturando nuances semânticas complexas que seriam difíceis de obter com modelos treinados separadamente.
 
 \begin{figure*}[!htbp]
 	\centering
 	\includegraphics[scale=0.2]{imagens/CLIP.png}
-    \caption {Pipeline de treinamento e uso do CLIP \cite{clip2021}.}
+    \caption{Pipeline de treinamento e uso do CLIP \cite{clip2021}.}
     \label{fig:clip-pipeline}
 \end{figure*}
 
@@ -123,22 +288,29 @@ A Figura~\ref{fig:clip-pipeline} ilustra o pipeline do CLIP em duas fases. Na \t
 
 Assim, enquanto VisualBERT integra modalidades cedo via \textit{Transformer} compartilhado, CLIP alinha via contraste em espaço separado, capturando nuances semânticas complexas. No entanto, para memes com ``contraste de ódio'' irônico (de sutil a explícito), esses modelos binários (odioso e não odioso) demandam modelagem de graus intermediários.
 
-O método \textit{Retrieval-Guided Contrastive Learning} (\textit{RGCL})~\cite{RGCL2024} propõe uma abordagem para detecção de memes de ódio baseada em aprendizado contrastivo orientado por recuperação de exemplos. Modelos baseados em CLIP ainda apresentam dificuldades para distinguir memes com diferenças visuais ou textuais sutis, mas significados semânticos opostos, como os confundidores benignos. Para contornar essa limitação, o método recupera dinamicamente exemplos positivos e negativos difíceis durante o treinamento, refinando o espaço de representação sensível às variações relevantes e alcançando AUROC de 87,0.
-
-\begin{figure*}[!htbp]
-\centering
-\includegraphics[scale=0.085]{imagens/RGCL_Model.png}
-\caption{Arquitetura do \textit{RGCL}~\cite{RGCL2024}. O método utiliza um codificador multimodal CLIP congelado para gerar embeddings dos memes, armazena essas representações em um banco de recuperação e, durante o treinamento, seleciona exemplos positivos e negativos difíceis por busca aproximada de vizinhos mais próximos. Na inferência, a predição pode ser feita por regressão logística ou por votação majoritária entre os \(K\) vizinhos mais próximos.}
-\label{fig:rgcl-model}
-\end{figure*}
-
 \subsection{Modelos Multimodais para Detecção de Discurso de Ódio em Memes}
  
 O Hate-CLIPper \cite{kumar2022} é um modelo especializado na detecção de discurso de ódio em memes, construído sobre os \textit{embeddings} do CLIP. O modelo introduz módulos de interação cruzada (\textit{cross-modal interaction}) que, em vez de simplesmente comparar os vetores de imagem e texto por similaridade de cosseno, aprendem explicitamente padrões de interação entre as duas modalidades relevantes para a classificação de conteúdo odioso. Para isso, o Hate-CLIPper projeta os \textit{embeddings} visuais e textuais do CLIP em matrizes de interação cruzada, nas quais cada elemento captura a co-ativação entre uma dimensão do espaço visual e uma dimensão do espaço textual \cite{kumar2022}. Essa representação de produto externo permite ao modelo capturar nuances combinatórias que se perdem em abordagens de fusão por concatenação ou soma ponderada.
+
+Como mostrado na Figura~\ref{fig:hateclipper-arch}, a arquitetura processa o meme pelos encoders de imagem e texto do CLIP congelados para preservar as representações pré-treinadas e focar o aprendizado na fusão multimodal. As saídas são projetadas por camadas treináveis para um espaço comum de dimensionalidade reduzida. A principal inovação é a \textit{Feature Interaction Matrix} (FIM), gerada pelo produto externo entre vetores de representação textual e visual. Essa matriz revela co-ativações e correlações cruzadas entre dimensões modais, capturando alinhamentos semânticos sutis ignorados em fusões simples, como concatenação. A FIM é aprimorada por dois mecanismos complementares: \textit{align-fusion}, que alinha projeções independentes dos \textit{embeddings} globais do CLIP antes do produto externo; e \textit{cross-fusion}, que promove interação precoce via atenção ou projeções cruzadas.
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[scale=0.45]{imagens/hateclipper.png}
+    \caption{Arquitetura do \textit{Hate-CLIPper}~\cite{kumar2022}.}
+    \label{fig:hateclipper-arch}
+\end{figure*}
  
 Ao ser avaliado nos \textit{benchmarks} do \textit{Hateful Memes Challenge} e conjuntos de dados derivados, o Hate-CLIPper demonstrou ganhos consistentes sobre \textit{baselines} que utilizam os \textit{embeddings} do CLIP com fusão simples, evidenciando que a modelagem explícita das interações entre modalidades é fundamental para a detecção de ódio em memes \cite{kumar2022}.
  
 O RGCL (\textit{Regional Graph Contrastive Learning}) \cite{rgcl2023} adota uma perspectiva diferente ao modelar as relações entre regiões visuais e segmentos textuais por meio de grafos. Em vez de tratar a imagem como um único vetor global, o RGCL constrói um grafo cujos nós representam regiões visuais detectadas e tokens textuais salientes, e cujas arestas capturam relações de co-referência, relevância semântica e proximidade contextual entre eles. Operações de \textit{graph convolution} propagam informação ao longo dessas conexões, construindo representações dos nós enriquecidas pelo contexto dos vizinhos na estrutura do grafo.
+
+\begin{figure*}[!htbp]
+\centering
+\includegraphics[scale=0.085]{imagens/RGCL_Model.png}
+\caption{Arquitetura do \textit{RGCL}~\cite{RGCL2024}.}
+\label{fig:rgcl-model}
+\end{figure*}
  
 O componente contrastivo do RGCL utiliza pares de memes similares e dissimilares para refinar as representações aprendidas: memes com conteúdo odioso análogo são aproximados no espaço de \textit{embeddings}, enquanto memes de classes distintas são separados \cite{rgcl2023}. Essa combinação entre modelagem relacional por grafos e aprendizado contrastivo permite ao modelo capturar tanto as interações locais entre regiões específicas da imagem e trechos do texto quanto padrões globais de similaridade semântica entre memes, abordando de forma mais granular a complexidade semântica característica do discurso de ódio expresso nesse formato multimodal.
 
@@ -152,15 +324,12 @@ A matriz de confusão é uma representação tabular que sintetiza os resultados
 \centering
 \caption{Matriz de confusão para classificação binária.}
 \label{tab:confusion_matrix}
-\begin{tabular}{llcc}
+\begin{tabular}{lcc}
 \hline
- & & \multicolumn{2}{c}{\textbf{Classe Predita}} \\
-\cline{3-4}
- & & \textbf{Positivo} & \textbf{Negativo} \\
+ & \textbf{Positivo} & \textbf{Negativo} \\
 \hline
-\multirow{2}{*}{\textbf{Classe Real}} 
-  & \textbf{Positivo} & Verdadeiro Positivo (VP) & Falso Negativo (FN) \\
-  & \textbf{Negativo} & Falso Positivo (FP) & Verdadeiro Negativo (VN) \\
+\textbf{Positivo} & Verdadeiro Positivo (VP) & Falso Negativo (FN) \\
+\textbf{Negativo} & Falso Positivo (FP) & Verdadeiro Negativo (VN) \\
 \hline
 \end{tabular}
 \end{table}
@@ -219,7 +388,7 @@ A AUROC possui uma interpretação probabilística direta: ela corresponde à pr
 
 \section{Lógica Fuzzy e classificação gradual}
 
-A lógica fuzzy \cite{Zadeh1965} estende a lógica booleana ao permitir verdades parciais, com graus de pertinência $\mu(x) \in [0,1]$ --- de ``completamente falso'' (0) a ``completamente verdadeiro'' (1). Essa abordagem é ideal para modelar fenômenos ambíguos, como ironia em memes, onde o ódio varia de sutil a explícito, superando classificações binárias rígidas.
+A lógica fuzzy \cite{Zadeh1965} estende a lógica booleana ao permitir verdades parciais, com graus de pertinência $\mu(x) \in [0,1]$ de ``completamente falso'' (0) a ``completamente verdadeiro'' (1). Essa abordagem é ideal para modelar fenômenos ambíguos, como ironia em memes, onde o ódio varia de sutil a explícito, superando classificações binárias rígidas.
 
 \begin{figure}[h]
 \centering
@@ -306,11 +475,14 @@ A operação de \textit{defuzzificação} — o processo pelo qual um valor fuzz
 O banco de dados \textit{Hateful Memes}, disponibilizado pela Meta no \textit{Hateful Memes Challenge} de 2020, contém mais de 10.000 memes multimodais em inglês, projetados para desafiar modelos de classificação de discurso de ódio. Esses memes abordam alvos protegidos como etnia, raça, religião, gênero, orientação sexual e deficiência, com ódio definido como ``ataque direto ou indireto a pessoas com base em características protegidas, incluindo violência, desumanização ou chamadas para exclusão''.
 
 O conjunto é balanceado com as seguintes proporções:
-40\% memes de ódio multimodal: texto e imagem contribuem conjuntamente para o ódio;
-10\% memes de ódio unimodal: apenas uma modalidade (texto ou imagem) transmite o ódio;
-20\% confounders de texto benigno: texto alterado para tornar o meme não odioso, mas imagem sugere ofensa;
-20\% confounders de imagem benigna: imagem alterada para tornar o meme não odioso, mas texto sugere ofensa; e
-10\% memes não odiosos aleatórios.
+
+\begin{itemize}
+    \item \textbf{40\%} memes de ódio multimodal: texto e imagem contribuem conjuntamente;
+    \item \textbf{10\%} memes de ódio unimodal: apenas uma modalidade transmite o ódio;
+    \item \textbf{20\%} confundidores de texto benigno: texto alterado para tornar o meme não odioso;
+    \item \textbf{20\%} confundidores de imagem benigna: imagem alterada para tornar o meme não odioso;
+    \item \textbf{10\%} memes não odiosos aleatórios.
+\end{itemize}
 
 \begin{figure}[!htbp]
 	\centering
@@ -331,14 +503,6 @@ O trabalho realizado pelos pesquisadores da Meta AI \cite{ArticleHatefulMemesCha
 
 O modelo \textit{Hate-CLIPper}~\cite{kumar2022} supera as limitações das arquiteturas de fusão tardia, como do CLIP, que falham em capturar nuances semânticas em memes onde texto e imagem isoladamente são inofensivos, mas sua combinação é odiosa. Para isso, os autores introduzem um módulo de fusão intermediária explícita, promovendo interação cruzada profunda entre modalidades.
 
-Como mostrado na Figura~\ref{fig:hateclipper-arch}, a arquitetura processa o meme pelos encoders de imagem e texto do CLIP congelados para preservar as representações pré-treinadas e focar o aprendizado na fusão multimodal. As saídas são projetadas por camadas treináveis para um espaço comum de dimensionalidade reduzida. A principal inovação é a \textit{Feature Interaction Matrix} (FIM), gerada pelo produto externo entre vetores de representação textual e visual. Essa matriz revela co-ativações e correlações cruzadas entre dimensões modais, capturando alinhamentos semânticos sutis ignorados em fusões simples, como concatenação. A FIM é aprimorada por dois mecanismos complementares: \textit{align-fusion}, que alinha projeções independentes dos \textit{embeddings} globais do CLIP antes do produto externo; e \textit{cross-fusion}, que promove interação precoce via atenção ou projeções cruzadas.
-
-\begin{figure*}[!htbp]
-    \centering
-    \includegraphics[scale=0.45]{imagens/hateclipper.png}
-    \caption{Arquitetura do \textit{Hate-CLIPper}~\cite{kumar2022}.}
-    \label{fig:hateclipper-arch}
-\end{figure*}
-
 Por fim, a FIM é achatada em um vetor unidimensional e processada por camadas densas de pré-saída. Em desempenho, o modelo alcança AUROC de 85,8, superando o VisualBERT e CLIP \textit{zero-shot}.
 
+\subsection{\textit{RGCL}: Aprendizado contrastivo de grafos regionais}

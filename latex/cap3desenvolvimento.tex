@@ -12,50 +12,24 @@
 \section{Modelagem e arquitetura}
 % Apresente diagramas (UML, blocos ou fluxogramas) que mostram como os módulos se relacionam, identificando componentes críticos e como eles atendem ao problema e à metodologia.
 
-A arquitetura central desta pesquisa baseia-se no \textit{Contrastive Language-Image Pretraining} (CLIP), desenvolvido pela OpenAI~\cite{clip2021}, que emprega aprendizado contrastivo para alinhar representações visuais e textuais em um espaço latente compartilhado, tornando-o especialmente adequado para tarefas multimodais como a detecção de discurso de ódio em memes.
+A arquitetura central desta pesquisa baseia-se no modelo HateCLIPper, estruturado sobre os codificadores pré-treinados do CLIP. Esse modelo disponibiliza diferentes variantes, cada uma com um desempenho e custo computacional distintos. Para os experimentos desta pesquisa, adotou-se a variante \textbf{clip-vit-large-patch14}, que opera com resolução de entrada de 224$\times$224 pixels, contexto textual máximo de 77 \textit{tokens} e vocabulário de aproximadamente 49 mil entradas. Essa variante possui cerca de 428 milhões de parâmetros, o que impõe restrições práticas de escalabilidade, como limites ao tamanho dos textos processáveis e à resolução das imagens de entrada.
 
-Todo o desenvolvimento foi conduzido no Google Colab, plataforma baseada em \textit{Jupyter Notebook} que oferece ambiente de execução em nuvem com acesso gratuito a GPUs e TPUs~\cite{googlecolab}. O ambiente foi configurado com GPU NVIDIA Tesla T4, voltada à aceleração de inferência em modelos de aprendizado profundo, isto é, a geração de previsões a partir de um modelo já treinado, com suporte nativo ao CUDA (\textit{Compute Unified Device Architecture}) plataforma de computação paralela da NVIDIA que possibilita a exploração do processamento massivamente paralelo das GPUs.
+Todo o desenvolvimento foi conduzido no Google Colab, plataforma baseada em \textit{Jupyter Notebook} que oferece um ambiente de execução em nuvem com acesso a GPUs e TPUs~\cite{googlecolab}. O ambiente foi configurado com GPU NVIDIA Tesla T4, voltada à aceleração de tarefas de aprendizado profundo, com suporte nativo ao CUDA (\textit{Compute Unified Device Architecture}), plataforma de computação paralela da NVIDIA que viabiliza o processamento massivamente paralelo das GPUs.
 
-O CLIP disponibiliza diferentes variantes de modelo, cada uma com distintas trocas entre desempenho e custo computacional. Para os experimentos desta pesquisa, adotou-se o \textbf{ViT-L/14@336px}, que opera com resolução de entrada de 336×336 pixels, contexto textual máximo de 77 \textit{tokens} e vocabulário de aproximadamente 49 mil entradas. Esse modelo possui cerca de 428 milhões de parâmetros, métrica que quantifica sua complexidade computacional e capacidade de aprendizado. Essa escala impõe restrições práticas de escalabilidade, como limites ao tamanho dos textos processáveis e à resolução das imagens de entrada.
+O sistema recebe entradas multimodais que são processadas de forma independente por codificadores visuais e textuais. As representações resultantes passam por camadas de mapeamento linear, nas quais a dimensionalidade é reduzida e as características são normalizadas.
 
-O fluxo de processamento (\textit{pipeline}) adotado seguiu a seguinte sequência lógica:
+Para combinar as representações das duas modalidades, o módulo de fusão foi projetado de forma modular, contemplando quatro estratégias distintas: \textit{align} (multiplicação), \textit{concat} (concatenação), \textit{cross} (produto de matrizes ) e \textit{align\_concat} (combinação das duas primeiras). A saída do módulo de fusão é então direcionada a camadas densas (\textit{Pre-Output} e \textit{Output}), responsáveis por gerar as probabilidades de predição para o rótulo de ódio.
 
-\begin{enumerate}
-    \item \textbf{Codificador de Imagem (ViT-L/14@336px)}: extração de vetores de características a partir das imagens dos memes;
-    \item \textbf{Codificador de Texto}: geração de \textit{embeddings} para os \textit{prompts} de classificação (por exemplo, ``\textit{isso é ódio}'' vs.\ ``\textit{isso não é ódio}'');
-    \item \textbf{Cálculo de Similaridade}: aplicação do produto escalar entre os vetores de imagem e texto, seguida de função \textit{Softmax} para obtenção de probabilidades normalizadas por classe.
-\end{enumerate}
+Além da via multimodal principal, a arquitetura também extrai inferências unimodais. Essas saídas alimentam um componente adicional de Lógica Fuzzy, implementado com a biblioteca \textit{scikit-fuzzy}. O sistema Fuzzy emprega as probabilidades unimodais como antecedentes para categorizar o nível de ódio em cinco conjuntos linguísticos: \textit{Inofensivo}, \textit{Questionável}, \textit{Moderado}, \textit{Crítico} e \textit{Extremo}, acrescentando uma camada interpretável à predição final. A arquitetura também incorpora uma variação com RGCL (\textit{Representation Graph Contrastive Loss}), que introduz uma temperatura aprendível e uma função de perda contrastiva para otimizar o alinhamento entre as representações multimodais.
 
-No primeiro experimento, foi realizada uma classificação binária em modo \textit{zero-shot}, utilizando os \textit{prompts} ``\textit{isso é ódio}'' e ``\textit{isso não é ódio}'' como rótulos textuais. Nessa abordagem, o modelo realiza predições sem ter sido previamente treinado para a tarefa, servindo como linha de base (\textit{baseline}) para os experimentos subsequentes. Os textos são tokenizados, ou seja, convertidos em sequências numéricas compatíveis com o modelo, e codificados em vetores normalizados que descrevem semanticamente cada \textit{prompt}. O mesmo processo ocorre com as imagens, que são pré-processadas e codificadas em vetores de características no mesmo espaço semântico. As representações textuais e visuais são então comparadas via função \textit{Softmax}, produzindo probabilidades normalizadas para cada classe.
-
-\subsection{Arquitetura Híbrida Multimodal}
-
-Além da abordagem \textit{zero-shot}, foi proposta uma arquitetura de Classificador Multimodal Híbrido que combina aprendizado profundo e lógica difusa (\textit{fuzzy}). Seus principais componentes são:
-
-\begin{enumerate}
-    \item \textbf{Extração de Características (Backbone)}: para texto, utilizou-se o SentenceTransformer (modelo \texttt{all-mpnet-base-v2}) para geração de vetores semânticos; para imagem, empregou-se a ResNet18 em conjunto com o CLIP (ViT-L/14@336px) para capturar contextos visuais e a relação linguagem-imagem.
-    
-    \item \textbf{Módulo de Agrupamento (Clustering)}: implementação do algoritmo DBSCAN com métrica de similaridade de cosseno para identificar agrupamentos de temas recorrentes em textos e imagens, gerando rótulos de contexto auxiliares.
-    
-    \item \textbf{Camada de Fusão}: uma rede neural densa (MultimodalModel) que concatena os \textit{embeddings} de imagem, texto e os índices de clusters, utilizando camadas de BatchNorm1d e Dropout para regularização.
-    
-    \item \textbf{Tomada de Decisão Fuzzy}: os valores de probabilidade de saída são processados por um sistema de inferência \textit{fuzzy} para categorizar os memes em níveis de agressividade.
-\end{enumerate}
+No primeiro experimento, realizou-se uma classificação binária em modo \textit{zero-shot}, utilizando os \textit{prompts} ``\textit{isso é ódio}'' e ``\textit{isso não é ódio}'' como rótulos textuais. Nessa abordagem, o modelo realiza predições sem ter sido previamente ajustado para a tarefa, servindo como linha de base para os experimentos seguintes. Os textos são \textit{tokenizados} e codificados em vetores normalizados que descrevem semanticamente cada \textit{prompt}. O mesmo processo é aplicado às imagens, que são pré-processadas e codificadas no mesmo espaço semântico. As representações textuais e visuais são então comparadas por meio da função \textit{Softmax}, produzindo probabilidades normalizadas para cada classe.
 
 \section{Coleta e tratamento de dados}
 % Explique como os dados foram coletados (logs, sensores, APIs), armazenados e preparados (limpeza, normalização, anonimização). Registre ferramentas usadas no pré-processamento.
 
 O dataset utilizado nesta pesquisa é o Hateful Memes, disponibilizado pela Meta AI no âmbito do Hateful Memes Challenge. O conjunto é composto por 12.140 imagens de memes em inglês, balanceadas entre conteúdo odioso e benigno, cobrindo temas como gênero, raça, religião, orientação sexual e classe social.
 
-Uma característica crítica do dataset é a presença de confundidores benignos (\textit{benign confounders}): versões alternativas de cada meme odioso em que uma alteração mínima, na imagem ou no texto, é suficiente para inverter a classificação. Esse mecanismo garante que o modelo seja genuinamente multimodal, pois memes idênticos em uma das modalidades podem ter significados opostos dependendo da outra. A composição do dataset reflete essa complexidade:
-
-\begin{itemize}
-    \item 40\% memes de ódio multimodal: texto e imagem contribuem conjuntamente para a mensagem de ódio;
-    \item 20\% memes com confundidor de texto benigno: texto alterado para remover o ódio, mas a imagem ainda pode sugerir conteúdo ofensivo;
-    \item 20\% memes com confundidor de imagem benigno: imagem alterada, mas o texto ainda pode sugerir conteúdo ofensivo;
-    \item 10\% memes de ódio unimodal: apenas uma modalidade é suficiente para transmitir o discurso de ódio;
-    \item 10\% memes não odiosos aleatórios.
-\end{itemize}
+Uma característica crítica do dataset é a presença de confundidores benignos (\textit{benign confounders}): versões alternativas de cada meme odioso em que uma alteração mínima, na imagem ou no texto, é suficiente para inverter a classificação. Esse mecanismo garante que o modelo seja genuinamente multimodal, pois memes idênticos em uma das modalidades podem ter significados opostos dependendo da outra.
 
 O dataset foi originalmente disponibilizado em hatefulmemeschallenge.com, porém, no momento desta pesquisa, o domínio encontrava-se indisponível, sendo obtido pela plataforma Kaggle. Após extração do arquivo ZIP, verificou-se a seguinte estrutura:
 
