@@ -207,12 +207,93 @@ A maioria dos classificadores modernos baseados em aprendizado profundo não pro
 \end{equation}
  
 A \textit{Curva ROC} (\textit{Receiver Operating Characteristic}) é construída variando $\tau$ continuamente de 1 a 0 e plotando os pares (TFP, TVP) resultantes em um espaço bidimensional \cite{Fawcett2006}. O ponto $(0, 1)$ representa o classificador perfeito, que detecta todos os positivos sem nenhum falso alarme; a diagonal principal corresponde ao desempenho de um classificador aleatório. A \textbf{AUROC} (\textit{Area Under the ROC Curve}) resume a curva ROC em um único escalar: a área sob essa curva, com valor 1,0 para o classificador perfeito e 0,5 para o aleatório \cite{bradley1997}.
- 
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{imagens/roc_auroc.png}
+    \caption{Exemplo de curva ROC e área sob a curva (AUROC).}
+    \label{fig:roc-auroc}
+\end{figure}
+
 A AUROC possui uma interpretação probabilística direta: ela corresponde à probabilidade de que, dado um par composto por um exemplo positivo e um exemplo negativo escolhidos aleatoriamente, o modelo atribua escore mais alto ao exemplo positivo \cite{Fawcett2006}. Essa propriedade torna a AUROC especialmente adequada para conjuntos de dados desbalanceados: como a métrica é calculada sobre toda a curva ROC — e não em um único limiar —, ela avalia o poder discriminativo do modelo independentemente da distribuição das classes. Em um conjunto com forte desbalanceamento, a escolha de um limiar padrão de 0,5 pode ser subótima, e a AUROC captura o desempenho relativo do modelo de forma invariante a essa escolha \cite{he2009}. Por essas razões, o \textit{Hateful Memes Challenge} adota a AUROC como métrica primária de avaliação \cite{ArticleHatefulMemesChallenge2020}.
 
 \section{Lógica Fuzzy e classificação gradual}
 
 A lógica fuzzy \cite{Zadeh1965} estende a lógica booleana ao permitir verdades parciais, com graus de pertinência $\mu(x) \in [0,1]$ --- de ``completamente falso'' (0) a ``completamente verdadeiro'' (1). Essa abordagem é ideal para modelar fenômenos ambíguos, como ironia em memes, onde o ódio varia de sutil a explícito, superando classificações binárias rígidas.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=13cm, height=6cm,
+    xmin=0, xmax=1,
+    ymin=0, ymax=1.35,
+    xlabel={Variável $x$},
+    ylabel={Grau de pertinência $\mu(x)$},
+    ytick={0, 0.5, 1},
+    yticklabels={0, 0{,}5, 1},
+    xtick={0, 0.2, 0.4, 0.6, 0.8, 1.0},
+    xticklabels={0, 0{,}2, 0{,}4, 0{,}6, 0{,}8, 1{,}0},
+    axis lines=left,
+    tick align=outside,
+    enlargelimits=false,
+    clip=false,
+    grid=both,
+    grid style={dotted, gray!30},
+]
+
+\addplot[cyan!70!blue, thick] coordinates {
+    (0,1) (0.15,1) (0.25,0)
+};
+
+\addplot[green!60!black, thick] coordinates {
+    (0.15,0) (0.30,1) (0.45,0)
+};
+
+\addplot[gray!70!black, thick] coordinates {
+    (0.35,0) (0.50,1) (0.65,0)
+};
+
+\addplot[orange!90!black, thick] coordinates {
+    (0.55,0) (0.70,1) (0.85,0)
+};
+
+\addplot[red!80!black, thick] coordinates {
+    (0.75,0) (0.85,1) (1.0,1)
+};
+
+\node[fill=cyan!20, draw=cyan!70!blue, rounded corners,
+      font=\scriptsize\bfseries, inner sep=3pt]
+    at (axis cs:0.08, 1.18) {Muito Baixo};
+
+\node[fill=green!15, draw=green!50, rounded corners,
+      font=\scriptsize\bfseries, inner sep=3pt]
+    at (axis cs:0.30, 1.18) {Baixo};
+
+\node[fill=gray!20, draw=gray!60, rounded corners,
+      font=\scriptsize\bfseries, inner sep=3pt]
+    at (axis cs:0.50, 1.18) {Médio};
+
+\node[fill=orange!20, draw=orange!60, rounded corners,
+      font=\scriptsize\bfseries, inner sep=3pt]
+    at (axis cs:0.70, 1.18) {Alto};
+
+\node[fill=red!15, draw=red!50, rounded corners,
+      font=\scriptsize\bfseries, inner sep=3pt]
+    at (axis cs:0.91, 1.18) {Muito Alto};
+
+\addplot[gray!50, dashed, thin] coordinates {(0.08,1)(0.08,1.12)};
+\addplot[gray!50, dashed, thin] coordinates {(0.30,1)(0.30,1.12)};
+\addplot[gray!50, dashed, thin] coordinates {(0.50,1)(0.50,1.12)};
+\addplot[gray!50, dashed, thin] coordinates {(0.70,1)(0.70,1.12)};
+\addplot[gray!50, dashed, thin] coordinates {(0.91,1)(0.91,1.12)};
+
+\end{axis}
+\end{tikzpicture}
+\caption{Exemplo de funções de pertinência para uma variável 
+         genérica com cinco termos fuzzy.}
+\label{fig:fuzzy-variavel}
+\end{figure}
 
 A análise das métricas de avaliação anteriores revela uma tensão fundamental subjacente à tarefa de detecção de discurso de ódio: a realidade do fenômeno é graduada e contínua, mas os sistemas de moderação exigem decisões binárias. Essa tensão encontra ressonância na Lógica Fuzzy, proposta por Zadeh \cite{Zadeh1965}, que formaliza a representação de conceitos com fronteiras imprecisas por meio de \textit{funções de pertinência} que mapeiam elementos a graus no intervalo $[0, 1]$, em contraste com a lógica clássica, que admite apenas os valores 0 ou 1.
  
