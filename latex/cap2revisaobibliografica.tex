@@ -32,20 +32,16 @@ Nesse cenário, a aplicação de técnicas de aprendizado de máquina tornou-se 
  
 O aprendizado de máquina (\textit{Machine Learning}, ML) é uma subárea da inteligência
 artificial que desenvolve algoritmos capazes de aprender padrões a partir de dados, sem
-serem explicitamente programados para cada tarefa \cite{mitchell1997}. Em vez de seguir
-regras fixas definidas por um programador, esses algoritmos ajustam seus parâmetros
-internos com base em exemplos, generalizando o conhecimento adquirido para dados
+serem explicitamente programados para cada tarefa \cite{mitchell1997}, ajustando seus parâmetros
+internos com base em exemplos e generalizando o conhecimento adquirido para dados
 não vistos.
  
 As abordagens de aprendizado de máquina são geralmente classificadas em três paradigmas
 principais. No \textbf{aprendizado supervisionado}, o modelo é treinado com pares de
-entrada e saída rotulados — como memes e seus respectivos rótulos ``odioso'' ou ``não
-odioso'' —, aprendendo a mapear entradas a saídas corretas. No \textbf{aprendizado não
+entrada e saída rotulados, aprendendo a mapear entradas e saídas corretas. No \textbf{aprendizado não
 supervisionado}, o modelo recebe apenas os dados de entrada, sem rótulos, e busca
-identificar estruturas latentes, como agrupamentos ou padrões de co-ocorrência. Já no
-\textbf{aprendizado por reforço}, um agente aprende a tomar decisões em um ambiente por
-meio de recompensas e penalidades, sem supervisão direta. Este trabalho concentra-se no
-aprendizado supervisionado, paradigma dominante nas tarefas de classificação de conteúdo.
+identificar e agrupar padrões. Já no \textbf{aprendizado por reforço}, um agente aprende a tomar decisões em um ambiente por
+meio de recompensas e penalidades, sem supervisão direta.
  
 Um conceito central em aprendizado supervisionado é a divisão dos dados em conjuntos de
 \textbf{treinamento}, \textbf{validação} e \textbf{teste}. O modelo é ajustado sobre os
@@ -60,11 +56,10 @@ generalização \cite{goodfellow2016}.
  
 As redes neurais artificiais são modelos computacionais inspirados, de forma abstrata, na
 estrutura do cérebro humano \cite{rosenblatt1958}. A unidade fundamental é o
-\textbf{neurônio artificial} (ou perceptron), que recebe um conjunto de entradas
-$x_1, x_2, \ldots, x_n$, pondera cada uma por um peso $w_i$, soma os resultados com um
-viés $b$ e aplica uma \textbf{função de ativação} $f$ para produzir uma saída
+\textbf{neurônio artificial} (ou perceptron), que recebe um conjunto de entradas, pondera cada uma por um peso, soma os resultados com um
+viés e aplica uma \textbf{função de ativação} para produzir uma saída.
  
-Funções de ativação como a ReLU (\textit{Rectified Linear Unit}), a sigmoide e a
+Funções de ativação, a sigmoide e a
 tangente hiperbólica introduzem não-linearidade ao modelo, permitindo que ele aprenda
 relações complexas nos dados. Isoladamente, um único neurônio é capaz apenas de separar
 classes linearmente. Para modelar padrões não lineares, os neurônios são organizados em
@@ -72,9 +67,9 @@ classes linearmente. Para modelar padrões não lineares, os neurônios são org
 saída. Essa estrutura em camadas é denominada \textit{Multilayer Perceptron} (MLP) ou
 rede neural de alimentação direta (\textit{feedforward}).
  
-O aprendizado ocorre pelo ajuste dos pesos $w_i$ e vieses $b$ por meio do algoritmo de
-\textbf{retropropagação} (\textit{backpropagation}): dado um erro entre a saída prevista
-e a saída esperada — calculado por uma função de perda como a entropia cruzada —, o
+O aprendizado ocorre pelo ajuste dos pesos e vieses por meio do algoritmo de
+\textbf{retropropagação} (\textit{backpropagation}), ou seja, dado um erro entre a saída prevista
+e a saída esperada, calculado por uma função de perda como a entropia cruzada, o
 gradiente desse erro em relação a cada parâmetro é computado pela regra da cadeia e
 utilizado pelo \textbf{gradiente descendente} para atualizar os pesos na direção que
 reduz o erro \cite{rumelhart1986}.
@@ -82,16 +77,12 @@ reduz o erro \cite{rumelhart1986}.
 \subsection{Aprendizado Profundo}
  
 O aprendizado profundo (\textit{Deep Learning}) é uma subárea do aprendizado de máquina
-que utiliza redes neurais com muitas camadas ocultas — daí o adjetivo ``profundo''
-\cite{goodfellow2016}. Cada camada aprende representações progressivamente mais abstratas
-dos dados: nas primeiras camadas de uma rede de visão computacional, por exemplo,
-detectam-se bordas e texturas simples; nas camadas mais profundas, formas e conceitos
-semânticos complexos.
+que utiliza redes neurais com muitas camadas ocultas \cite{goodfellow2016}. Cada camada aprende representações progressivamente mais abstratas dos dados.
  
 Essa capacidade de aprender representações hierárquicas automaticamente diferencia o
 aprendizado profundo das abordagens tradicionais de aprendizado de máquina, que dependiam
 de características extraídas manualmente por especialistas (\textit{feature engineering}).
-Em dados não estruturados de alta dimensionalidade --- como imagens, áudio e texto ---,
+Em dados não estruturados de alta dimensionalidade,
 onde o espaço de características relevantes é imenso e difícil de especificar
 manualmente, o aprendizado profundo demonstrou ganhos expressivos \cite{lecun2015}.
  
@@ -100,7 +91,7 @@ O treinamento de redes profundas apresenta desafios próprios, entre os quais se
 tendem a se tornar exponencialmente pequenos à medida que se propagam pelas camadas mais
 iniciais, impedindo que essas camadas aprendam de forma eficaz \cite{goodfellow2016}.
 Técnicas modernas como normalização de camada (\textit{layer normalization}), conexões
-residuais (\textit{skip connections}) e funções de ativação como a ReLU mitigam esse
+residuais (\textit{skip connections}) e funções de ativação mitigam esse
 problema, viabilizando o treinamento de arquiteturas com dezenas ou centenas de camadas.
 
 \subsection{Redes Neurais Convolucionais}
@@ -108,49 +99,39 @@ problema, viabilizando o treinamento de arquiteturas com dezenas ou centenas de 
 As Redes Neurais Convolucionais (\textit{Convolutional Neural Networks}, CNNs) são uma
 classe de arquiteturas de aprendizado profundo projetadas para processar dados com
 estrutura espacial, como imagens \cite{lecun1998}. Em vez de conectar cada neurônio a
-todos os neurônios da camada anterior --- o que seria computacionalmente proibitivo para
-imagens de alta resolução ---, as CNNs exploram a \textbf{localidade espacial}: pequenos
+todos os neurônios da camada anterior, as CNNs exploram a \textbf{localidade espacial}, ou seja, pequenos
 filtros convolucionais deslizam sobre a entrada, detectando padrões locais (bordas,
 texturas, formas) de forma eficiente e com compartilhamento de parâmetros.
  
 Uma CNN típica é composta por camadas alternadas de \textbf{convolução} e
 \textbf{pooling}. As camadas de convolução aplicam múltiplos filtros aprendíveis,
 produzindo mapas de características que capturam a presença de padrões específicos em cada
-região da imagem. As camadas de pooling reduzem a dimensionalidade espacial ---
-tipicamente tomando o valor máximo em regiões locais (\textit{max pooling}) ---, conferindo
+região da imagem. As camadas de pooling reduzem a dimensionalidade espacial, conferindo
 invariância a pequenas translações e reduzindo o custo computacional das camadas
 subsequentes. Após as camadas convolucionais, camadas densas (\textit{fully connected})
 integram as características extraídas para produzir a predição final.
- 
-O marco que consolidou as CNNs como padrão em visão computacional foi a AlexNet
-\cite{krizhevsky2012}, que venceu o desafio ImageNet em 2012 com ganhos expressivos
-sobre abordagens tradicionais. Arquiteturas subsequentes como VGG \cite{simonyan2014},
-Inception \cite{szegedy2015} e ResNet \cite{he2016} aprofundaram progressivamente as
-redes e refinaram técnicas de treinamento, estabelecendo representações visuais
-pré-treinadas que podem ser transferidas para outras tarefas com dados limitados.
 
 \subsection{Redes Neurais Recorrentes}
  
 As Redes Neurais Recorrentes (\textit{Recurrent Neural Networks}, RNNs) são arquiteturas
 projetadas para processar dados sequenciais, como texto, áudio e séries temporais
 \cite{elman1990}. Diferentemente das redes \textit{feedforward}, as RNNs mantêm um
-\textbf{estado oculto} que é atualizado a cada passo da sequência: ao processar o
+\textbf{estado oculto} que é atualizado a cada passo da sequência, ao processar o
 $t$-ésimo elemento, o modelo considera tanto a entrada atual $x_t$ quanto o estado oculto
 $h_{t-1}$ produzido pelo passo anterior, propagando informação ao longo do tempo.
  
 Apesar dessa capacidade de modelagem sequencial, as RNNs clássicas apresentam
-dificuldades em capturar \textbf{dependências de longo alcance} --- relações entre
+dificuldades em capturar \textbf{dependências de longo alcance}, relações entre
 elementos distantes na sequência. A razão é que, durante a retropropagação ao longo do
 tempo (\textit{backpropagation through time}), os gradientes são multiplicados
-repetidamente pela mesma matriz de pesos, fazendo com que diminuam (ou explodam)
+repetidamente pela mesma matriz de pesos, fazendo com que diminuam
 exponencialmente para sequências longas \cite{hochreiter1991}.
  
 A arquitetura \textit{Long Short-Term Memory} (LSTM) \cite{hochreiter1997} foi proposta
-para mitigar esse problema, introduzindo \textbf{mecanismos de porta} (\textit{gates})
---- de entrada, esquecimento e saída --- que controlam seletivamente quais informações são
+para mitigar esse problema, introduzindo \textbf{mecanismos de porta} (\textit{gates}) que controlam seletivamente quais informações são
 retidas, descartadas ou transmitidas no estado da célula. Embora as LSTMs tenham
 representado um avanço significativo, ambas as arquiteturas permanecem inerentemente
-sequenciais: cada passo depende do anterior, o que limita a paralelização durante o
+sequenciais, cada passo depende do anterior, o que limita a paralelização durante o
 treinamento e dificulta a captura de contextos muito longos. Essa limitação motivou o
 desenvolvimento de uma abordagem radicalmente diferente, baseada exclusivamente em
 atenção: o \textit{Transformer}.
@@ -366,14 +347,7 @@ F_1 = 2 \cdot \frac{\text{Precisão} \times \text{Revocação}}{\text{Precisão}
 \label{eq:f1}
 \end{equation}
  
-A média harmônica penaliza desproporções acentuadas entre os dois termos: para que o F1 seja alto, ambas as métricas devem ser simultaneamente elevadas. Isso torna o F1-score mais robusto do que a acurácia em cenários desbalanceados e é amplamente utilizado como métrica primária em benchmarks de detecção de discurso de ódio \cite{ArticleHatefulMemesChallenge2020}. Todavia, o F1-score ainda depende de um limiar de decisão fixo aplicado à saída probabilística do modelo, o que introduz uma limitação abordada pela métrica discutida a seguir.
-
-A maioria dos classificadores modernos baseados em aprendizado profundo não produz diretamente rótulos binários, mas sim um escore de confiança contínuo — tipicamente uma probabilidade entre 0 e 1 — que é binarizado por meio de um limiar de decisão $\tau$: exemplos com escore acima de $\tau$ são classificados como positivos, e os demais, como negativos. A escolha desse limiar afeta diretamente o equilíbrio entre a taxa de verdadeiros positivos (TVP, ou revocação) e a taxa de falsos positivos (TFP), definidas como:
- 
-\begin{equation}
-\text{TVP} = \frac{VP}{VP + FN}, \qquad \text{TFP} = \frac{FP}{FP + VN}
-\label{eq:tpr_fpr}
-\end{equation}
+A média harmônica penaliza desproporções acentuadas entre os dois termos: para que o F1 seja alto, ambas as métricas devem ser simultaneamente elevadas. Isso torna o F1-score mais robusto do que a acurácia em cenários desbalanceados e é amplamente utilizado como métrica primária em benchmarks de detecção de discurso de ódio \cite{ArticleHatefulMemesChallenge2020}.
  
 A \textit{Curva ROC} (\textit{Receiver Operating Characteristic}) é construída variando $\tau$ continuamente de 1 a 0 e plotando os pares (TFP, TVP) resultantes em um espaço bidimensional \cite{Fawcett2006}. O ponto $(0, 1)$ representa o classificador perfeito, que detecta todos os positivos sem nenhum falso alarme; a diagonal principal corresponde ao desempenho de um classificador aleatório. A \textbf{AUROC} (\textit{Area Under the ROC Curve}) resume a curva ROC em um único escalar: a área sob essa curva, com valor 1,0 para o classificador perfeito e 0,5 para o aleatório \cite{bradley1997}.
 
@@ -463,12 +437,10 @@ A lógica fuzzy \cite{Zadeh1965} estende a lógica booleana ao permitir verdades
          genérica com cinco termos fuzzy.}
 \label{fig:fuzzy-variavel}
 \end{figure}
+ 
+Os modelos de aprendizado profundo capturam implicitamente essa gradação ao produzirem escores probabilísticos contínuos, que funcionam como funções de pertinência: um escore próximo de 1 indica alta pertinência, enquanto valores intermediários refletem incerteza semântica.
 
-A análise das métricas de avaliação anteriores revela uma tensão fundamental subjacente à tarefa de detecção de discurso de ódio: a realidade do fenômeno é graduada e contínua, mas os sistemas de moderação exigem decisões binárias. Essa tensão encontra ressonância na Lógica Fuzzy, proposta por Zadeh \cite{Zadeh1965}, que formaliza a representação de conceitos com fronteiras imprecisas por meio de \textit{funções de pertinência} que mapeiam elementos a graus no intervalo $[0, 1]$, em contraste com a lógica clássica, que admite apenas os valores 0 ou 1.
- 
-No contexto dos memes, a própria natureza do discurso de ódio não é binária: um conteúdo pode ser parcialmente odioso, depender fortemente do contexto cultural do receptor, ou situar-se em uma zona de ambiguidade entre ironia inofensiva e hostilidade velada \cite{Ferrari2022}. Os modelos de aprendizado profundo capturam implicitamente essa gradação ao produzirem escores probabilísticos contínuos, que funcionam como funções de pertinência à classe "odioso": um escore próximo de 1 indica alta pertinência, enquanto valores intermediários refletem incerteza semântica.
- 
-A operação de \textit{defuzzificação} — o processo pelo qual um valor fuzzy contínuo é convertido em uma decisão crisp binária — corresponde, nesse enquadramento, à aplicação do limiar $\tau$ sobre o escore do classificador \cite{Klir1995}. A escolha de $\tau$ não é neutra: um limiar mais baixo prioriza revocação, aceitando mais falsos positivos para não deixar conteúdo odioso passar; um limiar mais alto prioriza precisão, reduzindo falsos alarmes ao custo de menor sensibilidade. A AUROC, ao avaliar o desempenho sobre todos os possíveis valores de $\tau$, é uma métrica coerente com a perspectiva fuzzy: ela não compromete o modelo com uma única fronteira de pertinência, mas mede sua qualidade discriminativa ao longo de todo o espectro de decisão. Assim, a adoção da AUROC como métrica primária pode ser interpretada como um reconhecimento implícito da natureza inerentemente fuzzy do conceito de discurso de ódio.
+explicar \textit{defuzzificação} \cite{Klir1995}.
 
 \section{Banco de dados \textit{Hateful Memes}}
 
@@ -501,8 +473,8 @@ O trabalho realizado pelos pesquisadores da Meta AI \cite{ArticleHatefulMemesCha
 
 \subsection{\textit{Hate-CLIPper}: Classificação multimodal de memes odiosos com interação multimodal explícita das características CLIP}
 
-O modelo \textit{Hate-CLIPper}~\cite{kumar2022} supera as limitações das arquiteturas de fusão tardia, como do CLIP, que falham em capturar nuances semânticas em memes onde texto e imagem isoladamente são inofensivos, mas sua combinação é odiosa. Para isso, os autores introduzem um módulo de fusão intermediária explícita, promovendo interação cruzada profunda entre modalidades.
-
-Por fim, a FIM é achatada em um vetor unidimensional e processada por camadas densas de pré-saída. Em desempenho, o modelo alcança AUROC de 85,8, superando o VisualBERT e CLIP \textit{zero-shot}.
+O modelo \textit{Hate-CLIPper}~\cite{kumar2022} supera as limitações das arquiteturas de fusão tardia, como do CLIP, que falham em capturar nuances semânticas em memes onde texto e imagem isoladamente são inofensivos, mas sua combinação é odiosa. Para isso, os autores introduzem um módulo de fusão intermediária explícita, promovendo interação cruzada profunda entre modalidades. Em desempenho, o modelo alcança AUROC de 85,8, superando o VisualBERT e CLIP \textit{zero-shot}.
 
 \subsection{\textit{RGCL}: Aprendizado contrastivo de grafos regionais}
+
+\subsection{\textit{IntMeme}: Utilizando grandes modelos multimodais para a detecção de memes de ódio com decisões explicáveis}
