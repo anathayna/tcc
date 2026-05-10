@@ -50,43 +50,64 @@ validação e sua qualidade final é medida no conjunto de teste, mantido isolad
 todo o desenvolvimento para garantir uma estimativa imparcial da capacidade de
 generalização \cite{goodfellow2016}.
 
+Embora existam diversos algoritmos de aprendizado de máquina clássicos, tarefas que envolvem
+dados de alta dimensionalidade, como imagens e texto, demandam modelos capazes de extrair
+representações abstratas automaticamente. Nesse contexto, as \textbf{redes neurais
+artificiais} emergem como uma das abordagens mais expressivas.
+
 
 \subsection{Redes Neurais Artificiais}
 
- 
 As redes neurais artificiais são modelos computacionais inspirados, de forma abstrata, na
-estrutura do cérebro humano \cite{rosenblatt1958}. A unidade fundamental é o
-\textbf{neurônio artificial} (ou perceptron), que recebe um conjunto de entradas, pondera cada uma por um peso, soma os resultados com um
-viés e aplica uma \textbf{função de ativação} para produzir uma saída.
+estrutura e no funcionamento do sistema nervoso biológico \cite{rosenblatt1958}. A unidade fundamental é o
+\textbf{neurônio artificial} (ou \textit{perceptron}), que recebe um conjunto de entradas, pondera cada uma por um peso, soma os resultados com um
+viés e aplica uma \textbf{função de ativação} para produzir uma saída, conforme ilustrado na Figura
+\ref{fig:perceptron}.
 
 \begin{figure*}[!htbp]
     \centering
     \includegraphics[scale=0.25]{imagens/perceptron.png}
-    \caption{Arquitetura do \textit{Perceptron} \cite{rosenblatt1958}.}
+    \caption{Estrutura de um neurônio artificial (\textit{perceptron})\cite{perceptron}.}
     \label{fig:perceptron}
 \end{figure*}
- 
-Funções de ativação, a sigmoide e a
-tangente hiperbólica introduzem não-linearidade ao modelo, permitindo que ele aprenda
-relações complexas nos dados. Isoladamente, um único neurônio é capaz apenas de separar
-classes linearmente. Para modelar padrões não lineares, os neurônios são organizados em
-\textbf{camadas}: uma camada de entrada, uma ou mais camadas ocultas e uma camada de
-saída. Essa estrutura em camadas é denominada \textit{Multilayer Perceptron} (MLP) ou
-rede neural de alimentação direta (\textit{feedforward}).
+
+Isoladamente, um único neurônio consegue apenas separar classes linearmente separáveis.
+Para modelar padrões não lineares e de maior complexidade, os neurônios são organizados
+em \textbf{camadas}: uma camada de entrada, responsável por receber os dados brutos; uma
+ou mais \textbf{camadas ocultas}, que extraem representações intermediárias; e uma
+\textbf{camada de saída}, que produz a predição final. Essa arquitetura em camadas é
+denominada \textit{Multilayer Perceptron} (MLP) ou rede neural de alimentação direta
+(\textit{feedforward neural network}), na qual o sinal se propaga exclusivamente da
+entrada para a saída, sem realimentação \cite{goodfellow2016}.
  
 O aprendizado ocorre pelo ajuste dos pesos e vieses por meio do algoritmo de
-\textbf{retropropagação} (\textit{backpropagation}), ou seja, dado um erro entre a saída prevista
-e a saída esperada, calculado por uma função de perda como a entropia cruzada, o
-gradiente desse erro em relação a cada parâmetro é computado pela regra da cadeia e
-utilizado pelo \textbf{gradiente descendente} para atualizar os pesos na direção que
-reduz o erro \cite{rumelhart1986}.
+\textbf{retropropagação} (\textit{backpropagation}). A cada iteração, a diferença entre a saída prevista e a saída esperada é quantificada por
+uma \textbf{função de perda}, o gradiente dessa função em relação a cada
+parâmetro é calculado pela regra da cadeia e utilizado pelo algoritmo de
+\textbf{gradiente descendente} para atualizar os pesos na direção que minimiza o erro
+\cite{rumelhart1986}.
 
-\begin{figure*}[!htbp]
+\begin{figure}[!htbp]
     \centering
     \includegraphics[scale=0.4]{imagens/artificial-neural-network.png}
-    \caption{Arquitetura da Rede Neural Artificial \cite{rosenblatt1958}.}
+    \caption{Arquitetura de uma rede neural \textit{feedforward} com duas camadas
+    ocultas. As setas pretas indicam o fluxo \textit{feed forward},
+    da camada de entrada até a camada de saída. As setas vermelhas ilustram o processo
+    de retropropagação (\textit{backpropagation}), pelo qual o gradiente do erro é
+    propagado da saída em direção às camadas anteriores para atualização dos pesos.
+    Adaptado de \cite{geeksforgeeks2023ann}.}
     \label{fig:artificial-neural-network}
-\end{figure*}
+\end{figure}
+
+Embora redes neurais sejam robustas, seu desempenho em tarefas de alta complexidade,
+como reconhecimento de imagens e processamento de linguagem natural,
+é limitado quando aplicadas diretamente a dados de alta
+dimensão. O aumento no número de camadas e neurônios, necessário
+para capturar tais padrões, torna o treinamento instável e
+computacionalmente inviável com as técnicas da época
+\cite{goodfellow2016}. Esses desafios motivaram o desenvolvimento de
+arquiteturas mais profundas e especializadas, consolidadas sob o termo
+\textbf{aprendizado profundo} (\textit{deep learning}).
 
 \subsection{Aprendizado Profundo}
  
