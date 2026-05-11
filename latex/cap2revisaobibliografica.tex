@@ -124,6 +124,19 @@ estrutura espacial, como imagens \cite{lecun1998}. Em vez de conectar cada neur�
 todos os neurônios da camada anterior, as CNNs exploram a \textbf{localidade espacial}, por meio de pequenos
 filtros convolucionais que deslizam sobre a entrada, detectando padrões locais de forma eficiente e com compartilhamento de parâmetros.
 
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[scale=0.35]{imagens/CNNs.png}
+    \caption{Arquitetura de uma Rede Neural Convolucional aplicada à classificação de
+    imagens \cite{swapna2020cnn}. A partir de uma imagem de entrada (zebra), um kernel deslizante extrai
+    padrões locais ao longo de três blocos de Convolução + ReLU intercalados por
+    camadas de \textit{Pooling}, formando mapas de características hierárquicos.
+    A saída desse estágio é linearizada por uma camada \textit{Flatten} e processada
+    por camadas totalmente conectadas, culminando em uma distribuição de probabilidade, 70\% de probabilidade para a classe
+    ``Zebra'', 20\% para ``Horse'' e 10\% para ``Dog''.}
+    \label{fig:cnn}
+\end{figure*}
+
 A arquitetura de uma CNN típica, ilustrada na Figura~\ref{fig:cnn}, organiza-se em
 dois grandes blocos funcionais: \textbf{extração de características} e
 \textbf{classificação}. No bloco de extração, camadas alternadas de
@@ -145,19 +158,6 @@ as características extraídas e produzem um vetor de pontuações (\textit{logi
 para cada classe. Por fim, a função \textit{Softmax} converte esse vetor em uma
 \textbf{distribuição de probabilidade}, permitindo interpretar a saída do modelo como
 a probabilidade estimada de a entrada pertencer a cada classe.
-
-\begin{figure*}[!htbp]
-    \centering
-    \includegraphics[scale=0.35]{imagens/CNNs.png}
-    \caption{Arquitetura de uma Rede Neural Convolucional aplicada à classificação de
-    imagens \cite{swapna2020cnn}. A partir de uma imagem de entrada (zebra), um kernel deslizante extrai
-    padrões locais ao longo de três blocos de Convolução + ReLU intercalados por
-    camadas de \textit{Pooling}, formando mapas de características hierárquicos.
-    A saída desse estágio é linearizada por uma camada \textit{Flatten} e processada
-    por camadas totalmente conectadas, culminando em uma distribuição de probabilidade, 70\% de probabilidade para a classe
-    ``Zebra'', 20\% para ``Horse'' e 10\% para ``Dog''.}
-    \label{fig:cnn}
-\end{figure*}
 
 Embora as CNNs sejam altamente eficazes no processamento de dados com 
 estrutura espacial, elas não foram projetadas para lidar com dados 
@@ -331,32 +331,6 @@ Durante o treinamento, o \textit{framework} aprende a mapear imagens e textos pa
 A Figura~\ref{fig:clip-pipeline} ilustra o pipeline do CLIP em duas fases. Na \textbf{Fase 1 (Pré-treinamento Contrastivo)}, pares de imagem e texto são processados simultaneamente: as imagens passam pelo \textit{Image Encoder}, que as converte em vetores de representação, enquanto as descrições textuais associadas passam pelo \textit{Text Encoder}, produzindo vetores no mesmo espaço latente (também chamados de \textit{embeddings}). O treinamento otimiza a similaridade cosseno dos pares corretos, maximizando-a na diagonal da matriz de similaridade, enquanto penaliza os pares incorretos fora dela. Na \textbf{Fase 2 (Classificação \textit{Zero-Shot})}, uma nova imagem é codificada pelo \textit{Image Encoder} e seu vetor é comparado aos \textit{embeddings} de rótulos textuais candidatos, como \textit{``a photo of a dog''}, gerados pelo \textit{Text Encoder}. Sem nenhum treinamento adicional, o modelo seleciona a classe cuja representação textual apresenta maior similaridade com a representação visual da imagem, como ilustrado pelo exemplo do cachorro na figura. 
 
 Assim, enquanto VisualBERT integra modalidades cedo via \textit{Transformer} compartilhado, CLIP alinha via contraste em espaço separado, capturando nuances semânticas complexas. No entanto, para memes com ``contraste de ódio'' irônico (de sutil a explícito), esses modelos binários (odioso e não odioso) demandam modelagem de graus intermediários.
-
-\subsection{Modelos Multimodais para Detecção de Discurso de Ódio em Memes}
- 
-O Hate-CLIPper \cite{kumar2022} é um modelo especializado na detecção de discurso de ódio em memes, construído sobre os \textit{embeddings} do CLIP. O modelo introduz módulos de interação cruzada (\textit{cross-modal interaction}) que, em vez de simplesmente comparar os vetores de imagem e texto por similaridade de cosseno, aprendem explicitamente padrões de interação entre as duas modalidades relevantes para a classificação de conteúdo odioso. Para isso, o Hate-CLIPper projeta os \textit{embeddings} visuais e textuais do CLIP em matrizes de interação cruzada, nas quais cada elemento captura a co-ativação entre uma dimensão do espaço visual e uma dimensão do espaço textual \cite{kumar2022}. Essa representação de produto externo permite ao modelo capturar nuances combinatórias que se perdem em abordagens de fusão por concatenação ou soma ponderada.
-
-Como mostrado na Figura~\ref{fig:hateclipper-arch}, a arquitetura processa o meme pelos encoders de imagem e texto do CLIP congelados para preservar as representações pré-treinadas e focar o aprendizado na fusão multimodal. As saídas são projetadas por camadas treináveis para um espaço comum de dimensionalidade reduzida. A principal inovação é a \textit{Feature Interaction Matrix} (FIM), gerada pelo produto externo entre vetores de representação textual e visual. Essa matriz revela co-ativações e correlações cruzadas entre dimensões modais, capturando alinhamentos semânticos sutis ignorados em fusões simples, como concatenação. A FIM é aprimorada por dois mecanismos complementares: \textit{align-fusion}, que alinha projeções independentes dos \textit{embeddings} globais do CLIP antes do produto externo; e \textit{cross-fusion}, que promove interação precoce via atenção ou projeções cruzadas.
-
-\begin{figure*}[!htbp]
-    \centering
-    \includegraphics[scale=0.45]{imagens/hateclipper.png}
-    \caption{Arquitetura do \textit{Hate-CLIPper}~\cite{kumar2022}.}
-    \label{fig:hateclipper-arch}
-\end{figure*}
- 
-Ao ser avaliado nos \textit{benchmarks} do \textit{Hateful Memes Challenge} e conjuntos de dados derivados, o Hate-CLIPper demonstrou ganhos consistentes sobre \textit{baselines} que utilizam os \textit{embeddings} do CLIP com fusão simples, evidenciando que a modelagem explícita das interações entre modalidades é fundamental para a detecção de ódio em memes \cite{kumar2022}.
- 
-O RGCL (\textit{Regional Graph Contrastive Learning}) \cite{rgcl2023} adota uma perspectiva diferente ao modelar as relações entre regiões visuais e segmentos textuais por meio de grafos. Em vez de tratar a imagem como um único vetor global, o RGCL constrói um grafo cujos nós representam regiões visuais detectadas e tokens textuais salientes, e cujas arestas capturam relações de co-referência, relevância semântica e proximidade contextual entre eles. Operações de \textit{graph convolution} propagam informação ao longo dessas conexões, construindo representações dos nós enriquecidas pelo contexto dos vizinhos na estrutura do grafo.
-
-\begin{figure*}[!htbp]
-\centering
-\includegraphics[scale=0.085]{imagens/RGCL_Model.png}
-\caption{Arquitetura do \textit{RGCL}~\cite{RGCL2024}.}
-\label{fig:rgcl-model}
-\end{figure*}
- 
-O componente contrastivo do RGCL utiliza pares de memes similares e dissimilares para refinar as representações aprendidas: memes com conteúdo odioso análogo são aproximados no espaço de \textit{embeddings}, enquanto memes de classes distintas são separados \cite{rgcl2023}. Essa combinação entre modelagem relacional por grafos e aprendizado contrastivo permite ao modelo capturar tanto as interações locais entre regiões específicas da imagem e trechos do texto quanto padrões globais de similaridade semântica entre memes, abordando de forma mais granular a complexidade semântica característica do discurso de ódio expresso nesse formato multimodal.
 
 \section{Métricas de Avaliação}
 
@@ -532,12 +506,65 @@ Os \textbf{confundidores benignos} são alterações mínimas (texto ou imagem) 
 
 \subsection{\textit{The Hateful Memes Challenge}: Detecção de discurso de ódio em memes multimodais} 
 
-O trabalho realizado pelos pesquisadores da Meta AI \cite{ArticleHatefulMemesChallenge2020} propôs um desafio para a classificação multimodal, com foco na detecção de discurso de ódio em memes. Realizaram um \textit{benchmark} de modelos multimodais com diferentes níveis de sofisticação e introduziram o conceito de ``confundidores benignos'' na criação do banco de dados. Esses confundidores foram adicionados para aumentar a dificuldade do desafio, pois usam as mesmas imagens e frases que os memes odiosos, mas em contextos inofensivos. O desafio evidenciou que modelos baseados somente em texto ou somente em imagem ficam aquém de classificadores humanos, motivando o desenvolvimento de arquiteturas que integrem ambas as modalidades de forma mais sofisticada.
+O trabalho realizado pelos pesquisadores da Meta AI \cite{ArticleHatefulMemesChallenge2020}
+propôs um desafio para a detecção de discurso de ódio em memes multimodais, realizando um
+\textit{benchmark} de modelos multimodais com diferentes níveis de sofisticação e criando um
+conjunto de dados projetado especificamente para avaliar a capacidade desses modelos multimodais.
+O trabalho parte da premissa de que memes são inerentemente multimodais, isto é, seu
+significado emerge da combinação entre imagem e texto, e que abordagens unimodais são
+insuficientes para capturar essa semântica.
+
+Os autores avaliaram uma série de modelos de fusão multimodal como \textit{baselines},
+incluindo abordagens de fusão por concatenação, como o \textit{VisualBERT}, utilizando a métrica
+AUROC como critério principal de comparação. Os resultados demonstraram que mesmo os modelos
+multimodais de alto desempenho em outras tarefas ficaram significativamente abaixo do
+desempenho humano, estimado em 84,7\% de AUROC, evidenciando a dificuldade do problema e
+motivando pesquisas futuras na área.
 
 \subsection{\textit{Hate-CLIPper}: Classificação multimodal de memes odiosos com interação multimodal explícita das características CLIP}
 
-O modelo \textit{Hate-CLIPper}~\cite{kumar2022} supera as limitações das arquiteturas de fusão tardia, como do CLIP, que falham em capturar nuances semânticas em memes onde texto e imagem isoladamente são inofensivos, mas sua combinação é odiosa. Para isso, os autores introduzem um módulo de fusão intermediária explícita, promovendo interação cruzada profunda entre modalidades. Em desempenho, o modelo alcança AUROC de 85,8, superando o VisualBERT e CLIP \textit{zero-shot}.
+A arquitetura do \textit{Hate-CLIPper} \cite{kumar2022} para classificação de memes odiosos explora a interação entre as representações visuais e textuais extraídas pelo modelo CLIP. A motivação central do trabalho é que estratégias convencionais de fusão multimodal, como concatenação simples ou soma ponderada dos vetores de cada modalidade, capturam de forma superficial a relação semântica entre imagem e texto, sendo insuficientes para o raciocínio fino exigido pela detecção de discurso de ódio em memes.
 
-\subsection{\textit{RGCL}: Aprendizado contrastivo de grafos regionais}
+Para superar essa limitação, os autores introduzem um mecanismo de interação \textit{cross-modal} explícita baseado no produto externo entre os vetores de características de imagem e texto obtidos pelo CLIP. Essa operação produz uma matriz de interação que captura correlações par a par entre cada dimensão das duas modalidades, representando de forma mais rica como conceitos visuais e linguísticos se relacionam dentro de um mesmo meme. A matriz resultante é então linearizada e utilizada como entrada para um classificador, podendo ser combinada com os vetores unimodais originais.
+
+O modelo é avaliado no \textit{Hateful Memes Challenge}, além de outros benchmarks, e supera diversas \textit{baselines} de fusão multimodal, incluindo abordagens baseadas em concatenação direta de \textit{embeddings} CLIP. Os resultados evidenciam que a modelagem explícita da interação entre modalidades proporciona ganhos consistentes de desempenho, e que as representações do CLIP — pré-treinadas em larga escala com alinhamento imagem-texto — constituem uma base sólida para a tarefa.
+
+% O Hate-CLIPper \cite{kumar2022} é um modelo especializado na detecção de discurso de ódio em memes, construído sobre os \textit{embeddings} do CLIP. O modelo introduz módulos de interação cruzada (\textit{cross-modal interaction}) que, em vez de simplesmente comparar os vetores de imagem e texto por similaridade de cosseno, aprendem explicitamente padrões de interação entre as duas modalidades relevantes para a classificação de conteúdo odioso. Para isso, o Hate-CLIPper projeta os \textit{embeddings} visuais e textuais do CLIP em matrizes de interação cruzada, nas quais cada elemento captura a co-ativação entre uma dimensão do espaço visual e uma dimensão do espaço textual \cite{kumar2022}. Essa representação de produto externo permite ao modelo capturar nuances combinatórias que se perdem em abordagens de fusão por concatenação ou soma ponderada.
+
+% Como mostrado na Figura~\ref{fig:hateclipper-arch}, a arquitetura processa o meme pelos encoders de imagem e texto do CLIP congelados para preservar as representações pré-treinadas e focar o aprendizado na fusão multimodal. As saídas são projetadas por camadas treináveis para um espaço comum de dimensionalidade reduzida. A principal inovação é a \textit{Feature Interaction Matrix} (FIM), gerada pelo produto externo entre vetores de representação textual e visual. Essa matriz revela co-ativações e correlações cruzadas entre dimensões modais, capturando alinhamentos semânticos sutis ignorados em fusões simples, como concatenação. A FIM é aprimorada por dois mecanismos complementares: \textit{align-fusion}, que alinha projeções independentes dos \textit{embeddings} globais do CLIP antes do produto externo; e \textit{cross-fusion}, que promove interação precoce via atenção ou projeções cruzadas.
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[scale=0.45]{imagens/hateclipper.png}
+    \caption{Arquitetura do \textit{Hate-CLIPper}~\cite{kumar2022}.}
+    \label{fig:hateclipper-arch}
+\end{figure*}
+ 
+% Ao ser avaliado nos \textit{benchmarks} do \textit{Hateful Memes Challenge} e conjuntos de dados derivados, o Hate-CLIPper demonstrou ganhos consistentes sobre \textit{baselines} que utilizam os \textit{embeddings} do CLIP com fusão simples, evidenciando que a modelagem explícita das interações entre modalidades é fundamental para a detecção de ódio em memes \cite{kumar2022}.
+
+\subsection{\textit{RGCL}: Aprendizado contrastivo guiado por recuperação para detecção de memes odiosos}
+
+O RGCL (\textit{Retrieval-Guided Contrastive Learning}) \cite{RGCL2024} é uma abordagem que aprimora a detecção de memes odiosos ao construir um espaço de \textit{embeddings} sensível à natureza ofensiva do conteúdo por meio de aprendizado contrastivo guiado por recuperação. O ponto de partida do trabalho é uma limitação identificada nos sistemas baseados em CLIP, onde o espaço de representações aprendido por esses modelos carece de sensibilidade a diferenças sutis entre memes, diferenças essas que são determinantes para a classificação correta quanto ao ódio.
+
+Para superar essa limitação, o RGCL introduz um objetivo contrastivo auxiliar treinado com exemplos positivos e negativos recuperados dinamicamente do conjunto de treinamento. Em vez de utilizar pares fixos, o modelo consulta, a cada iteração, exemplos semanticamente próximos ao meme em questão, refinando continuamente as fronteiras de decisão no espaço de \textit{embeddings}.
+
+O modelo é avaliado no \textit{Hateful Memes Challenge}, alcançando desempenho estado-da-arte, superando inclusive grandes modelos multimodais em configurações comparáveis.
+
+% O RGCL (\textit{Regional Graph Contrastive Learning}) \cite{RGCL2024} adota uma perspectiva diferente ao modelar as relações entre regiões visuais e segmentos textuais por meio de grafos. Em vez de tratar a imagem como um único vetor global, o RGCL constrói um grafo cujos nós representam regiões visuais detectadas e tokens textuais salientes, e cujas arestas capturam relações de co-referência, relevância semântica e proximidade contextual entre eles. Operações de \textit{graph convolution} propagam informação ao longo dessas conexões, construindo representações dos nós enriquecidas pelo contexto dos vizinhos na estrutura do grafo.
+
+\begin{figure*}[!htbp]
+\centering
+\includegraphics[scale=0.085]{imagens/RGCL_Model.png}
+\caption{Arquitetura do \textit{RGCL}~\cite{RGCL2024}.}
+\label{fig:rgcl-model}
+\end{figure*}
+ 
+% O componente contrastivo do RGCL utiliza pares de memes similares e dissimilares para refinar as representações aprendidas: memes com conteúdo odioso análogo são aproximados no espaço de \textit{embeddings}, enquanto memes de classes distintas são separados \cite{RGCL2024}. Essa combinação entre modelagem relacional por grafos e aprendizado contrastivo permite ao modelo capturar tanto as interações locais entre regiões específicas da imagem e trechos do texto quanto padrões globais de similaridade semântica entre memes, abordando de forma mais granular a complexidade semântica característica do discurso de ódio expresso nesse formato multimodal.
 
 \subsection{\textit{IntMeme}: Utilizando grandes modelos multimodais para a detecção de memes de ódio com decisões explicáveis}
+
+O \textit{IntMeme} \cite{hee2025} é um \textit{framework} publicado que aborda simultaneamente dois desafios centrais na detecção de memes odiosos: a melhoria da acurácia de classificação e a explicabilidade das decisões tomadas pelo modelo. O trabalho parte de uma crítica aos sistemas baseados em modelos de visão-linguagem pré-treinados, cujo processo de classificação depende de conhecimento implícito adquirido durante o pré-treinamento e de mecanismos de atenção de difícil interpretação, tornando suas decisões opacas.
+
+Para contornar essa opacidade, o \textit{IntMeme} adota uma estratégia de duas etapas. Na primeira, grandes modelos multimodais (\textit{LMMs}) são utilizados em modo \textit{zero-shot} para gerar interpretações textuais dos memes em linguagem natural, explicitando os elementos visuais, o texto sobreposto, o contexto implícito e os aspectos que tornam o conteúdo potencialmente odioso. Essas interpretações funcionam como um elo entre a percepção multimodal e o processo de classificação, tornando o raciocínio do modelo auditável. Na segunda etapa, o \textit{framework} codifica de forma independente o meme original e sua interpretação gerada por meio de módulos de codificação separados, um módulo de alinhamento visão-linguagem e um módulo de codificação da interpretação, cujas representações são posteriormente combinadas para a classificação final.
+
+O \textit{IntMeme} é avaliado em três conjuntos de dados de detecção de memes odiosos, demonstrando superioridade em relação a modelos estado-da-arte. O trabalho evidencia que ancorar as decisões de classificação em interpretações geradas explicitamente não apenas melhora a acurácia, mas também reduz a dependência de mecanismos implícitos difíceis de inspecionar.
