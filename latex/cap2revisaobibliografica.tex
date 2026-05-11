@@ -129,12 +129,12 @@ dois grandes blocos funcionais: \textbf{extração de características} e
 \textbf{classificação}. No bloco de extração, camadas alternadas de
 \textbf{convolução} e \textbf{pooling} são empilhadas progressivamente. Cada camada
 de convolução aplica um conjunto de filtros aprendíveis à entrada, gerando
-\textit{mapas de características} que codificam a presença de padrões específicos em
-cada região da imagem; em seguida, uma função de ativação não linear (ReLU -- \textit{Rectified Linear Unit}) é aplicada elemento a elemento para
+\textbf{mapas de características} que codificam a presença de padrões específicos em
+cada região da imagem, em seguida, uma função de ativação não linear (ReLU -- \textit{Rectified Linear Unit}) é aplicada elemento a elemento para
 introduzir não-linearidade ao modelo. As camadas de \textit{pooling} subsequentes
-reduzem a resolução espacial dos mapas, conferindo invariância a pequenas translações
-e diminuindo o custo computacional das camadas seguintes. Ao longo desse bloco,
-as representações tornam-se progressivamente mais abstratas: as primeiras camadas
+reduzem a resolução espacial dos mapas, conferindo invariância a pequenas translações, de modo que pequenos deslocamentos do objeto na imagem 
+não alterem o resultado da classificação, e diminuindo o custo computacional das camadas seguintes. Ao longo desse bloco,
+as representações tornam-se progressivamente mais abstratas, as primeiras camadas
 tendem a capturar características de baixo nível (bordas e gradientes), enquanto as
 camadas mais profundas respondem a estruturas semânticas de alto nível.
 
@@ -148,7 +148,7 @@ a probabilidade estimada de a entrada pertencer a cada classe.
 
 \begin{figure*}[!htbp]
     \centering
-    \includegraphics[scale=0.3]{imagens/CNNs.png}
+    \includegraphics[scale=0.35]{imagens/CNNs.png}
     \caption{Arquitetura de uma Rede Neural Convolucional aplicada à classificação de
     imagens \cite{swapna2020cnn}. A partir de uma imagem de entrada (zebra), um kernel deslizante extrai
     padrões locais ao longo de três blocos de Convolução + ReLU intercalados por
@@ -168,19 +168,27 @@ modelar dependências temporais em sequências de dados.
 
 \subsection{Redes Neurais Recorrentes}
  
-As Redes Neurais Recorrentes (\textit{Recurrent Neural Networks}, RNNs) são arquiteturas
+As Redes Neurais Recorrentes (\textit{Recurrent Neural Networks}) são arquiteturas de aprendizado profundo
 projetadas para processar dados sequenciais, como texto, áudio e séries temporais
-\cite{elman1990}. Diferentemente das redes \textit{feedforward}, as RNNs mantêm um
-\textbf{estado oculto} que é atualizado a cada passo da sequência, ao processar o
-$t$-ésimo elemento, o modelo considera tanto a entrada atual $x_t$ quanto o estado oculto
-$h_{t-1}$ produzido pelo passo anterior, propagando informação ao longo do tempo.
+\cite{elman1990}. Diferentemente das redes \textit{feedforward}, nas quais a informação flui em uma única direção da entrada
+à saída, as RNNs introduzem conexões recorrentes que permitem ao modelo manter
+um \textbf{estado oculto} que é atualizado a cada passo da sequência. 
+Esse estado oculto funciona como uma forma de memória de curto prazo, ao processar
+cada novo elemento da sequência, a rede não considera apenas a entrada atual, mas
+também o estado produzido no passo anterior. Dessa forma, a informação se propaga
+ao longo do tempo, permitindo que o modelo leve em conta o contexto acumulado dos
+elementos anteriores ao fazer sua predição.
  
 Apesar dessa capacidade de modelagem sequencial, as RNNs clássicas apresentam
-dificuldades em capturar \textbf{dependências de longo alcance}, relações entre
+uma limitação estrutural em capturar \textbf{dependências de longo alcance}, isto é, relações semânticas ou temporais entre
 elementos distantes na sequência. A razão é que, durante a retropropagação ao longo do
 tempo (\textit{backpropagation through time}), os gradientes são multiplicados
-repetidamente pela mesma matriz de pesos, fazendo com que diminuam
-exponencialmente para sequências longas \cite{hochreiter1991}.
+repetidamente pela mesma matriz de pesos. Em sequências longas, esse processo leva ao \textbf{desvanecimento do gradiente}
+(\textit{vanishing gradient}), no qual os gradientes decaem exponencialmente,
+impedindo que o modelo aprenda relações entre elementos distantes
+\cite{hochreiter1991}. O fenômeno inverso, a \textbf{explosão do gradiente}
+(\textit{exploding gradient}), também pode ocorrer, tornando o treinamento
+numericamente instável.
  
 A arquitetura \textit{Long Short-Term Memory} (LSTM) \cite{hochreiter1997} foi proposta
 para mitigar esse problema, introduzindo \textbf{mecanismos de porta} (\textit{gates}) que controlam seletivamente quais informações são
