@@ -30,7 +30,7 @@ Nesse cenário, a aplicação de técnicas de aprendizado de máquina tornou-se 
 
 \section{Aprendizado de Máquina}
  
-O aprendizado de máquina (\textit{Machine Learning}, ML) é uma subárea da inteligência
+O aprendizado de máquina é uma subárea da inteligência
 artificial que desenvolve algoritmos capazes de aprender padrões a partir de dados, sem
 serem explicitamente programados para cada tarefa \cite{mitchell1997}, ajustando seus parâmetros
 internos com base em exemplos e generalizando o conhecimento adquirido para dados
@@ -66,8 +66,8 @@ viés e aplica uma \textbf{função de ativação} para produzir uma saída, con
 
 \begin{figure*}[!htbp]
     \centering
-    \includegraphics[scale=0.25]{imagens/perceptron.png}
-    \caption{Estrutura de um neurônio artificial (\textit{perceptron})\cite{perceptron}.}
+    \includegraphics[scale=0.3]{imagens/perceptron.png}
+    \caption{Estrutura de um neurônio artificial \cite{perceptron}.}
     \label{fig:perceptron}
 \end{figure*}
 
@@ -90,16 +90,14 @@ parâmetro é calculado pela regra da cadeia e utilizado pelo algoritmo de
 \begin{figure}[!htbp]
     \centering
     \includegraphics[scale=0.4]{imagens/artificial-neural-network.png}
-    \caption{Arquitetura de uma rede neural \textit{feedforward} com duas camadas
-    ocultas. As setas pretas indicam o fluxo \textit{feed forward},
+    \caption{Arquitetura de uma rede neural. As setas pretas indicam o fluxo \textit{feed forward},
     da camada de entrada até a camada de saída. As setas vermelhas ilustram o processo
     de retropropagação (\textit{backpropagation}), pelo qual o gradiente do erro é
-    propagado da saída em direção às camadas anteriores para atualização dos pesos.
-    Adaptado de \cite{geeksforgeeks2023ann}.}
+    propagado da saída em direção às camadas anteriores para atualização dos pesos \cite{geeksforgeeks2023ann}.}
     \label{fig:artificial-neural-network}
 \end{figure}
 
-Embora redes neurais sejam robustas, seu desempenho em tarefas de alta complexidade,
+Embora as redes neurais sejam robustas, seu desempenho em tarefas de alta complexidade,
 como reconhecimento de imagens e processamento de linguagem natural,
 é limitado quando aplicadas diretamente a dados de alta
 dimensão. O aumento no número de camadas e neurônios, necessário
@@ -107,44 +105,66 @@ para capturar tais padrões, torna o treinamento instável e
 computacionalmente inviável com as técnicas da época
 \cite{goodfellow2016}. Esses desafios motivaram o desenvolvimento de
 arquiteturas mais profundas e especializadas, consolidadas sob o termo
-\textbf{aprendizado profundo} (\textit{deep learning}).
+\textbf{aprendizado profundo}.
 
 \subsection{Aprendizado Profundo}
- 
+
 O aprendizado profundo (\textit{Deep Learning}) é uma subárea do aprendizado de máquina
-que utiliza redes neurais com muitas camadas ocultas \cite{goodfellow2016}. Cada camada aprende representações progressivamente mais abstratas dos dados.
- 
-Essa capacidade de aprender representações hierárquicas automaticamente diferencia o
-aprendizado profundo das abordagens tradicionais de aprendizado de máquina, que dependiam
-de características extraídas manualmente por especialistas (\textit{feature engineering}).
-Em dados não estruturados de alta dimensionalidade,
-onde o espaço de características relevantes é imenso e difícil de especificar
-manualmente, o aprendizado profundo demonstrou ganhos expressivos \cite{lecun2015}.
- 
-O treinamento de redes profundas apresenta desafios próprios, entre os quais se destaca o
-\textbf{problema do desaparecimento do gradiente}: em redes muito profundas, os gradientes
-tendem a se tornar exponencialmente pequenos à medida que se propagam pelas camadas mais
-iniciais, impedindo que essas camadas aprendam de forma eficaz \cite{goodfellow2016}.
-Técnicas modernas como normalização de camada (\textit{layer normalization}), conexões
-residuais (\textit{skip connections}) e funções de ativação mitigam esse
-problema, viabilizando o treinamento de arquiteturas com dezenas ou centenas de camadas.
+que utiliza redes neurais com muitas camadas ocultas, para conseguir processar grandes 
+volumes de dados não estruturados para reconhecer padrões complexos, permitindo que aprendam sozinhos e executem tarefas com alta precisão \cite{lecun2015}.
+
+Dentre as arquiteturas de aprendizado profundo, as Redes Neurais Convolucionais destacam-se para dados com
+estrutura espacial, como imagens.
 
 \subsection{Redes Neurais Convolucionais}
  
-As Redes Neurais Convolucionais (\textit{Convolutional Neural Networks}, CNNs) são uma
+As Redes Neurais Convolucionais (\textit{Convolutional Neural Networks}) são uma
 classe de arquiteturas de aprendizado profundo projetadas para processar dados com
 estrutura espacial, como imagens \cite{lecun1998}. Em vez de conectar cada neurônio a
-todos os neurônios da camada anterior, as CNNs exploram a \textbf{localidade espacial}, ou seja, pequenos
-filtros convolucionais deslizam sobre a entrada, detectando padrões locais (bordas,
-texturas, formas) de forma eficiente e com compartilhamento de parâmetros.
- 
-Uma CNN típica é composta por camadas alternadas de \textbf{convolução} e
-\textbf{pooling}. As camadas de convolução aplicam múltiplos filtros aprendíveis,
-produzindo mapas de características que capturam a presença de padrões específicos em cada
-região da imagem. As camadas de pooling reduzem a dimensionalidade espacial, conferindo
-invariância a pequenas translações e reduzindo o custo computacional das camadas
-subsequentes. Após as camadas convolucionais, camadas densas (\textit{fully connected})
-integram as características extraídas para produzir a predição final.
+todos os neurônios da camada anterior, as CNNs exploram a \textbf{localidade espacial}, por meio de pequenos
+filtros convolucionais que deslizam sobre a entrada, detectando padrões locais de forma eficiente e com compartilhamento de parâmetros.
+
+A arquitetura de uma CNN típica, ilustrada na Figura~\ref{fig:cnn}, organiza-se em
+dois grandes blocos funcionais: \textbf{extração de características} e
+\textbf{classificação}. No bloco de extração, camadas alternadas de
+\textbf{convolução} e \textbf{pooling} são empilhadas progressivamente. Cada camada
+de convolução aplica um conjunto de filtros aprendíveis à entrada, gerando
+\textit{mapas de características} que codificam a presença de padrões específicos em
+cada região da imagem; em seguida, uma função de ativação não linear (ReLU -- \textit{Rectified Linear Unit}) é aplicada elemento a elemento para
+introduzir não-linearidade ao modelo. As camadas de \textit{pooling} subsequentes
+reduzem a resolução espacial dos mapas, conferindo invariância a pequenas translações
+e diminuindo o custo computacional das camadas seguintes. Ao longo desse bloco,
+as representações tornam-se progressivamente mais abstratas: as primeiras camadas
+tendem a capturar características de baixo nível (bordas e gradientes), enquanto as
+camadas mais profundas respondem a estruturas semânticas de alto nível.
+
+No bloco de classificação, a saída do último mapa de características é
+\textbf{linearizada} (\textit{flatten}) em um vetor unidimensional, que alimenta uma
+ou mais camadas densas (\textit{fully connected}). Essas camadas integram globalmente
+as características extraídas e produzem um vetor de pontuações (\textit{logits})
+para cada classe. Por fim, a função \textit{Softmax} converte esse vetor em uma
+\textbf{distribuição de probabilidade}, permitindo interpretar a saída do modelo como
+a probabilidade estimada de a entrada pertencer a cada classe.
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[scale=0.3]{imagens/CNNs.png}
+    \caption{Arquitetura de uma Rede Neural Convolucional aplicada à classificação de
+    imagens \cite{swapna2020cnn}. A partir de uma imagem de entrada (zebra), um kernel deslizante extrai
+    padrões locais ao longo de três blocos de Convolução + ReLU intercalados por
+    camadas de \textit{Pooling}, formando mapas de características hierárquicos.
+    A saída desse estágio é linearizada por uma camada \textit{Flatten} e processada
+    por camadas totalmente conectadas, culminando em uma distribuição de probabilidade, 70\% de probabilidade para a classe
+    ``Zebra'', 20\% para ``Horse'' e 10\% para ``Dog''.}
+    \label{fig:cnn}
+\end{figure*}
+
+Embora as CNNs sejam altamente eficazes no processamento de dados com 
+estrutura espacial, elas não foram projetadas para lidar com dados 
+sequenciais, nos quais a ordem temporal das informações é determinante 
+para a compreensão do contexto. Para suprir essa limitação, surgem as 
+Redes Neurais Recorrentes, arquiteturas especialmente concebidas para 
+modelar dependências temporais em sequências de dados.
 
 \subsection{Redes Neurais Recorrentes}
  
