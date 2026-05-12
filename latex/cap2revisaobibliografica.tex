@@ -12,7 +12,7 @@ Neste capítulo, apresenta-se a revisão da literatura relacionada aos principai
 
 O discurso de ódio nas redes sociais é um fenômeno complexo e multidimensional, moldado por tensões sociais, políticas e culturais de cada contexto histórico. Ele vai além de agressões explícitas, podendo assumir formas sutis, irônicas ou humorísticas, o que exige uma análise contextual para identificar. Além disso, os grupos que produzem e compartilham esse tipo de conteúdo frequentemente formam comunidades com jargões e práticas próprias, reforçando seu caráter social e coletivo \cite{Ferrari2022}.
 
-Diversos autores definem o discurso de ódio como qualquer manifestação que busca incitar hostilidade, violência ou discriminação contra determinados grupos sociais \cite{sanguinetti2018, fortuna2018}. Tem um impacto amplo, gerando estresse psicológico, exclusão social e contribuindo para a polarização de comunidades online \cite{waseem2017}. Em resposta, plataformas de redes sociais têm adotado políticas de moderação de conteúdo que envolvem detecção automática, remoção de publicações e divulgação de relatórios de transparência. Contudo, a eficácia dessas medidas tem sido limitada, pois as decisões variam conforme o tipo de conteúdo, o contexto e os critérios internos das plataformas \cite{Dergacheva2023}. 
+Diversos autores definem o discurso de ódio como qualquer manifestação que busca incitar hostilidade, violência ou discriminação contra determinados grupos sociais \cite{sanguinetti2018, fortuna2018}. Tem um impacto amplo, gerando estresse psicológico, exclusão social e contribuindo para a polarização de comunidades \textit{online} \cite{waseem2017}. Em resposta, plataformas de redes sociais têm adotado políticas de moderação de conteúdo que envolvem detecção automática, remoção de publicações e divulgação de relatórios de transparência. Contudo, a eficácia dessas medidas tem sido limitada, pois as decisões variam conforme o tipo de conteúdo, o contexto e os critérios internos das plataformas \cite{Dergacheva2023}. 
 
 Nesse contexto, formatos comunicativos como os memes, com sua ironia e sutileza, agravam o desafio, complicando a aplicação consistente de políticas de moderação e o equilíbrio entre liberdade de expressão e proteção dos usuários \cite{anImage2023}. Portanto, compreender o papel desses memes como vetores de disseminação do discurso de ódio, especialmente em expressões visuais e humorísticas, torna-se essencial.
 
@@ -22,11 +22,18 @@ Nesse contexto, formatos comunicativos como os memes, com sua ironia e sutileza,
 
 \section{Memes como meio de comunicação digital}
 
-O termo “meme”, cunhado por Richard Dawkins em O Gene Egoísta \cite{Dawkins1976}, refere-se a unidades culturais que se replicam e se difundem na cultura humana. Inspirado por essa concepção, atualmente essas unidades se propagam principalmente no meio digital, impulsionadas pela velocidade de compartilhamento e pelo amplo alcance das redes sociais \cite{shifman2013memes}. Os memes consolidaram-se como formas distintivas de comunicação digital, combinando imagens e textos para transmitir mensagens frequentemente marcadas por humor, ironia ou sátira, cuja compreensão depende fortemente do contexto cultural e social do público \cite{horta2015meme}.
+O termo “meme”, cunhado por Richard Dawkins em O Gene Egoísta \cite{Dawkins1976}, refere-se a unidades culturais que se replicam e se difundem na cultura humana de forma análoga aos genes na biologia. Na cultura digital contemporânea, essas unidades se propagam principalmente no meio digital, impulsionadas pela velocidade de compartilhamento e pelo amplo alcance das redes sociais \cite{shifman2013memes}. Os memes consolidaram-se como formas distintivas de comunicação digital, combinando imagens e textos para transmitir mensagens frequentemente marcadas por humor, ironia ou sátira, cuja compreensão depende fortemente do contexto cultural e social do público \cite{horta2015meme}.
 
 Estudos recentes mostram que memes não apenas refletem tendências culturais e discursos sociais, mas também desempenham papel ativo na construção e disseminação de mensagens, inclusive aquelas de teor odioso ou discriminatório \cite{peixoto2020circulacao}. Essa capacidade de veicular múltiplos sentidos, muitas vezes de modo ambíguo, desafia mecanismos tradicionais de moderação, pois exige a análise integrada de informações visuais e textuais, bem como de seus contextos de circulação \cite{ArticleHatefulMemesChallenge2020}.
 
 Nesse cenário, a aplicação de técnicas de aprendizado de máquina tornou-se fundamental para compreender, classificar e moderar a enorme quantidade de memes compartilhados nas redes. Modelos multimodais que integram texto e imagem têm sido desenvolvidos para detectar padrões sutis, categorizar conteúdos e identificar potenciais riscos associados a esses memes, ampliando as possibilidades de análise automatizada e interpretabilidade dos memes em larga escala \cite{ArticleHatefulMemesChallenge2020}.
+
+\section{Moderação de conteúdo automatizada}
+
+A moderação de conteúdo surgiu nos primórdios da internet, na década de 80, com fóruns \textit{online} onde moderadores voluntários aprovavam postagens para preservar discussões civilizadas \cite{Ackermann2020}. Essa prática evoluiu para políticas privadas em plataformas modernas, impulsionada pelo combate a \textit{spam}, assédio e discursos de ódio. Com o crescimento exponencial do acesso à internet, a moderação se tornou em uma operação de escala industrial, levando gigantes de tecnologia a contratar milhares de revisores para analisar denúncias, um trabalho muitas vezes invisível e marginalizado \cite{gillespie2018, gray2019}. Hoje, diante de bilhões de postagens diárias, o foco está sobre a moderação automatizada, na qual algoritmos de inteligência artificial filtram a maior parte do conteúdo proibido antes mesmo de qualquer intervenção humana \cite{gillespie2020}.
+
+As abordagens tradicionais de moderação automatizada são predominantemente baseadas em modelos unimodais que analisam apenas o texto por meio de Processamento de Linguagem Natural (PLN) ou apenas a imagem por meio de Visão Computacional. Porém, os memes são inerentemente multimodais, e o ódio frequentemente só se manifesta na combinação entre as duas modalidades. Isso torna 
+necessário o uso de modelos multimodais capazes de processar texto e imagem de forma integrada, o que exige uma compreensão sólida das técnicas de aprendizado de máquina.
 
 \section{Aprendizado de Máquina}
  
@@ -198,13 +205,6 @@ sequenciais, cada passo depende do anterior, o que limita a paralelização dura
 treinamento e dificulta a captura de contextos muito longos. Essa limitação motivou o
 desenvolvimento de uma abordagem radicalmente diferente, baseada exclusivamente em
 atenção: o \textit{Transformer}.
-
-
-\section{Moderação de conteúdo automatizada}
-
-A moderação de conteúdo surgiu nos primórdios da internet, na década de 80, com fóruns online onde moderadores voluntários aprovavam postagens para preservar discussões civilizadas \cite{Ackermann2020}. Essa prática evoluiu para políticas privadas em plataformas modernas, impulsionada pelo combate a spam, assédio e discursos de ódio. Com o crescimento exponencial do acesso à internet, a moderação se tornou em uma operação de escala industrial, levando gigantes de tecnologia a contratar milhares de revisores para analisar denúncias, um trabalho muitas vezes invisível e marginalizado \cite{gillespie2018, gray2019}. Hoje, diante de bilhões de postagens diárias, o foco está sobre a moderação automatizada, na qual algoritmos de inteligência artificial filtram a maior parte do conteúdo proibido antes mesmo de qualquer intervenção humana \cite{gillespie2020}.
-
-As abordagens tradicionais de moderação automatizada são predominantemente baseadas em modelos unimodais que analisam apenas o texto por meio de \textit{Processamento de Linguagem Natural} (PLN) ou apenas a imagem por meio de \textit{Visão Computacional}.
 
 \section{Processamento de Linguagem Natural}
 
