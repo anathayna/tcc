@@ -389,7 +389,7 @@ A \textit{Curva ROC} (\textit{Receiver Operating Characteristic}) é construída
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[scale=0.3]{imagens/roc_auroc.png}
+    \includegraphics[scale=0.4]{imagens/roc_auroc.png}
     \caption{Exemplo de curva ROC e área sob a curva (AUROC).}
     \label{fig:roc-auroc}
 \end{figure}
@@ -567,3 +567,10 @@ O \textit{IntMeme} \cite{hee2025} é um \textit{framework} publicado que aborda 
 Para contornar essa opacidade, o \textit{IntMeme} adota uma estratégia de duas etapas. Na primeira, grandes modelos multimodais (\textit{LMMs}) são utilizados em modo \textit{zero-shot} para gerar interpretações textuais dos memes em linguagem natural, explicitando os elementos visuais, o texto sobreposto, o contexto implícito e os aspectos que tornam o conteúdo potencialmente odioso. Essas interpretações funcionam como um elo entre a percepção multimodal e o processo de classificação, tornando o raciocínio do modelo auditável. Na segunda etapa, o \textit{framework} codifica de forma independente o meme original e sua interpretação gerada por meio de módulos de codificação separados, um módulo de alinhamento visão-linguagem e um módulo de codificação da interpretação, cujas representações são posteriormente combinadas para a classificação final.
 
 O \textit{IntMeme} é avaliado em três conjuntos de dados de detecção de memes odiosos, demonstrando superioridade em relação a modelos estado-da-arte. O trabalho evidencia que ancorar as decisões de classificação em interpretações geradas explicitamente não apenas melhora a acurácia, mas também reduz a dependência de mecanismos implícitos difíceis de inspecionar.
+
+\begin{figure*}[!htbp]
+\centering
+\includegraphics[scale=0.5]{imagens/intmeme.png}
+\caption{Arquitetura do \textit{IntMeme}~\cite{hee2025}.}
+\label{fig:intmeme}
+\end{figure*}
