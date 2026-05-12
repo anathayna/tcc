@@ -208,30 +208,29 @@ As abordagens tradicionais de moderação automatizada são predominantemente ba
 
 \section{Processamento de Linguagem Natural}
 
-O \textit{Processamento de Linguagem Natural} (PLN) é uma subárea da inteligência artificial dedicada a capacitar computadores a compreender, interpretar e gerar linguagem humana de forma natural \cite{jurafsky2026}. Um desafio central nessa área está na representação de textos em formatos numéricos que preservem informações semânticas e sintáticas relevantes para tarefas específicas.
- 
-Abordagens tradicionais, como \textit{bag-of-words}, tratam palavras como símbolos discretos e independentes, desconsiderando relações semânticas entre termos. Um marco importante foi a introdução dos \textit{word embeddings}, que representam palavras como vetores densos em um espaço vetorial contínuo \cite{Bengio2003}. O modelo \textit{Word2Vec} \cite{Mikolov2013}, treinado com objetivos preditivos em grandes corpora textuais, demonstrou que operações algébricas simples nesses vetores capturam relações semânticas e analógicas, como vetores semanticamente próximos correspondem a palavras com significados similares.
+O \textit{Processamento de Linguagem Natural} (PLN) é uma subárea da inteligência artificial dedicada a capacitar computadores a compreender, interpretar e gerar linguagem humana de forma natural \cite{jurafsky2026}, representando textos em formatos numéricos que preservem informações semânticas e sintáticas.
 
-Apesar desse avanço, os \textit{word embeddings} são estáticos onde cada palavra tem um vetor fixo, independentemente do contexto. Essa limitação é particularmente problemática em linguagens ambíguas e irônicas, como a dos memes, motivando o desenvolvimento de representações contextualizadas baseadas em arquiteturas mais expressivas, como os \textit{Transformers} \cite{GoogleTeamTransformers}.
+Abordagens tradicionais, como \textit{bag-of-words}, representam documentos como vetores de contagem de palavras, ignorando a ordem dos
+termos e qualquer relação semântica entre eles. Um marco importante foi a introdução dos \textit{word embeddings}, que mapeiam palavras em vetores densos em um espaço vetorial contínuo, onde a proximidade geométrica reflete similaridade de significado \cite{Bengio2003}. O modelo \textit{Word2Vec} \cite{Mikolov2013}, consolidou essa ideia ao demonstrar que operações algébricas simples nesses vetores capturam relações semânticas e analógicas.
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[scale=0.25]{imagens/word-embeddings.png}
+    \caption{Exemplos de relações semânticas e sintáticas capturadas por
+    \textit{word embeddings}. As setas indicam que o vetor de deslocamento
+    entre os pares é aproximadamente constante \cite{Mikolov2013}.}
+    \label{fig:word-embeddings}
+\end{figure*}
+
+Apesar desse avanço, os \textit{word embeddings} tradicionais são estáticos onde cada palavra tem um vetor fixo, independentemente do contexto, sendo dificíl representar linguagens ambíguas e irônicas. Essa limitação motivou o desenvolvimento de representações contextualizadas, em que o vetor de uma palavra é calculado dinamicamente em função de todo o seu contexto, como os \textit{Transformers} \cite{GoogleTeamTransformers}.
 
 \subsection{\textit{Transformer}}
  
 Antes dos \textit{Transformer}, as arquiteturas predominantes para modelagem sequencial de linguagem eram as redes recorrentes. Embora fossem capazes de processar sequências, essas redes apresentavam dificuldades em capturar dependências de longo alcance, devido ao problema do desaparecimento do gradiente ao longo de sequências longas, além de serem inerentemente sequenciais, o que limitava sua paralelização durante o treinamento.
  
-O mecanismo de atenção foi proposto inicialmente como uma forma de contornar essas limitações em modelos \textit{encoder-decoder} para tradução automática \cite{bahdanau2015}, que ao gerar cada palavra da tradução, o modelo aprende a atribuir pesos diferentes a cada posição da sequência de entrada, focando nas partes mais relevantes em cada etapa. A eficácia desse mecanismo fez com que propuseram eliminar completamente a recorrência e as convoluções, construindo uma arquitetura baseada exclusivamente em atenção: o Transformer.
-
-O mecanismo de atenção foi proposto inicialmente como forma de contornar
-essas limitações em modelos \textit{encoder-decoder} para tradução automática
-\cite{bahdanau2015}. Em vez de comprimir toda a sequência de entrada em um
-único vetor de contexto, o modelo aprende a atribuir pesos diferentes a cada
-posição da entrada ao gerar cada palavra da tradução, focando dinamicamente
-nas partes mais relevantes em cada etapa.
-
-A eficácia desse mecanismo motivou o desenvolvimento de uma arquitetura que
-eliminasse completamente a recorrência e as convoluções, construindo um modelo
-baseado exclusivamente em atenção: o \textit{Transformer} \cite{GoogleTeamTransformers}.
+O mecanismo de atenção foi proposto inicialmente como uma forma de contornar essas limitações em modelos \textit{encoder-decoder} para tradução automática \cite{bahdanau2015}, que ao gerar cada palavra da tradução, o modelo aprende a atribuir pesos diferentes a cada posição da sequência de entrada, focando nas partes mais relevantes em cada etapa. A eficácia desse mecanismo fez com que propuseram eliminar completamente a recorrência e as convoluções, construindo uma arquitetura baseada exclusivamente em atenção: o \textit{Transformer}.
  
-A arquitetura Transformer é composta por blocos de \textit{atenção multi-cabeça} (\textit{multi-head attention}), nos quais múltiplas projeções paralelas da atenção permitem ao modelo capturar simultaneamente diferentes tipos de relações entre os \textit{tokens} da sequência \cite{GoogleTeamTransformers}. A \textit{autoatenção} (\textit{self-attention}) permite que cada posição da sequência considere todas as demais ao construir sua representação, independentemente da distância entre elas. Como a arquitetura não possui estrutura sequencial intrínseca, informações sobre a posição relativa dos \textit{tokens} são incorporadas por meio de \textit{codificações posicionais}. Cada bloco também inclui redes de alimentação direta por posição (\textit{feedforward}) e operações de normalização de camada complementam cada bloco. Essa combinação resultou em ganhos expressivos de qualidade e desempenho em tradução automática e rapidamente se tornou a base de modelos estado da arte em linguagem natural.
+A arquitetura \textit{Transformer} é composta por blocos de atenção multi-cabeça (\textit{multi-head attention}), nos quais múltiplas projeções paralelas da atenção permitem ao modelo capturar simultaneamente diferentes tipos de relações entre os \textit{tokens} da sequência \cite{GoogleTeamTransformers}. A autoatenção (\textit{self-attention}) permite que cada posição da sequência considere todas as demais ao construir sua representação, independentemente da distância entre elas. Como a arquitetura não possui estrutura sequencial intrínseca, informações sobre a posição relativa dos \textit{tokens} são incorporadas por meio de codificações posicionais. Cada bloco também inclui redes de alimentação direta por posição (\textit{feedforward}) e operações de normalização de camada complementam cada bloco. Essa combinação resultou em ganhos expressivos de qualidade e desempenho em tradução automática e rapidamente se tornou a base de modelos estado da arte em linguagem natural.
 
 \begin{figure*}[!htbp]
     \centering
@@ -253,10 +252,10 @@ o modelo considera simultaneamente todo o contexto à esquerda e à direita, cap
 dependências em ambas as direções.
 
 O pré-treinamento do BERT é realizado por meio de dois objetivos, com a Modelagem
-de Linguagem Mascarada (\textit{Masked Language Modeling}, MLM), na qual uma fração
+de Linguagem Mascarada (\textit{Masked Language Modeling}), na qual uma fração
 aleatória dos tokens é ocultada e o modelo é treinado para predizê-los a partir do
 contexto restante, e a Predição da Próxima Sentença (\textit{Next Sentence
-Prediction}, NSP), que treina o modelo a determinar se dois segmentos de texto são
+Prediction}), que treina o modelo a determinar se dois segmentos de texto são
 consecutivos em um documento original \cite{devlin2019bert}. Esses objetivos permitem
 que o BERT desenvolva representações ricas do idioma sem exigir dados rotulados. Na fase
 de \textit{fine-tuning}, o modelo pré-treinado é adaptado a tarefas específicas, como
@@ -529,9 +528,9 @@ Para superar essa limitação, os autores introduzem um mecanismo de interação
 
 O modelo é avaliado no \textit{Hateful Memes Challenge}, além de outros benchmarks, e supera diversas \textit{baselines} de fusão multimodal, incluindo abordagens baseadas em concatenação direta de \textit{embeddings} CLIP. Os resultados evidenciam que a modelagem explícita da interação entre modalidades proporciona ganhos consistentes de desempenho, e que as representações do CLIP constituem uma base sólida para a tarefa.
 
-% O Hate-CLIPper \cite{kumar2022} é um modelo especializado na detecção de discurso de ódio em memes, construído sobre os \textit{embeddings} do CLIP. O modelo introduz módulos de interação cruzada (\textit{cross-modal interaction}) que, em vez de simplesmente comparar os vetores de imagem e texto por similaridade de cosseno, aprendem explicitamente padrões de interação entre as duas modalidades relevantes para a classificação de conteúdo odioso. Para isso, o Hate-CLIPper projeta os \textit{embeddings} visuais e textuais do CLIP em matrizes de interação cruzada, nas quais cada elemento captura a co-ativação entre uma dimensão do espaço visual e uma dimensão do espaço textual \cite{kumar2022}. Essa representação de produto externo permite ao modelo capturar nuances combinatórias que se perdem em abordagens de fusão por concatenação ou soma ponderada.
+O Hate-CLIPper \cite{kumar2022} é um modelo especializado na detecção de discurso de ódio em memes, construído sobre os \textit{embeddings} do CLIP. O modelo introduz módulos de interação cruzada (\textit{cross-modal interaction}) que, em vez de simplesmente comparar os vetores de imagem e texto por similaridade de cosseno, aprendem explicitamente padrões de interação entre as duas modalidades relevantes para a classificação de conteúdo odioso. Para isso, o Hate-CLIPper projeta os \textit{embeddings} visuais e textuais do CLIP em matrizes de interação cruzada, nas quais cada elemento captura a co-ativação entre uma dimensão do espaço visual e uma dimensão do espaço textual \cite{kumar2022}. Essa representação de produto externo permite ao modelo capturar nuances combinatórias que se perdem em abordagens de fusão por concatenação ou soma ponderada.
 
-% Como mostrado na Figura~\ref{fig:hateclipper-arch}, a arquitetura processa o meme pelos encoders de imagem e texto do CLIP congelados para preservar as representações pré-treinadas e focar o aprendizado na fusão multimodal. As saídas são projetadas por camadas treináveis para um espaço comum de dimensionalidade reduzida. A principal inovação é a \textit{Feature Interaction Matrix} (FIM), gerada pelo produto externo entre vetores de representação textual e visual. Essa matriz revela co-ativações e correlações cruzadas entre dimensões modais, capturando alinhamentos semânticos sutis ignorados em fusões simples, como concatenação. A FIM é aprimorada por dois mecanismos complementares: \textit{align-fusion}, que alinha projeções independentes dos \textit{embeddings} globais do CLIP antes do produto externo; e \textit{cross-fusion}, que promove interação precoce via atenção ou projeções cruzadas.
+Como mostrado na Figura~\ref{fig:hateclipper-arch}, a arquitetura processa o meme pelos encoders de imagem e texto do CLIP congelados para preservar as representações pré-treinadas e focar o aprendizado na fusão multimodal. As saídas são projetadas por camadas treináveis para um espaço comum de dimensionalidade reduzida. A principal inovação é a \textit{Feature Interaction Matrix} (FIM), gerada pelo produto externo entre vetores de representação textual e visual. Essa matriz revela co-ativações e correlações cruzadas entre dimensões modais, capturando alinhamentos semânticos sutis ignorados em fusões simples, como concatenação. A FIM é aprimorada por dois mecanismos complementares: \textit{align-fusion}, que alinha projeções independentes dos \textit{embeddings} globais do CLIP antes do produto externo; e \textit{cross-fusion}, que promove interação precoce via atenção ou projeções cruzadas.
 
 \begin{figure*}[!htbp]
     \centering
@@ -540,7 +539,7 @@ O modelo é avaliado no \textit{Hateful Memes Challenge}, além de outros benchm
     \label{fig:hateclipper-arch}
 \end{figure*}
  
-% Ao ser avaliado nos \textit{benchmarks} do \textit{Hateful Memes Challenge} e conjuntos de dados derivados, o Hate-CLIPper demonstrou ganhos consistentes sobre \textit{baselines} que utilizam os \textit{embeddings} do CLIP com fusão simples, evidenciando que a modelagem explícita das interações entre modalidades é fundamental para a detecção de ódio em memes \cite{kumar2022}.
+Ao ser avaliado nos \textit{benchmarks} do \textit{Hateful Memes Challenge} e conjuntos de dados derivados, o Hate-CLIPper demonstrou ganhos consistentes sobre \textit{baselines} que utilizam os \textit{embeddings} do CLIP com fusão simples, evidenciando que a modelagem explícita das interações entre modalidades é fundamental para a detecção de ódio em memes \cite{kumar2022}.
 
 \subsection{\textit{RGCL}: Aprendizado contrastivo guiado por recuperação para detecção de memes odiosos}
 
@@ -550,7 +549,7 @@ Para superar essa limitação, o RGCL introduz um objetivo contrastivo auxiliar 
 
 O modelo é avaliado no \textit{Hateful Memes Challenge}, alcançando desempenho estado-da-arte, superando inclusive grandes modelos multimodais em configurações comparáveis.
 
-% O RGCL (\textit{Regional Graph Contrastive Learning}) \cite{RGCL2024} adota uma perspectiva diferente ao modelar as relações entre regiões visuais e segmentos textuais por meio de grafos. Em vez de tratar a imagem como um único vetor global, o RGCL constrói um grafo cujos nós representam regiões visuais detectadas e tokens textuais salientes, e cujas arestas capturam relações de co-referência, relevância semântica e proximidade contextual entre eles. Operações de \textit{graph convolution} propagam informação ao longo dessas conexões, construindo representações dos nós enriquecidas pelo contexto dos vizinhos na estrutura do grafo.
+O RGCL (\textit{Regional Graph Contrastive Learning}) \cite{RGCL2024} adota uma perspectiva diferente ao modelar as relações entre regiões visuais e segmentos textuais por meio de grafos. Em vez de tratar a imagem como um único vetor global, o RGCL constrói um grafo cujos nós representam regiões visuais detectadas e tokens textuais salientes, e cujas arestas capturam relações de co-referência, relevância semântica e proximidade contextual entre eles. Operações de \textit{graph convolution} propagam informação ao longo dessas conexões, construindo representações dos nós enriquecidas pelo contexto dos vizinhos na estrutura do grafo.
 
 \begin{figure*}[!htbp]
 \centering
@@ -559,7 +558,7 @@ O modelo é avaliado no \textit{Hateful Memes Challenge}, alcançando desempenho
 \label{fig:rgcl-model}
 \end{figure*}
  
-% O componente contrastivo do RGCL utiliza pares de memes similares e dissimilares para refinar as representações aprendidas: memes com conteúdo odioso análogo são aproximados no espaço de \textit{embeddings}, enquanto memes de classes distintas são separados \cite{RGCL2024}. Essa combinação entre modelagem relacional por grafos e aprendizado contrastivo permite ao modelo capturar tanto as interações locais entre regiões específicas da imagem e trechos do texto quanto padrões globais de similaridade semântica entre memes, abordando de forma mais granular a complexidade semântica característica do discurso de ódio expresso nesse formato multimodal.
+O componente contrastivo do RGCL utiliza pares de memes similares e dissimilares para refinar as representações aprendidas: memes com conteúdo odioso análogo são aproximados no espaço de \textit{embeddings}, enquanto memes de classes distintas são separados \cite{RGCL2024}. Essa combinação entre modelagem relacional por grafos e aprendizado contrastivo permite ao modelo capturar tanto as interações locais entre regiões específicas da imagem e trechos do texto quanto padrões globais de similaridade semântica entre memes, abordando de forma mais granular a complexidade semântica característica do discurso de ódio expresso nesse formato multimodal.
 
 \subsection{\textit{IntMeme}: Utilizando grandes modelos multimodais para a detecção de memes de ódio com decisões explicáveis}
 
