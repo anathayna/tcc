@@ -207,7 +207,7 @@ Mais recentemente, o \textit{Vision Transformer} (ViT) \cite{dosovitskiy2021} tr
 
 \begin{figure*}[!htbp]
 	\centering
-	\includegraphics[scale=0.32]{imagens/vit.png}
+	\includegraphics[scale=0.4]{imagens/vit.png}
     \caption{Arquitetura do \textit{Vision Transformer} \cite{dosovitskiy2021}.}
     \label{fig:vit-arch}
 \end{figure*}
@@ -258,7 +258,7 @@ Assim, enquanto VisualBERT integra modalidades cedo via \textit{Transformer} com
 
 \section{Métricas de Avaliação}
 
-A escolha das métricas de avaliação é uma decisão metodológica fundamental em qualquer tarefa de classificação, pois diferentes métricas capturam aspectos distintos do comportamento do modelo e podem levar a conclusões contraditórias sobre sua qualidade \cite{sokolova2009}. No contexto da detecção de discurso de ódio em memes, essa escolha é ainda mais crítica: os conjuntos de dados disponíveis são tipicamente desbalanceados, com amostras odiosas em proporção consideravelmente menor do que amostras benignas, o que torna métricas agregadas pouco informativas e potencialmente enganosas \cite{ArticleHatefulMemesChallenge2020}. Esta seção apresenta as principais métricas utilizadas na literatura, desde as fundadas na matriz de confusão até a área sob a curva ROC, discutindo suas propriedades e adequação ao problema em questão.
+As métricas de avaliação são fundamentais em qualquer tarefa de classificação, pois diferentes métricas capturam aspectos distintos do comportamento do modelo e podem levar a conclusões contraditórias sobre sua qualidade \cite{sokolova2009}. Esta seção apresenta as principais métricas utilizadas.
 
 A matriz de confusão é uma representação tabular que sintetiza os resultados de um classificador binário ao cruzar as classes reais dos exemplos com as classes preditas pelo modelo \cite{Fawcett2006}. Para um problema de classificação binária, ela é composta por quatro células, conforme apresentado na Tabela~\ref{tab:confusion_matrix}.
  
@@ -276,7 +276,7 @@ A matriz de confusão é uma representação tabular que sintetiza os resultados
 \end{tabular}
 \end{table}
  
-No contexto da detecção de memes odiosos, a classe positiva corresponde ao meme classificado como odioso. Um \textit{Verdadeiro Positivo} (VP) ocorre quando o modelo identifica corretamente um meme odioso; um \textit{Verdadeiro Negativo} (VN), quando classifica corretamente um meme não odioso. Os erros são de dois tipos: o \textit{Falso Positivo} (FP), em que um conteúdo inofensivo é incorretamente sinalizado como odioso — implicando censura indevida —, e o \textit{Falso Negativo} (FN), em que um meme efetivamente odioso passa sem detecção, perpetuando seu alcance nocivo \cite{Fawcett2006}. A distinção entre esses dois tipos de erro tem implicações práticas distintas para sistemas de moderação, e a matriz de confusão fornece a base para o cálculo das demais métricas descritas a seguir.
+No contexto da detecção de memes odiosos, a classe positiva corresponde ao meme classificado como odioso. Um \textit{Verdadeiro Positivo} (VP) ocorre quando o modelo identifica corretamente um meme odioso; um \textit{Verdadeiro Negativo} (VN), quando classifica corretamente um meme não odioso. Os erros são de dois tipos: o \textit{Falso Positivo} (FP), em que um conteúdo inofensivo é incorretamente sinalizado como odioso, implicando uma censura indevida, e o \textit{Falso Negativo} (FN), em que um meme efetivamente odioso passa sem detecção, perpetuando seu alcance nocivo \cite{Fawcett2006}. A distinção entre esses dois tipos de erro tem implicações práticas distintas para sistemas de moderação, e a matriz de confusão fornece a base para o cálculo das demais métricas descritas a seguir.
 
 A \textbf{acurácia} é a métrica mais intuitiva de avaliação, expressa pela proporção de exemplos classificados corretamente sobre o total de exemplos:
  
@@ -285,7 +285,7 @@ A \textbf{acurácia} é a métrica mais intuitiva de avaliação, expressa pela 
 \label{eq:accuracy}
 \end{equation}
  
-Apesar de sua simplicidade, a acurácia é uma métrica inadequada para conjuntos de dados desbalanceados. Em um conjunto em que 90\% dos memes são não odiosos, um classificador trivial que sempre prediz a classe negativa obteria 90\% de acurácia sem aprender qualquer padrão discriminativo — resultado numericamente satisfatório, porém praticamente inútil para a tarefa de moderação \cite{he2009}.
+Apesar de sua simplicidade, a acurácia é uma métrica inadequada para conjuntos de dados desbalanceados. Em um conjunto em que 90\% dos memes são não odiosos, um classificador trivial que sempre prediz a classe negativa obteria 90\% de acurácia sem aprender qualquer padrão discriminativo, resultado numericamente satisfatório, porém praticamente insignificante para a tarefa de moderação \cite{he2009}.
  
 A \textbf{precisão} mede, dentre todos os exemplos classificados como positivos, a proporção que de fato pertence à classe positiva:
  
@@ -301,16 +301,32 @@ A \textbf{revocação} (\textit{recall}), também denominada sensibilidade ou ta
 \label{eq:recall}
 \end{equation}
  
-Há uma tensão inerente entre precisão e revocação: aumentar a sensibilidade do classificador para detectar mais memes odiosos tende a elevar o número de falsos positivos, reduzindo a precisão. O ponto de equilíbrio entre essas duas métricas é capturado pelo \textbf{F1-score}, que corresponde à média harmônica entre precisão e revocação:
+Existe um compromisso estrutural entre precisão e revocação: aumentar a sensibilidade do classificador para detectar mais memes odiosos tende a elevar o número de falsos positivos, reduzindo a precisão. O ponto de equilíbrio entre essas duas métricas é capturado pelo \textbf{F1-score}, que corresponde à média harmônica entre precisão e revocação:
  
 \begin{equation}
 F_1 = 2 \cdot \frac{\text{Precisão} \times \text{Revocação}}{\text{Precisão} + \text{Revocação}}
 \label{eq:f1}
 \end{equation}
  
-A média harmônica penaliza desproporções acentuadas entre os dois termos: para que o F1 seja alto, ambas as métricas devem ser simultaneamente elevadas. Isso torna o F1-score mais robusto do que a acurácia em cenários desbalanceados e é amplamente utilizado como métrica primária em benchmarks de detecção de discurso de ódio \cite{ArticleHatefulMemesChallenge2020}.
+A média harmônica penaliza desproporções acentuadas entre os dois termos: para que o F1 seja alto, ambas as métricas devem ser simultaneamente elevadas. Isso torna o F1-score mais robusto do que a acurácia em cenários desbalanceados e é amplamente utilizado como métrica primária em \textit{benchmarks} de detecção de discurso de ódio \cite{ArticleHatefulMemesChallenge2020}.
+
+Para compreender a curva ROC, é necessário definir as duas taxas que a compõem.
+A \textbf{Taxa de Verdadeiros Positivos} (TVP), também denominada revocação ou
+sensibilidade, mede a proporção de amostras positivas corretamente identificadas
+pelo modelo:
+
+\begin{equation}
+    TVP = \frac{TP}{TP + FN}
+\end{equation}
+
+E a \textbf{Taxa de Falsos Positivos} (TFP), por sua vez, quantifica a proporção
+de amostras negativas incorretamente classificadas como positivas:
+
+\begin{equation}
+    TFP = \frac{FP}{FP + TN}
+\end{equation}
  
-A \textit{Curva ROC} (\textit{Receiver Operating Characteristic}) é construída variando $\tau$ continuamente de 1 a 0 e plotando os pares (TFP, TVP) resultantes em um espaço bidimensional \cite{Fawcett2006}. O ponto $(0, 1)$ representa o classificador perfeito, que detecta todos os positivos sem nenhum falso alarme; a diagonal principal corresponde ao desempenho de um classificador aleatório. A \textbf{AUROC} (\textit{Area Under the ROC Curve}) resume a curva ROC em um único escalar: a área sob essa curva, com valor 1,0 para o classificador perfeito e 0,5 para o aleatório \cite{bradley1997}.
+A \textbf{Curva ROC} (\textit{Receiver Operating Characteristic}) é construída variando continuamente o limiar de decisão de 1 a 0 e plotando os pares (TFP, TVP) resultantes em um espaço bidimensional \cite{Fawcett2006}. O ponto $(0, 1)$ representa o classificador perfeito, que detecta todos os positivos sem nenhum falso alarme; a diagonal principal corresponde ao desempenho de um classificador aleatório. A \textbf{AUROC} (\textit{Area Under the ROC Curve}) resume a curva ROC em um único escalar: a área sob essa curva, com valor 1,0 para o classificador perfeito e 0,5 para o aleatório \cite{bradley1997}.
 
 \begin{figure}[htbp]
     \centering
@@ -319,11 +335,11 @@ A \textit{Curva ROC} (\textit{Receiver Operating Characteristic}) é construída
     \label{fig:roc-auroc}
 \end{figure}
 
-A AUROC possui uma interpretação probabilística direta: ela corresponde à probabilidade de que, dado um par composto por um exemplo positivo e um exemplo negativo escolhidos aleatoriamente, o modelo atribua escore mais alto ao exemplo positivo \cite{Fawcett2006}. Essa propriedade torna a AUROC especialmente adequada para conjuntos de dados desbalanceados: como a métrica é calculada sobre toda a curva ROC — e não em um único limiar —, ela avalia o poder discriminativo do modelo independentemente da distribuição das classes. Em um conjunto com forte desbalanceamento, a escolha de um limiar padrão de 0,5 pode ser subótima, e a AUROC captura o desempenho relativo do modelo de forma invariante a essa escolha \cite{he2009}. Por essas razões, o \textit{Hateful Memes Challenge} adota a AUROC como métrica primária de avaliação \cite{ArticleHatefulMemesChallenge2020}.
+A AUROC possui uma interpretação probabilística direta, correspondendo à probabilidade de que, dado um par composto por um exemplo positivo e um exemplo negativo escolhidos aleatoriamente, o modelo atribua escore mais alto ao exemplo positivo \cite{Fawcett2006}. Essa propriedade torna a AUROC especialmente adequada para conjuntos de dados desbalanceados: como a métrica é calculada sobre toda a curva ROC — e não em um único limiar —, ela avalia o poder discriminativo do modelo independentemente da distribuição das classes. Em um conjunto com forte desbalanceamento, a escolha de um limiar padrão de 0,5 pode ser subótima, e a AUROC captura o desempenho relativo do modelo de forma invariante a essa escolha \cite{he2009}. Por essas razões, o \textit{Hateful Memes Challenge} adota a AUROC como métrica primária de avaliação \cite{ArticleHatefulMemesChallenge2020}.
 
 \section{Lógica Fuzzy e classificação gradual}
 
-A lógica fuzzy \cite{Zadeh1965} estende a lógica booleana ao permitir verdades parciais, com graus de pertinência $\mu(x) \in [0,1]$ de ``completamente falso'' (0) a ``completamente verdadeiro'' (1). Essa abordagem é ideal para modelar fenômenos ambíguos, como ironia em memes, onde o ódio varia de sutil a explícito, superando classificações binárias rígidas.
+A lógica \textit{fuzzy} \cite{Zadeh1965} estende a lógica booleana clássica ao permitir verdades parciais, representando graus de pertinência $\mu(x) \in [0,1]$ que variam de ``completamente falso'' (0) a ``completamente verdadeiro'' (1). Essa abordagem é particularmente adequada para modelar fenômenos ambíguos, como ironia.
 
 \begin{figure}[h]
 \centering
