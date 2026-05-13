@@ -168,27 +168,9 @@ A Figura~\ref{fig:attention-model} apresenta a arquitetura do \textit{Transforme
 
 \subsection{BERT: Representações Bidirecionais a partir de Transformers}
 
-Construído sobre a arquitetura Transformer, o BERT (\textit{Bidirectional Encoder
-Representations from Transformers}) \cite{devlin2019bert} introduziu uma abordagem de
-pré-treinamento em larga escala que transformou o estado da arte em diversas tarefas de
-PLN. Diferentemente de modelos anteriores que processavam o texto da esquerda para a
-direita, o BERT emprega atenção bidirecional, ao construir a representação de um token,
-o modelo considera simultaneamente todo o contexto à esquerda e à direita, capturando
-dependências em ambas as direções.
+Construído sobre a arquitetura Transformer, o BERT (\textit{Bidirectional Encoder Representations from Transformers}) \cite{devlin2019bert} introduziu uma abordagem de pré-treinamento em larga escala que transformou o estado da arte em diversas tarefas de PLN. Diferentemente de modelos anteriores que processavam o texto da esquerda para a direita, o BERT emprega atenção bidirecional, ao construir a representação de um token, o modelo considera simultaneamente todo o contexto à esquerda e à direita, capturando dependências em ambas as direções.
 
-O pré-treinamento do BERT é realizado por meio de dois objetivos, com a Modelagem
-de Linguagem Mascarada (\textit{Masked Language Modeling}), na qual uma fração
-aleatória dos tokens é ocultada e o modelo é treinado para predizê-los a partir do
-contexto restante, e a Predição da Próxima Sentença (\textit{Next Sentence
-Prediction}), que treina o modelo a determinar se dois segmentos de texto são
-consecutivos em um documento original \cite{devlin2019bert}. Esses objetivos permitem
-que o BERT desenvolva representações ricas do idioma sem exigir dados rotulados. Na fase
-de \textit{fine-tuning}, o modelo pré-treinado é adaptado a tarefas específicas, como
-classificação de sentimentos, resposta a perguntas ou detecção de discurso de ódio,
-por meio do acréscimo de camadas de saída e do ajuste supervisionado com dados rotulados
-da tarefa-alvo. Essa separação entre pré-treinamento em larga escala e ajuste fino em
-domínio específico consolidou-se como paradigma central no desenvolvimento de modelos de
-PLN modernos.
+O pré-treinamento do BERT é realizado por meio de dois objetivos. O primeiro é a Modelagem de Linguagem Mascarada (\textit{Masked Language Modeling}), na qual uma fração aleatória dos \textit{tokens} é ocultada e o modelo é treinado para predizê-los a partir do contexto restante. O segundo é a Predição da Próxima Sentença (\textit{Next Sentence Prediction}), que treina o modelo a determinar se dois segmentos de texto são consecutivos em um documento original \cite{devlin2019bert}. Esses objetivos permitem que o BERT desenvolva representações ricas do idioma sem exigir dados rotulados. Na fase de \textit{fine-tuning}, o modelo pré-treinado é adaptado a tarefas específicas por meio do acréscimo de camadas de saída e do ajuste supervisionado com dados rotulados da tarefa-alvo. Essa separação entre pré-treinamento em larga escala e ajuste fino em domínio específico consolidou-se como paradigma central no desenvolvimento de modelos de PLN modernos.
 
 \begin{figure*}[!htbp]
     \centering
@@ -197,14 +179,8 @@ PLN modernos.
     \label{fig:bert-model}
 \end{figure*}
 
-A Figura~\ref{fig:bert-model} ilustra as duas etapas do ciclo de vida do BERT. No
-pré-treinamento, a entrada é composta por sequências de tokens iniciadas pelo marcador
-especial \texttt{[CLS]} e delimitadas pelo marcador \texttt{[SEP]}, sendo cada token
-representado por um vetor que combina \textit{embeddings} de conteúdo, de posição e de
-segmento. No \textit{fine-tuning}, os parâmetros obtidos no pré-treinamento são
-utilizados como ponto de partida e ajustados de forma supervisionada para tarefas
-específicas, como análise de sentimentos, resposta a perguntas e reconhecimento de
-entidades nomeadas.
+A Figura~\ref{fig:bert-model} ilustra as duas etapas do ciclo de vida do BERT. No pré-treinamento, a entrada é composta por sequências de tokens iniciadas pelo marcador especial \texttt{[CLS]} e delimitadas pelo marcador \texttt{[SEP]}, sendo cada token representado por um vetor que combina \textit{embeddings} de conteúdo, de posição e de
+segmento. No \textit{fine-tuning}, os parâmetros obtidos no pré-treinamento são utilizados como ponto de partida e ajustados de forma supervisionada para tarefas específicas, como análise de sentimentos, resposta a perguntas e reconhecimento de entidades nomeadas.
 
 \section{Visão Computacional}
  
@@ -212,49 +188,31 @@ A visão computacional é o campo da inteligência artificial dedicado a extrair
 
 \subsection{Redes Neurais Convolucionais}
  
-As Redes Neurais Convolucionais (\textit{Convolutional Neural Networks}) são arquiteturas de aprendizado profundo projetadas para processar dados com estrutura espacial, como imagens \cite{lecun1998}. Em vez de conectar cada neurônio a todos os neurônios da camada anterior, as CNNs exploram a \textbf{localidade espacial}, por meio de pequenos filtros convolucionais que deslizam sobre a entrada, detectando padrões locais de forma eficiente e com compartilhamento de parâmetros.
+As Redes Neurais Convolucionais (\textit{Convolutional Neural Networks}) são uma classe de arquiteturas de aprendizado profundo projetadas para processar dados com estrutura espacial, como imagens \cite{lecun1998}. Em vez de conectar cada neurônio a todos os neurônios da camada anterior, as CNNs exploram a \textbf{localidade espacial}, por meio de pequenos filtros convolucionais que deslizam sobre a entrada, detectando padrões locais de forma eficiente e com compartilhamento de parâmetros.
 
 \begin{figure*}[!htbp]
     \centering
     \includegraphics[scale=0.35]{imagens/CNNs.png}
-    \caption{Arquitetura de uma Rede Neural Convolucional aplicada à classificação de
-    imagens \cite{swapna2020cnn}. A partir de uma imagem de entrada (zebra), um kernel deslizante extrai
-    padrões locais ao longo de três blocos de Convolução + ReLU intercalados por
-    camadas de \textit{Pooling}, formando mapas de características hierárquicos.
-    A saída desse estágio é linearizada por uma camada \textit{Flatten} e processada
-    por camadas totalmente conectadas, culminando em uma distribuição de probabilidade, 70\% de probabilidade para a classe
-    ``Zebra'', 20\% para ``Horse'' e 10\% para ``Dog''.}
+    \caption{Arquitetura de uma Rede Neural Convolucional aplicada à classificação de imagens \cite{swapna2020cnn}. A partir de uma imagem de entrada (zebra), um kernel deslizante extrai padrões locais ao longo de três blocos de Convolução + ReLU intercalados por camadas de \textit{Pooling}, formando mapas de características hierárquicos. A saída desse estágio é linearizada por uma camada \textit{Flatten} e processada por camadas totalmente conectadas, culminando em uma distribuição de probabilidade, 70\% de probabilidade para a classe ``Zebra'', 20\% para ``Horse'' e 10\% para ``Dog''.}
     \label{fig:cnn}
 \end{figure*}
 
-A arquitetura de uma CNN típica, ilustrada na Figura~\ref{fig:cnn}, organiza-se em
-dois grandes blocos funcionais: \textbf{extração de características} e
-\textbf{classificação}. No bloco de extração, camadas alternadas de
-\textbf{convolução} e \textbf{pooling} são empilhadas progressivamente. Cada camada
-de convolução aplica um conjunto de filtros aprendíveis à entrada, gerando
-\textbf{mapas de características} que codificam a presença de padrões específicos em
-cada região da imagem, em seguida, uma função de ativação não linear (ReLU -- \textit{Rectified Linear Unit}) é aplicada elemento a elemento para
-introduzir não-linearidade ao modelo. As camadas de \textit{pooling} subsequentes
-reduzem a resolução espacial dos mapas, conferindo invariância a pequenas translações, de modo que pequenos deslocamentos do objeto na imagem 
-não alterem o resultado da classificação, e diminuindo o custo computacional das camadas seguintes. Ao longo desse bloco,
-as representações tornam-se progressivamente mais abstratas, as primeiras camadas
-tendem a capturar características de baixo nível (bordas e gradientes), enquanto as
-camadas mais profundas respondem a estruturas semânticas de alto nível.
+A arquitetura de uma CNN típica, ilustrada na Figura~\ref{fig:cnn}, organiza-se em dois grandes blocos funcionais: \textbf{extração de características} e \textbf{classificação}. No bloco de extração, camadas alternadas de \textbf{convolução} e \textbf{pooling} são empilhadas progressivamente. Cada camada de convolução aplica um conjunto de filtros aprendíveis à entrada, gerando \textbf{mapas de características} que codificam a presença de padrões específicos em cada região da imagem, em seguida, uma função de ativação não linear (ReLU -- \textit{Rectified Linear Unit}) é aplicada elemento a elemento para introduzir não-linearidade ao modelo. As camadas de \textit{pooling} subsequentes reduzem a resolução espacial dos mapas, conferindo invariância a pequenas translações, de modo que pequenos deslocamentos do objeto na imagem  não alterem o resultado da classificação, e diminuindo o custo computacional das camadas seguintes. Ao longo desse bloco, as representações tornam-se progressivamente mais abstratas, as primeiras camadas tendem a capturar características de baixo nível (bordas e gradientes), enquanto as camadas mais profundas respondem a estruturas semânticas de alto nível.
 
-No bloco de classificação, a saída do último mapa de características é
-\textbf{linearizada} (\textit{flatten}) em um vetor unidimensional, que alimenta uma
-ou mais camadas densas (\textit{fully connected}). Essas camadas integram globalmente
-as características extraídas e produzem um vetor de pontuações (\textit{logits})
-para cada classe. Por fim, a função \textit{Softmax} converte esse vetor em uma
-\textbf{distribuição de probabilidade}, permitindo interpretar a saída do modelo como
-a probabilidade estimada de a entrada pertencer a cada classe.
+No bloco de classificação, a saída do último mapa de características é \textbf{linearizada} (\textit{flatten}) em um vetor unidimensional, que alimenta uma ou mais camadas densas (\textit{fully connected}). Essas camadas integram globalmente as características extraídas e produzem um vetor de pontuações (\textit{logits}) para cada classe. Por fim, a função \textit{Softmax} converte esse vetor em uma \textbf{distribuição de probabilidade}, permitindo interpretar a saída do modelo como a probabilidade estimada de a entrada pertencer a cada classe.
 
-Embora as CNNs sejam altamente eficazes no processamento de dados com 
-estrutura espacial, elas não foram projetadas para lidar com dados 
-sequenciais, nos quais a ordem temporal das informações é determinante 
-para a compreensão do contexto. Para suprir essa limitação, surgem as 
-Redes Neurais Recorrentes, arquiteturas especialmente concebidas para 
-modelar dependências temporais em sequências de dados.
+\subsection{\textit{Vision Transformer}}
+
+Mais recentemente, o \textit{Vision Transformer} (ViT) \cite{dosovitskiy2021} transpôs a arquitetura \textit{Transformer} para o domínio visual. Em vez de processar pixels localmente por convoluções, o ViT divide a imagem em \textit{patches} retangulares de tamanho fixo, lineariza cada \textit{patch} em um vetor e os trata como \textit{tokens} de uma sequência, aplicando atenção multi-cabeça sobre eles. Pré-treinado em conjuntos massivos de imagens, o ViT atingiu desempenho comparável ou superior ao das CNNs em diversas tarefas de visão e, ao mesmo tempo, produziu representações visuais mais alinhadas com as estruturas de \textit{tokens} utilizadas por modelos de linguagem, facilitando, assim, a integração entre as modalidades de texto e imagem no aprendizado multimodal.
+
+\begin{figure*}[!htbp]
+	\centering
+	\includegraphics[scale=0.32]{imagens/vit.png}
+    \caption{Arquitetura do \textit{Vision Transformer} \cite{dosovitskiy2021}.}
+    \label{fig:vit-arch}
+\end{figure*}
+
+A Figura~\ref{fig:vit-arch} ilustra a arquitetura do \textit{Vision Transformer} (ViT). O processo inicia-se com a divisão da imagem de entrada em \textit{patches} retangulares de tamanho fixo, que são linearizados e projetados em vetores de dimensão constante por meio de uma projeção linear (Linear Projection of Flattened Patches). A cada vetor é somado um embedding de posição, de modo a preservar a informação espacial relativa de cada \textit{patch} na sequência. Concatena-se ainda um \textit{token} especial de classe, representado pela posição 0, cuja representação final será utilizada para a classificação. A sequência de tokens resultante é então alimentada no \textit{Transformer Encoder}, composto por blocos idênticos empilhados. Cada bloco aplica, em ordem: normalização, atenção multi-cabeça, uma conexão residual, nova normalização e um bloco MLP com outra conexão residual. Ao final do encoder, a representação do token é passada a uma cabeça de classificação (MLP Head), que produz as probabilidades sobre as classes de saída.
 
 \section{Aprendizado Multimodal}
 
