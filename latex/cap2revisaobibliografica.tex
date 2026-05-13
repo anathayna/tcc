@@ -131,6 +131,79 @@ treinamento e dificulta a captura de contextos muito longos. Essa limitação mo
 desenvolvimento de uma abordagem radicalmente diferente, baseada exclusivamente em
 atenção: o \textit{Transformer}.
 
+\subsection{Aprendizado por \textit{Ensemble}}
+ 
+O aprendizado por \textit{ensemble} (\textit{ensemble learning}) é uma
+estratégia de aprendizado de máquina que combina as predições de múltiplos
+modelos base, denominados aprendizes (\textit{learners}), com o
+objetivo de produzir uma predição final mais robusta e precisa do que
+qualquer modelo individualmente \cite{dietterich2000}. A motivação central
+reside no princípio estatístico de que erros cometidos por modelos distintos
+tendem a ser descorrelacionados, ao agregar suas saídas, os erros individuais
+se cancelam parcialmente, reduzindo a variância e o viés da predição
+combinada \cite{breiman1996}.
+ 
+As principais estratégias de ensemble diferem na forma como os aprendizes
+são treinados e em como suas saídas são combinadas: enquanto alguns métodos
+treinam os modelos de forma independente e depois agregam suas predições por
+votação ou média, outros os treinam sequencialmente, de modo que cada novo
+aprendiz corrija os erros dos anteriores. Em todos os casos, a predição final
+resulta da combinação das saídas individuais, e não de um único modelo
+isolado.
+ 
+\subsubsection{Bagging}
+ 
+O \textit{bagging} (\textit{Bootstrap Aggregating}) \cite{breiman1996}
+treina cada aprendiz de forma independente sobre uma amostra distinta obtida
+por reamostragem com reposição (\textit{bootstrap}) do conjunto de
+treinamento original. A diversidade entre os modelos, decorrente das
+diferentes amostras de treino, reduz a variância do ensemble sem aumentar o
+viés. A predição final é obtida por votação majoritária em classificação ou
+por média em regressão. O \textit{Random Forest} \cite{breiman2001} é o
+algoritmo de bagging mais amplamente utilizado, combinando árvores de
+decisão treinadas sobre subconjuntos aleatórios de dados e de atributos.
+ 
+\subsubsection{Boosting}
+ 
+O \textit{boosting} \cite{freund1997} treina os aprendizes de forma
+sequencial: cada modelo subsequente é treinado para corrigir os erros
+cometidos pelo conjunto de modelos anteriores, atribuindo maior peso às
+amostras classificadas incorretamente. O resultado final é uma combinação
+ponderada dos aprendizes, em que modelos mais precisos recebem maior peso.
+Algoritmos como o \textit{AdaBoost} \cite{freund1997} e o
+\textit{Gradient Boosting} \cite{friedman2001} tornaram-se referências em
+tarefas de classificação estruturada, apresentando resultados
+estado-da-arte em diversas competições e benchmarks.
+ 
+\subsubsection{Stacking}
+ 
+O \textit{stacking} (\textit{stacked generalization}) \cite{wolpert1992}
+adota uma abordagem hierárquica: os aprendizes de nível base são treinados
+sobre os dados originais e suas predições, utilizadas como novas
+características, alimentam um \textit{metamodelo} (\textit{meta-learner})
+que aprende a combinar as saídas de forma ótima. Diferentemente do bagging
+e do boosting, o stacking é adequado para combinar modelos heterogêneos,
+isto é, aprendizes com arquiteturas e insumos distintos, pois o metamodelo
+aprende os pontos fortes e as limitações de cada base para ponderá-los
+adequadamente.
+ 
+\subsubsection{Votação por probabilidade}
+ 
+Em problemas de classificação binária, uma forma direta de combinação é a
+\textbf{votação suave} (\textit{soft voting}), na qual a probabilidade
+predita pela classe positiva é calculada como a média (possivelmente
+ponderada) das probabilidades individuais dos aprendizes:
+ 
+Na votação suave, cada aprendiz produz uma probabilidade de que a entrada
+pertença à classe positiva, e a predição final é calculada como a média
+dessas probabilidades, podendo atribuir pesos distintos a modelos mais
+confiáveis. Diferentemente da votação por maioria, que considera apenas
+a classe vencedora de cada modelo, a votação suave preserva a
+granularidade probabilística das predições individuais, tornando-a
+compatível com limiares de decisão variáveis e com métricas como a AUROC,
+amplamente utilizada em \textit{benchmarks} de detecção de discurso de
+ódio \cite{ArticleHatefulMemesChallenge2020}.
+
 \section{Processamento de Linguagem Natural}
 
 O \textit{Processamento de Linguagem Natural} (PLN) é uma subárea da inteligência artificial dedicada a capacitar computadores a compreender, interpretar e gerar linguagem humana de forma natural \cite{jurafsky2026}, representando textos em formatos numéricos que preservem informações semânticas e sintáticas.
@@ -275,13 +348,11 @@ de maior alcance, sem se limitar apenas às relações locais imediatas.
 
 \begin{figure*}[!htbp]
 	\centering
-	\includegraphics[scale=0.3]{imagens/gcn-message-passing.jpg}
-    \caption{Mecanismo de passagem de mensagens em uma GNN para o nó 1.
-Na etapa de \textit{agregação}, o nó recebe os vetores de representação
-dos seus vizinhos imediatos (nós 2 e 3) na iteração $k$. Na etapa de
-\textit{atualização}, essas informações são combinadas para produzir
-uma nova representação $h_1^{(k+1)}$, mais rica do que a anterior por
-incorporar o contexto local do grafo \cite{sen2022}.}
+	\includegraphics[scale=0.4]{imagens/gcn-message-passing.jpg}
+    \caption{Mecanismo de passagem de mensagens em uma GNN.
+Na etapa de agregação, o nó 1 recebe os vetores de seus vizinhos imediatos;
+na etapa de atualização, essas informações geram uma nova representação
+enriquecida que incorpora o contexto dos vizinhos imediatos \cite{sen2022}.}
     \label{fig:gcn-message-passing}
 \end{figure*}
 
