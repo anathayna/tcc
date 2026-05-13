@@ -222,7 +222,7 @@ No contexto da moderação de memes, o aprendizado multimodal é indispensável.
 
 \subsection{Modelos de linguagem e visão}
 
-O VisualBERT \cite{visualbert2019} foi um marco ao fundir representações visuais e textuais em um único \textit{encoder}, permitindo que o mecanismo de autoatenção descubra alinhamentos implícitos entre as duas  modalidades. O modelo é pré-treinado com duas tarefas: modelagem de linguagem mascarada (Objetivo 1), em que \textit{tokens} de texto são ocultados e preditos com base no contexto visual e linguístico, e previsão de alinhamento entre frase e imagem (Objetivo 2), que verifica se uma legenda corresponde à imagem fornecida. Após o pré-treinamento com dados de legendas, o modelo é ajustado para diferentes tarefas específicas. Uma limitação relevante do VisualBERT é sua dependência de detectores de objetos pré-computados para extrair as regiões visuais, o que torna o \textit{pipeline} mais rígido e computacionalmente custoso.
+O VisualBERT \cite{visualbert2019} foi um marco ao fundir representações visuais e textuais em um único \textit{encoder}, permitindo que o mecanismo de autoatenção descubra alinhamentos implícitos entre as duas  modalidades. A Figura~\ref{fig:visualbert-arch} ilustra que o modelo é pré-treinado com duas tarefas: modelagem de linguagem mascarada (Objetivo 1), em que \textit{tokens} de texto são ocultados e preditos com base no contexto visual e linguístico, e previsão de alinhamento entre frase e imagem (Objetivo 2), que verifica se uma legenda corresponde à imagem fornecida. Após o pré-treinamento com dados de legendas, o modelo é ajustado para diferentes tarefas específicas. Uma limitação relevante do VisualBERT é sua dependência de detectores de objetos pré-computados para extrair as regiões visuais, o que torna o \textit{pipeline} mais rígido e computacionalmente custoso.
 
 \begin{figure*}[!htbp]
 	\centering
@@ -257,69 +257,33 @@ A Figura~\ref{fig:clip-pipeline} ilustra o pipeline do CLIP em duas fases. Na \t
 Assim, enquanto VisualBERT integra modalidades cedo via \textit{Transformer} compartilhado, CLIP alinha via contraste em espaço separado, capturando nuances semânticas complexas. No entanto, para memes com ``contraste de ódio'' irônico (de sutil a explícito), esses modelos binários (odioso e não odioso) demandam modelagem de graus intermediários.
 
 \subsection{Redes Neurais em Grafos}
- 
-Grafos são estruturas matemáticas compostas por um conjunto de \textbf{nós}
+
+Os grafos são estruturas matemáticas compostas por um conjunto de \textbf{nós}
 (ou vértices) e um conjunto de \textbf{arestas} que codificam relações entre
 eles \cite{bondy1976}. Diferentemente de sequências ou grades regulares, os
 grafos podem representar dependências arbitrárias entre entidades: moléculas
-químicas, redes de citações científicas, estruturas sintáticas de sentenças e,
-no contexto multimodal, relações entre regiões visuais e segmentos textuais
-de um mesmo documento.
- 
-As \textbf{Redes Neurais em Grafos} (\textit{Graph Neural Networks})
+químicas, estruturas sintáticas de sentenças e, no contexto multimodal,
+relações entre regiões visuais e segmentos textuais de um mesmo documento.
+
+As \textbf{Redes Neurais em Grafos} (\textit{Graph Neural Networks}, GNNs)
 são uma classe de arquiteturas de aprendizado profundo projetadas para operar
 diretamente sobre dados estruturados em grafos \cite{scarselli2009}. O princípio
 central é a \textbf{passagem de mensagens} (\textit{message passing}): a
-representação de cada nó é atualizada iterativamente agregando as
-representações dos seus vizinhos na topologia do grafo. Após $K$ iterações,
-cada nó incorpora informações de uma vizinhança de raio $K$ no grafo, o que
-permite capturar tanto características locais quanto dependências estruturais
-de maior alcance.
+representação de cada nó é atualizada iterativamente agregando as representações
+dos seus vizinhos na topologia do grafo. Após $n$ iterações, cada nó incorpora
+informações de uma vizinhança de raio $n$, permitindo capturar tanto
+características locais quanto dependências estruturais de maior alcance.
 
-\subsubsection{Redes Neurais Convolucionais em Grafos}
- 
-A formulação mais amplamente adotada de GNN é a \textbf{Rede Neural
-Convolucional em Grafos} (\textit{Graph Convolutional Network} --- GCN),
-proposta por Kipf e Welling \cite{kipf2017}. Dado um grafo com matriz de
-adjacência $\mathbf{A} \in \mathbb{R}^{N \times N}$ e uma matriz de
-características dos nós $\mathbf{H}^{(l)} \in \mathbb{R}^{N \times d}$ na
-camada $l$, a regra de propagação de uma camada GCN é definida como:
- 
-\begin{equation}
-    \mathbf{H}^{(l+1)} = \sigma\!\left(
-        \tilde{\mathbf{D}}^{-\frac{1}{2}}
-        \tilde{\mathbf{A}}\,
-        \tilde{\mathbf{D}}^{-\frac{1}{2}}
-        \mathbf{H}^{(l)}
-        \mathbf{W}^{(l)}
-    \right),
-    \label{eq:gcn}
-\end{equation}
- 
-\noindent onde $\tilde{\mathbf{A}} = \mathbf{A} + \mathbf{I}$ adiciona
-autoconexões a cada nó, $\tilde{\mathbf{D}}$ é a matriz diagonal de graus de
-$\tilde{\mathbf{A}}$, $\mathbf{W}^{(l)}$ é a matriz de pesos aprendível da
-camada $l$ e $\sigma(\cdot)$ é uma função de ativação não linear. A
-normalização simétrica por $\tilde{\mathbf{D}}^{-1/2}$ evita que nós de alto
-grau dominem a agregação, estabilizando o treinamento \cite{kipf2017}.
- 
-Ao empilhar $K$ camadas GCN, cada nó agrega informações provenientes de nós
-a até $K$ saltos de distância, construindo representações progressivamente
-mais ricas em contexto estrutural.
- 
-\subsubsection{Redes Neurais Convolucionais no Aprendizado Multimodal}
- 
-No contexto multimodal, GNNs têm sido empregadas para modelar interações
-entre regiões de imagem e fragmentos textuais. A intuição é representar
-cada região visual detectada e cada \textit{token} ou segmento de texto
-como nós de um grafo, conectando-os por arestas que refletem relações de
-relevância semântica ou proximidade contextual. A convolução em grafo propaga
-informação ao longo dessas conexões, enriquecendo a representação de cada nó
-com o contexto dos seus vizinhos na estrutura conjunta texto-imagem
-\cite{yao2018}. Essa abordagem supera limitações de métodos de fusão baseados
-em simples concatenação, pois captura explicitamente a estrutura relacional
-entre entidades das duas modalidades, em vez de tratá-las como vetores
-independentes.
+No contexto multimodal, GNNs têm sido empregadas para modelar interações entre
+regiões de imagem e fragmentos textuais. Cada região visual detectada e cada
+\textit{token} ou segmento de texto é representado como um nó do grafo,
+conectados por arestas que refletem relações de relevância semântica ou
+proximidade contextual. A convolução em grafo propaga informação ao longo
+dessas conexões, enriquecendo a representação de cada nó com o contexto dos
+seus vizinhos na estrutura conjunta texto-imagem \cite{yao2018}. Essa abordagem
+supera limitações de métodos de fusão baseados em simples concatenação, pois
+captura explicitamente a estrutura relacional entre entidades das duas
+modalidades, em vez de tratá-las como vetores independentes.
 
 \section{Métricas de Avaliação}
 
