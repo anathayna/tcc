@@ -12,7 +12,7 @@ Neste capítulo, apresenta-se a revisão da literatura relacionada aos principai
 
 O discurso de ódio nas redes sociais é um fenômeno complexo e multidimensional, moldado por tensões sociais, políticas e culturais de cada contexto histórico. Ele vai além de agressões explícitas, podendo assumir formas sutis, irônicas ou humorísticas, o que exige uma análise contextual para identificar. Além disso, os grupos que produzem e compartilham esse tipo de conteúdo frequentemente formam comunidades com jargões e práticas próprias, reforçando seu caráter social e coletivo \cite{Ferrari2022}.
 
-Diversos autores definem o discurso de ódio como qualquer manifestação que busca incitar hostilidade, violência ou discriminação contra determinados grupos sociais \cite{sanguinetti2018, fortuna2018}. Tem um impacto amplo, gerando estresse psicológico, exclusão social e contribuindo para a polarização de comunidades \textit{online} \cite{waseem2017}. Em resposta, plataformas de redes sociais têm adotado políticas de moderação de conteúdo que envolvem detecção automática, remoção de publicações e divulgação de relatórios de transparência. Contudo, a eficácia dessas medidas tem sido limitada, pois as decisões variam conforme o tipo de conteúdo, o contexto e os critérios internos das plataformas \cite{Dergacheva2023}. 
+Diversos autores definem o discurso de ódio como qualquer manifestação que busca incitar hostilidade, violência ou discriminação contra determinados grupos sociais \cite{sanguinetti2018, fortuna2018}. Tem um impacto amplo, gerando estresse psicológico, exclusão social e contribuindo para a polarização de comunidades \textit{online} \cite{waseem2017}. Em resposta, plataformas de redes sociais têm adotado políticas de moderação de conteúdo que envolvem detecção automática, remoção de publicações e divulgação de relatórios de transparência. Contudo, a eficácia dessas medidas tem sido limitada, pois as decisões variam conforme o tipo de conteúdo, o contexto e os critérios internos das plataformas \cite{dergacheva2023}. 
 
 Nesse contexto, formatos comunicativos como os memes, com sua ironia e sutileza, agravam o desafio, complicando a aplicação consistente de políticas de moderação e o equilíbrio entre liberdade de expressão e proteção dos usuários \cite{anImage2023}. Portanto, compreender o papel desses memes como vetores de disseminação do discurso de ódio, especialmente em expressões visuais e humorísticas, torna-se essencial.
 
@@ -191,8 +191,7 @@ adequadamente.
  
 Em problemas de classificação binária, uma forma direta de combinação é a
 \textbf{votação suave} (\textit{soft voting}), na qual a probabilidade
-predita pela classe positiva é calculada como a média (possivelmente
-ponderada) das probabilidades individuais dos aprendizes:
+predita pela classe positiva é calculada como a média das probabilidades individuais dos aprendizes.
  
 Na votação suave, cada aprendiz produz uma probabilidade de que a entrada
 pertença à classe positiva, e a predição final é calculada como a média
@@ -254,6 +253,30 @@ O pré-treinamento do BERT é realizado por meio de dois objetivos. O primeiro �
 
 A Figura~\ref{fig:bert-model} ilustra as duas etapas do ciclo de vida do BERT. No pré-treinamento, a entrada é composta por sequências de tokens iniciadas pelo marcador especial \texttt{[CLS]} e delimitadas pelo marcador \texttt{[SEP]}, sendo cada token representado por um vetor que combina \textit{embeddings} de conteúdo, de posição e de
 segmento. No \textit{fine-tuning}, os parâmetros obtidos no pré-treinamento são utilizados como ponto de partida e ajustados de forma supervisionada para tarefas específicas, como análise de sentimentos, resposta a perguntas e reconhecimento de entidades nomeadas.
+
+\subsection{Grandes Modelos de Linguagem}
+
+A consolidação do paradigma do BERT
+motivou o desenvolvimento de modelos cada vez maiores. Pesquisadores
+observaram que, ao escalar simultaneamente o número de parâmetros, o volume
+de dados de treinamento e o poder computacional empregado, modelos baseados
+na arquitetura \textit{Transformer} passavam a exibir capacidades qualitativas
+ausentes em versões menores \cite{wei2022emergent}. Essa constatação impulsionou uma nova
+geração de sistemas conhecidos como Grandes Modelos de Linguagem
+(\textit{Large Language Models}, LLMs).
+
+Enquanto o BERT utiliza apenas o codificador
+(\textit{encoder}) do \textit{Transformer} para produzir representações
+contextualizadas, os LLMs adotam predominantemente a arquitetura de
+decodificador (\textit{decoder-only}), treinada com o objetivo de
+modelagem de linguagem autorregressiva. Dado um prefixo de texto, o modelo
+aprende a prever o próximo \textit{token}, repetindo o processo
+autorregressivamente até um critério de parada \cite{brown2020gpt3}.
+Treinados em grandes dados textuais extraídos da \textit{internet}, modelos
+como a família GPT \cite{brown2020gpt3} e LLaMA \cite{touvron2023llama}
+atingiram dezenas de bilhões de parâmetros e demonstraram desempenho notável
+em tarefas de geração de texto, resposta a perguntas, raciocínio e síntese
+de informações.
 
 \section{Visão Computacional}
  
@@ -371,7 +394,7 @@ modalidades, em vez de tratá-las como vetores independentes.
 
 As métricas de avaliação são fundamentais em qualquer tarefa de classificação, pois diferentes métricas capturam aspectos distintos do comportamento do modelo e podem levar a conclusões contraditórias sobre sua qualidade \cite{sokolova2009}. Esta seção apresenta as principais métricas utilizadas.
 
-A matriz de confusão é uma representação tabular que sintetiza os resultados de um classificador binário ao cruzar as classes reais dos exemplos com as classes preditas pelo modelo \cite{Fawcett2006}. Para um problema de classificação binária, ela é composta por quatro células, conforme apresentado na Tabela~\ref{tab:confusion_matrix}.
+A matriz de confusão é uma representação tabular que sintetiza os resultados de um classificador binário ao cruzar as classes reais dos exemplos com as classes preditas pelo modelo \cite{fawcett2006}. Para um problema de classificação binária, ela é composta por quatro células, conforme apresentado na Tabela~\ref{tab:confusion_matrix}.
  
 \begin{table}[ht]
 \centering
@@ -387,7 +410,7 @@ A matriz de confusão é uma representação tabular que sintetiza os resultados
 \end{tabular}
 \end{table}
  
-No contexto da detecção de memes odiosos, a classe positiva corresponde ao meme classificado como odioso. Um \textit{Verdadeiro Positivo} (VP) ocorre quando o modelo identifica corretamente um meme odioso; um \textit{Verdadeiro Negativo} (VN), quando classifica corretamente um meme não odioso. Os erros são de dois tipos: o \textit{Falso Positivo} (FP), em que um conteúdo inofensivo é incorretamente sinalizado como odioso, implicando uma censura indevida, e o \textit{Falso Negativo} (FN), em que um meme efetivamente odioso passa sem detecção, perpetuando seu alcance nocivo \cite{Fawcett2006}. A distinção entre esses dois tipos de erro tem implicações práticas distintas para sistemas de moderação, e a matriz de confusão fornece a base para o cálculo das demais métricas descritas a seguir.
+No contexto da detecção de memes odiosos, a classe positiva corresponde ao meme classificado como odioso. Um \textit{Verdadeiro Positivo} (VP) ocorre quando o modelo identifica corretamente um meme odioso; um \textit{Verdadeiro Negativo} (VN), quando classifica corretamente um meme não odioso. Os erros são de dois tipos: o \textit{Falso Positivo} (FP), em que um conteúdo inofensivo é incorretamente sinalizado como odioso, implicando uma censura indevida, e o \textit{Falso Negativo} (FN), em que um meme efetivamente odioso passa sem detecção, perpetuando seu alcance nocivo \cite{fawcett2006}. A distinção entre esses dois tipos de erro tem implicações práticas distintas para sistemas de moderação, e a matriz de confusão fornece a base para o cálculo das demais métricas descritas a seguir.
 
 A \textbf{acurácia} é a métrica mais intuitiva de avaliação, expressa pela proporção de exemplos classificados corretamente sobre o total de exemplos:
  
@@ -437,7 +460,7 @@ de amostras negativas incorretamente classificadas como positivas:
     TFP = \frac{FP}{FP + TN}
 \end{equation}
  
-A \textbf{Curva ROC} (\textit{Receiver Operating Characteristic}) é construída variando continuamente o limiar de decisão de 1 a 0 e plotando os pares (TFP, TVP) resultantes em um espaço bidimensional \cite{Fawcett2006}. O ponto $(0, 1)$ representa o classificador perfeito, que detecta todos os positivos sem nenhum falso alarme; a diagonal principal corresponde ao desempenho de um classificador aleatório. A \textbf{AUROC} (\textit{Area Under the ROC Curve}) resume a curva ROC em um único escalar: a área sob essa curva, com valor 1,0 para o classificador perfeito e 0,5 para o aleatório \cite{bradley1997}.
+A \textbf{Curva ROC} (\textit{Receiver Operating Characteristic}) é construída variando continuamente o limiar de decisão de 1 a 0 e plotando os pares (TFP, TVP) resultantes em um espaço bidimensional \cite{fawcett2006}. O ponto $(0, 1)$ representa o classificador perfeito, que detecta todos os positivos sem nenhum falso alarme; a diagonal principal corresponde ao desempenho de um classificador aleatório. A \textbf{AUROC} (\textit{Area Under the ROC Curve}) resume a curva ROC em um único escalar: a área sob essa curva, com valor 1,0 para o classificador perfeito e 0,5 para o aleatório \cite{bradley1997}.
 
 \begin{figure}[htbp]
     \centering
@@ -446,7 +469,7 @@ A \textbf{Curva ROC} (\textit{Receiver Operating Characteristic}) é construída
     \label{fig:roc-auroc}
 \end{figure}
 
-A AUROC possui uma interpretação probabilística direta, correspondendo à probabilidade de que, dado um par composto por um exemplo positivo e um exemplo negativo escolhidos aleatoriamente, o modelo atribua escore mais alto ao exemplo positivo \cite{Fawcett2006}. Essa propriedade torna a AUROC especialmente adequada para conjuntos de dados desbalanceados: como a métrica é calculada sobre toda a curva ROC — e não em um único limiar —, ela avalia o poder discriminativo do modelo independentemente da distribuição das classes. Em um conjunto com forte desbalanceamento, a escolha de um limiar padrão de 0,5 pode ser subótima, e a AUROC captura o desempenho relativo do modelo de forma invariante a essa escolha \cite{he2009}. Por essas razões, o \textit{Hateful Memes Challenge} adota a AUROC como métrica primária de avaliação \cite{ArticleHatefulMemesChallenge2020}.
+A AUROC possui uma interpretação probabilística direta, correspondendo à probabilidade de que, dado um par composto por um exemplo positivo e um exemplo negativo escolhidos aleatoriamente, o modelo atribua escore mais alto ao exemplo positivo \cite{fawcett2006}. Essa propriedade torna a AUROC especialmente adequada para conjuntos de dados desbalanceados: como a métrica é calculada sobre toda a curva ROC — e não em um único limiar —, ela avalia o poder discriminativo do modelo independentemente da distribuição das classes. Em um conjunto com forte desbalanceamento, a escolha de um limiar padrão de 0,5 pode ser subótima, e a AUROC captura o desempenho relativo do modelo de forma invariante a essa escolha \cite{he2009}. Por essas razões, o \textit{Hateful Memes Challenge} adota a AUROC como métrica primária de avaliação \cite{ArticleHatefulMemesChallenge2020}.
 
 \section{Lógica Fuzzy e classificação gradual}
 
