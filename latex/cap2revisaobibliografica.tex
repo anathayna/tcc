@@ -207,7 +207,7 @@ Mais recentemente, o \textit{Vision Transformer} (ViT) \cite{dosovitskiy2021} tr
 
 \begin{figure*}[!htbp]
 	\centering
-	\includegraphics[scale=0.4]{imagens/vit.png}
+	\includegraphics[scale=0.5]{imagens/vit.png}
     \caption{Arquitetura do \textit{Vision Transformer} \cite{dosovitskiy2021}.}
     \label{fig:vit-arch}
 \end{figure*}
@@ -260,9 +260,8 @@ Assim, enquanto VisualBERT integra modalidades cedo via \textit{Transformer} com
 
 Os grafos são estruturas matemáticas compostas por um conjunto de \textbf{nós}
 (ou vértices) e um conjunto de \textbf{arestas} que codificam relações entre
-eles \cite{bondy1976}. Diferentemente de sequências ou grades regulares, os
-grafos podem representar dependências arbitrárias entre entidades: moléculas
-químicas, estruturas sintáticas de sentenças e, no contexto multimodal,
+eles \cite{bondy1976}. Diferentemente de sequências (como texto e áudio) ou grades regulares
+(como pixels em imagens), os grafos podem representar dependências arbitrárias entre entidades como moléculas químicas, estruturas sintáticas de sentenças e, no contexto multimodal,
 relações entre regiões visuais e segmentos textuais de um mesmo documento.
 
 As \textbf{Redes Neurais em Grafos} (\textit{Graph Neural Networks}, GNNs)
@@ -270,11 +269,23 @@ são uma classe de arquiteturas de aprendizado profundo projetadas para operar
 diretamente sobre dados estruturados em grafos \cite{scarselli2009}. O princípio
 central é a \textbf{passagem de mensagens} (\textit{message passing}): a
 representação de cada nó é atualizada iterativamente agregando as representações
-dos seus vizinhos na topologia do grafo. Após $n$ iterações, cada nó incorpora
-informações de uma vizinhança de raio $n$, permitindo capturar tanto
-características locais quanto dependências estruturais de maior alcance.
+dos seus vizinhos na topologia do grafo. A cada iteração, a janela de contexto de cada nó se expande progressivamente: na primeira iteração, o nó agrega apenas informações dos seus vizinhos diretos; na segunda, incorpora também os vizinhos dos vizinhos; e assim por diante.
+Com iterações suficientes, cada nó passa a incorporar dependências estruturais
+de maior alcance, sem se limitar apenas às relações locais imediatas.
 
-No contexto multimodal, GNNs têm sido empregadas para modelar interações entre
+\begin{figure*}[!htbp]
+	\centering
+	\includegraphics[scale=0.3]{imagens/gcn-message-passing.jpg}
+    \caption{Mecanismo de passagem de mensagens em uma GNN para o nó 1.
+Na etapa de \textit{agregação}, o nó recebe os vetores de representação
+dos seus vizinhos imediatos (nós 2 e 3) na iteração $k$. Na etapa de
+\textit{atualização}, essas informações são combinadas para produzir
+uma nova representação $h_1^{(k+1)}$, mais rica do que a anterior por
+incorporar o contexto local do grafo \cite{sen2022}.}
+    \label{fig:gcn-message-passing}
+\end{figure*}
+
+No contexto multimodal, as GNNs têm sido empregadas para modelar interações entre
 regiões de imagem e fragmentos textuais. Cada região visual detectada e cada
 \textit{token} ou segmento de texto é representado como um nó do grafo,
 conectados por arestas que refletem relações de relevância semântica ou
