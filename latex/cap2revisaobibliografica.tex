@@ -139,7 +139,7 @@ que quantifica o erro entre as predições do modelo e os rótulos esperados.
 Esse processo de minimização é conduzido por um otimizador, que
 determina como os parâmetros são atualizados a cada passo com base no
 gradiente da função de perda \cite{goodfellow2016}. Paralelamente, técnicas
-de regularização visam evitar o \textbf{\textit{overfitting}}, que
+de regularização visam evitar o \textit{overfitting}, que
 ocorre quando o modelo memoriza os dados de treinamento em vez de aprender
 padrões generalizáveis, resultando em desempenho degradado em dados não
 vistos \cite{goodfellow2016}.
@@ -147,7 +147,7 @@ vistos \cite{goodfellow2016}.
 O treinamento é organizado em épocas (\textit{epochs}), que
 corresponde a uma passagem completa do otimizador por todos os exemplos do
 conjunto de treinamento \cite{goodfellow2016}. Na prática, o conjunto de
-treinamento é dividido em \textbf{\textit{mini-batches}} de tamanho fixo, e
+treinamento é dividido em \textit{mini-batches} de tamanho fixo, e
 o gradiente é calculado e os parâmetros são atualizados uma vez por
 \textit{mini-batch}. Dessa forma, uma única época é composta por múltiplas
 iterações de atualização. O modelo é avaliado no conjunto de validação ao
@@ -171,9 +171,7 @@ redor do mínimo global nas épocas finais, onde a taxa reduzida favorece um
 ajuste fino mais preciso. Em sua variante com reinicializações quentes
 (\textit{Cosine Annealing with Warm Restarts}), a taxa é periodicamente
 restaurada ao valor máximo, promovendo escapes de mínimos locais ao longo
-do treinamento. No presente trabalho, o Cosine Annealing é utilizado em
-conjunto com o AdamW para controlar a taxa de aprendizado ao longo das
-épocas de treinamento.
+do treinamento.
 
 O \textit{Dropout} \cite{srivastava2014} é uma técnica de
 regularização que, durante o treinamento, desativa aleatoriamente uma
@@ -192,9 +190,7 @@ predefinido de épocas consecutivas, denominado paciência
 (\textit{patience}). Ao encerrar o treinamento antes que o modelo comece a
 memorizar ruídos do conjunto de treinamento, a parada antecipada preserva a
 capacidade de generalização sem exigir que o número total de épocas seja
-fixado manualmente. No presente trabalho, a parada antecipada é configurada
-com paciência de cinco épocas, e os pesos do modelo com melhor desempenho
-de validação são restaurados ao término do treinamento.
+fixado manualmente.
 
 \subsection{Aprendizado por \textit{Ensemble}}
  
