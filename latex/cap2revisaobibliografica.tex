@@ -212,8 +212,6 @@ aprendiz corrija os erros dos anteriores. Em todos os casos, a predição final
 resulta da combinação das saídas individuais, e não de um único modelo
 isolado.
  
-\subsubsection{Bagging}
- 
 O \textit{bagging} (\textit{Bootstrap Aggregating}) \cite{breiman1996}
 treina cada aprendiz de forma independente sobre uma amostra distinta obtida
 por reamostragem com reposição (\textit{bootstrap}) do conjunto de
@@ -223,8 +221,6 @@ viés. A predição final é obtida por votação majoritária em classificaçã
 por média em regressão. O \textit{Random Forest} \cite{breiman2001} é o
 algoritmo de bagging mais amplamente utilizado, combinando árvores de
 decisão treinadas sobre subconjuntos aleatórios de dados e de atributos.
- 
-\subsubsection{Boosting}
  
 O \textit{boosting} \cite{freund1997} treina os aprendizes de forma
 sequencial: cada modelo subsequente é treinado para corrigir os erros
@@ -236,8 +232,6 @@ Algoritmos como o \textit{AdaBoost} \cite{freund1997} e o
 tarefas de classificação estruturada, apresentando resultados
 estado-da-arte em diversas competições e benchmarks.
  
-\subsubsection{Stacking}
- 
 O \textit{stacking} (\textit{stacked generalization}) \cite{wolpert1992}
 adota uma abordagem hierárquica: os aprendizes de nível base são treinados
 sobre os dados originais e suas predições, utilizadas como novas
@@ -247,8 +241,6 @@ e do boosting, o stacking é adequado para combinar modelos heterogêneos,
 isto é, aprendizes com arquiteturas e insumos distintos, pois o metamodelo
 aprende os pontos fortes e as limitações de cada base para ponderá-los
 adequadamente.
- 
-\subsubsection{Votação por probabilidade}
  
 Em problemas de classificação binária, uma forma direta de combinação é a
 \textbf{votação suave} (\textit{soft voting}), na qual a probabilidade
