@@ -32,7 +32,7 @@ Nesse cenário, a aplicação de técnicas de aprendizado de máquina tornou-se 
 
 A moderação de conteúdo surgiu nos primórdios da internet, na década de 80, com fóruns \textit{online} onde moderadores voluntários aprovavam postagens para preservar discussões civilizadas \cite{Ackermann2020}. Essa prática evoluiu para políticas privadas em plataformas modernas, impulsionada pelo combate a \textit{spam}, assédio e discursos de ódio. Com o crescimento exponencial do acesso à internet, a moderação se tornou em uma operação de escala industrial, levando gigantes de tecnologia a contratar milhares de revisores para analisar denúncias, um trabalho muitas vezes invisível e marginalizado \cite{gillespie2018, gray2019}. Hoje, diante de bilhões de postagens diárias, o foco está sobre a moderação automatizada, na qual algoritmos de inteligência artificial filtram a maior parte do conteúdo proibido antes mesmo de qualquer intervenção humana \cite{gillespie2020}.
 
-As abordagens tradicionais de moderação automatizada são predominantemente baseadas em modelos unimodais que analisam apenas o texto por meio de Processamento de Linguagem Natural (PLN) ou apenas a imagem por meio de Visão Computacional. Porém, os memes são inerentemente multimodais, e o ódio frequentemente só se manifesta na combinação entre as duas modalidades. Isso torna 
+As abordagens tradicionais de moderação automatizada são predominantemente baseadas em modelos unimodais que analisam apenas o texto por meio de Processamento de Linguagem Natural ou apenas a imagem por meio de Visão Computacional. Porém, os memes são inerentemente multimodais, e o ódio frequentemente só se manifesta na combinação entre as duas modalidades. Isso torna 
 necessário o uso de modelos multimodais capazes de processar texto e imagem de forma integrada, o que exige uma compreensão sólida das técnicas de aprendizado de máquina.
 
 \section{Aprendizado de Máquina}
@@ -130,6 +130,71 @@ sequenciais, cada passo depende do anterior, o que limita a paralelização dura
 treinamento e dificulta a captura de contextos muito longos. Essa limitação motivou o
 desenvolvimento de uma abordagem radicalmente diferente, baseada exclusivamente em
 atenção: o \textit{Transformer}.
+
+\subsection{Técnicas de Otimização e Regularização}
+ 
+O processo de treinamento de uma rede neural consiste em ajustar
+iterativamente seus parâmetros para minimizar uma função de perda
+que quantifica o erro entre as predições do modelo e os rótulos esperados.
+Esse processo de minimização é conduzido por um otimizador, que
+determina como os parâmetros são atualizados a cada passo com base no
+gradiente da função de perda \cite{goodfellow2016}. Paralelamente, técnicas
+de regularização visam evitar o \textbf{\textit{overfitting}}, que
+ocorre quando o modelo memoriza os dados de treinamento em vez de aprender
+padrões generalizáveis, resultando em desempenho degradado em dados não
+vistos \cite{goodfellow2016}.
+
+O treinamento é organizado em épocas (\textit{epochs}), que
+corresponde a uma passagem completa do otimizador por todos os exemplos do
+conjunto de treinamento \cite{goodfellow2016}. Na prática, o conjunto de
+treinamento é dividido em \textbf{\textit{mini-batches}} de tamanho fixo, e
+o gradiente é calculado e os parâmetros são atualizados uma vez por
+\textit{mini-batch}. Dessa forma, uma única época é composta por múltiplas
+iterações de atualização. O modelo é avaliado no conjunto de validação ao
+final de cada época, permitindo monitorar sua capacidade de generalização
+ao longo do treinamento.
+
+Manter a taxa de aprendizado constante ao longo do treinamento é subótimo:
+valores altos aceleram a convergência inicial, mas podem impedir que o
+modelo se ajuste a mínimos precisos nas épocas finais; valores baixos,
+por sua vez, tornam o aprendizado inicial proibitivamente lento
+\cite{loshchilov2017}. Os agendadores de taxa de aprendizado
+(\textit{learning rate schedulers}) ajustam esse hiperparâmetro
+automaticamente ao longo do treinamento.
+ 
+O \textit{Cosine Annealing} \cite{loshchilov2017} reduz a taxa de
+aprendizado seguindo uma curva cosseno: parte de um valor máximo no início
+do treinamento e decai suavemente até um valor mínimo próximo de zero,
+seguindo o formato de meio período de uma função cosseno. Essa trajetória
+evita tanto a estagnação em mínimos locais rasos, quanto as oscilações ao
+redor do mínimo global nas épocas finais, onde a taxa reduzida favorece um
+ajuste fino mais preciso. Em sua variante com reinicializações quentes
+(\textit{Cosine Annealing with Warm Restarts}), a taxa é periodicamente
+restaurada ao valor máximo, promovendo escapes de mínimos locais ao longo
+do treinamento. No presente trabalho, o Cosine Annealing é utilizado em
+conjunto com o AdamW para controlar a taxa de aprendizado ao longo das
+épocas de treinamento.
+
+O \textit{Dropout} \cite{srivastava2014} é uma técnica de
+regularização que, durante o treinamento, desativa aleatoriamente uma
+fração dos neurônios de uma camada a cada iteração, zerando suas ativações.
+Ao impedir que o modelo se apoie excessivamente em qualquer subconjunto de
+neurônios, o \textit{Dropout} força a rede a aprender representações distribuídas e
+mais robustas, reduzindo o \textit{overfitting}. Na inferência, todos os
+neurônios são ativados e suas saídas são escalonadas pela taxa de Dropout,
+mantendo a consistência com o comportamento esperado durante o treinamento.
+ 
+A parada antecipada (\textit{early stopping}) \cite{prechelt1998}
+é uma estratégia complementar de regularização que monitora o desempenho do
+modelo no conjunto de validação ao final de cada época e interrompe o
+treinamento quando esse desempenho deixa de melhorar por um número
+predefinido de épocas consecutivas, denominado paciência
+(\textit{patience}). Ao encerrar o treinamento antes que o modelo comece a
+memorizar ruídos do conjunto de treinamento, a parada antecipada preserva a
+capacidade de generalização sem exigir que o número total de épocas seja
+fixado manualmente. No presente trabalho, a parada antecipada é configurada
+com paciência de cinco épocas, e os pesos do modelo com melhor desempenho
+de validação são restaurados ao término do treinamento.
 
 \subsection{Aprendizado por \textit{Ensemble}}
  
