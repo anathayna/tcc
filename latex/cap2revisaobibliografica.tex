@@ -600,37 +600,7 @@ A lógica \textit{fuzzy} \cite{Zadeh1965} estende a lógica booleana clássica a
 \label{fig:fuzzy-variavel}
 \end{figure}
 
-A primeira etapa na construção de um sistema \textit{fuzzy} consiste em definir as funções de pertinência (\textit{membership functions}) que traduzem valores numéricos contínuos em graus de pertencimento a cada conjunto linguístico \cite{Ross2010}.
-
-\begin{itemize}
-    \item \textbf{Função trapezoidal} (\texttt{trapmf}): definida por quatro
-    parâmetros $[a, b, c, d]$ conforme a Equação~\ref{eq:trapmf}.  Produz grau
-    máximo ($\mu = 1$) no platô $[b, c]$ e decaimento linear nas rampas $[a,b]$
-    e $[c,d]$.  Por saturar em 1 para toda uma faixa de valores, é a escolha
-    natural para os \textbf{extremos} do universo de discurso: o conjunto
-    \textit{inofensivo} (scores muito próximos de 0) e o conjunto
-    \textit{extremo} (scores muito próximos de 1).
-
-    \begin{equation}
-    \mu_{\text{trap}}(x;\,a,b,c,d) =
-        \max\!\left(\min\!\left(\frac{x-a}{b-a},\;1,\;\frac{d-x}{d-c}\right),\;0\right)
-    \label{eq:trapmf}
-    \end{equation}
-
-    \item \textbf{Função triangular} (\texttt{trimf}): definida por três
-    parâmetros $[a, b, c]$ conforme a Equação~\ref{eq:trimf}.  Atinge $\mu = 1$
-    somente no vértice $b$ e cai linearmente a zero nas extremidades.  É
-    adequada para representar conjuntos de \textbf{transição} — como
-    \textit{questionável}, \textit{moderado} e \textit{crítico} —, onde um único
-    valor central concentra a pertinência máxima e os valores adjacentes
-    pertencem parcialmente a conjuntos vizinhos.
-
-    \begin{equation}
-    \mu_{\text{tri}}(x;\,a,b,c) =
-        \max\!\left(\min\!\left(\frac{x-a}{b-a},\;\frac{c-x}{c-b}\right),\;0\right)
-    \label{eq:trimf}
-    \end{equation}
-\end{itemize}
+A primeira etapa na construção de um sistema \textit{fuzzy} consiste em definir as funções de pertinência (\textit{membership functions}) que traduzem valores numéricos contínuos em graus de pertencimento a cada conjunto linguístico \cite{ross2010}.
  
 Os modelos de aprendizado profundo capturam implicitamente essa gradação ao produzirem escores probabilísticos contínuos, que funcionam como funções de pertinência: um escore próximo de 1 indica alta pertinência à classe odiosa, enquanto valores intermediários refletem incerteza semântica. No sistema proposto neste trabalho, esses escores contínuos são interpretados por meio de conjuntos \textit{fuzzy} que mapeiam o grau de ódio em categorias linguísticas graduais, como ``muito baixo'', ``baixo'', ``médio'', ``alto'' e ``muito alto'', conforme ilustrado na Figura~\ref{fig:fuzzy-variavel}.
 
