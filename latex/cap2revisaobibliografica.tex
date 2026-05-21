@@ -192,9 +192,9 @@ memorizar ruídos do conjunto de treinamento, a parada antecipada preserva a
 capacidade de generalização sem exigir que o número total de épocas seja
 fixado manualmente.
 
-\subsection{Aprendizado por \textit{Ensemble}}
+\subsection{Aprendizado por conjunto}
  
-O aprendizado por \textit{ensemble} (\textit{ensemble learning}) é uma
+O aprendizado por conjunto (\textit{ensemble learning}) é uma
 estratégia de aprendizado de máquina que combina as predições de múltiplos
 modelos base, denominados aprendizes (\textit{learners}), com o
 objetivo de produzir uma predição final mais robusta e precisa do que
@@ -204,7 +204,7 @@ tendem a ser descorrelacionados, ao agregar suas saídas, os erros individuais
 se cancelam parcialmente, reduzindo a variância e o viés da predição
 combinada \cite{breiman1996}.
  
-As principais estratégias de ensemble diferem na forma como os aprendizes
+As principais estratégias de \textit{ensemble} diferem na forma como os aprendizes
 são treinados e em como suas saídas são combinadas: enquanto alguns métodos
 treinam os modelos de forma independente e depois agregam suas predições por
 votação ou média, outros os treinam sequencialmente, de modo que cada novo
@@ -216,7 +216,7 @@ O \textit{bagging} (\textit{Bootstrap Aggregating}) \cite{breiman1996}
 treina cada aprendiz de forma independente sobre uma amostra distinta obtida
 por reamostragem com reposição (\textit{bootstrap}) do conjunto de
 treinamento original. A diversidade entre os modelos, decorrente das
-diferentes amostras de treino, reduz a variância do ensemble sem aumentar o
+diferentes amostras de treino, reduz a variância do \textit{ensemble} sem aumentar o
 viés. A predição final é obtida por votação majoritária em classificação ou
 por média em regressão. O \textit{Random Forest} \cite{breiman2001} é o
 algoritmo de bagging mais amplamente utilizado, combinando árvores de
