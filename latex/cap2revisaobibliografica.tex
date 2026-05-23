@@ -403,44 +403,6 @@ A Figura~\ref{fig:clip-pipeline} ilustra o pipeline do CLIP em duas fases. Na \t
 
 Assim, enquanto VisualBERT integra modalidades cedo via \textit{Transformer} compartilhado, CLIP alinha via contraste em espaço separado, capturando nuances semânticas complexas. No entanto, para memes com ``contraste de ódio'' irônico (de sutil a explícito), esses modelos binários (odioso e não odioso) demandam modelagem de graus intermediários.
 
-\subsection{Redes Neurais em Grafos}
-
-Os grafos são estruturas matemáticas compostas por um conjunto de \textbf{nós}
-(ou vértices) e um conjunto de \textbf{arestas} que codificam relações entre
-eles \cite{bondy1976}. Diferentemente de sequências (como texto e áudio) ou grades regulares
-(como pixels em imagens), os grafos podem representar dependências arbitrárias entre entidades como moléculas químicas, estruturas sintáticas de sentenças e, no contexto multimodal,
-relações entre regiões visuais e segmentos textuais de um mesmo documento.
-
-As Redes Neurais em Grafos (\textit{Graph Neural Networks}, GNNs)
-são uma classe de arquiteturas de aprendizado profundo projetadas para operar
-diretamente sobre dados estruturados em grafos \cite{scarselli2009}. O princípio
-central é a \textbf{passagem de mensagens} (\textit{message passing}): a
-representação de cada nó é atualizada iterativamente agregando as representações
-dos seus vizinhos na topologia do grafo. A cada iteração, a janela de contexto de cada nó se expande progressivamente: na primeira iteração, o nó agrega apenas informações dos seus vizinhos diretos; na segunda, incorpora também os vizinhos dos vizinhos; e assim por diante.
-Com iterações suficientes, cada nó passa a incorporar dependências estruturais
-de maior alcance, sem se limitar apenas às relações locais imediatas.
-
-\begin{figure*}[!htbp]
-	\centering
-	\includegraphics[scale=0.4]{imagens/gcn-message-passing.jpg}
-    \caption{Mecanismo de passagem de mensagens em uma GNN.
-Na etapa de agregação, o nó 1 recebe os vetores de seus vizinhos imediatos;
-na etapa de atualização, essas informações geram uma nova representação
-enriquecida que incorpora o contexto dos vizinhos imediatos \cite{sen2022}.}
-    \label{fig:gcn-message-passing}
-\end{figure*}
-
-No contexto multimodal, as GNNs têm sido empregadas para modelar interações entre
-regiões de imagem e fragmentos textuais. Cada região visual detectada e cada
-\textit{token} ou segmento de texto é representado como um nó do grafo,
-conectados por arestas que refletem relações de relevância semântica ou
-proximidade contextual. A convolução em grafo propaga informação ao longo
-dessas conexões, enriquecendo a representação de cada nó com o contexto dos
-seus vizinhos na estrutura conjunta texto-imagem \cite{yao2018}. Essa abordagem
-supera limitações de métodos de fusão baseados em simples concatenação, pois
-captura explicitamente a estrutura relacional entre entidades das duas
-modalidades, em vez de tratá-las como vetores independentes.
-
 \section{Métricas de Avaliação}
 
 As métricas de avaliação são fundamentais em qualquer tarefa de classificação, pois diferentes métricas capturam aspectos distintos do comportamento do modelo e podem levar a conclusões contraditórias sobre sua qualidade \cite{sokolova2009}. Esta seção apresenta as principais métricas utilizadas.
@@ -662,31 +624,3 @@ Para superar essa limitação, os autores introduzem um mecanismo de interação
 \end{figure*}
  
 Como mostrado na Figura~\ref{fig:hateclipper-arch}, a arquitetura processa o meme pelos \textit{encoders} de imagem e texto do CLIP congelados para preservar as representações pré-treinadas e focar o aprendizado na fusão multimodal, e as saídas são projetadas por camadas treináveis para um espaço comum de dimensionalidade reduzida. Ao ser avaliado nos \textit{benchmarks} do \textit{Hateful Memes Challenge}, o \textit{Hate-CLIPper} demonstrou ganhos consistentes sobre \textit{baselines} com fusão simples, evidenciando que a modelagem explícita das interações entre modalidades é fundamental para a detecção de ódio em memes \cite{kumar2022}.
-
-\subsection{\textit{RGCL}: Aprendizado contrastivo guiado por recuperação para detecção de memes odiosos}
-
-O RGCL (\textit{Regional Graph Contrastive Learning}) \cite{RGCL2024} adota uma perspectiva distinta dos modelos anteriores ao modelar as relações entre regiões visuais e segmentos textuais por meio de grafos. Em vez de tratar a imagem como um único vetor global, o RGCL constrói um grafo cujos nós representam regiões visuais detectadas e \textit{tokens} textuais salientes, e cujas arestas capturam relações de co-referência, relevância semântica e proximidade contextual entre eles. Operações de \textit{graph convolution} propagam informação ao longo dessas conexões, construindo representações dos nós enriquecidas pelo contexto dos vizinhos na estrutura do grafo.
-
-\begin{figure*}[!htbp]
-\centering
-\includegraphics[scale=0.085]{imagens/RGCL_Model.png}
-\caption{Arquitetura do \textit{RGCL}~\cite{RGCL2024}.}
-\label{fig:rgcl-model}
-\end{figure*}
- 
-O componente contrastivo do RGCL utiliza pares de memes similares e dissimilares para refinar as representações aprendidas: memes com conteúdo odioso análogo são aproximados no espaço de \textit{embeddings}, enquanto memes de classes distintas são separados \cite{RGCL2024}. Essa combinação entre modelagem relacional por grafos e aprendizado contrastivo permite ao modelo capturar tanto as interações locais entre regiões específicas da imagem e trechos do texto quanto padrões globais de similaridade semântica entre memes, abordando de forma mais granular a complexidade semântica característica do discurso de ódio expresso nesse formato multimodal.
-
-\subsection{\textit{IntMeme}: Utilizando grandes modelos multimodais para a detecção de memes de ódio com decisões explicáveis}
-
-O \textit{IntMeme} \cite{hee2025} é um \textit{framework} publicado que aborda simultaneamente dois desafios centrais na detecção de memes odiosos: a melhoria da acurácia de classificação e a explicabilidade das decisões tomadas pelo modelo. O trabalho parte de uma crítica aos sistemas baseados em modelos de visão-linguagem pré-treinados, cujo processo de classificação depende de conhecimento implícito adquirido durante o pré-treinamento e de mecanismos de atenção de difícil interpretação, tornando suas decisões opacas.
-
-Para contornar essa opacidade, o \textit{IntMeme} adota uma estratégia de duas etapas. Na primeira, grandes modelos multimodais (\textit{LMMs}) são utilizados em modo \textit{zero-shot} para gerar interpretações textuais dos memes em linguagem natural, explicitando os elementos visuais, o texto sobreposto, o contexto implícito e os aspectos que tornam o conteúdo potencialmente odioso. Essas interpretações funcionam como um elo entre a percepção multimodal e o processo de classificação, tornando o raciocínio do modelo auditável. Na segunda etapa, o \textit{framework} codifica de forma independente o meme original e sua interpretação gerada por meio de módulos de codificação separados, um módulo de alinhamento visão-linguagem e um módulo de codificação da interpretação, cujas representações são posteriormente combinadas para a classificação final.
-
-O \textit{IntMeme} é avaliado em três conjuntos de dados de detecção de memes odiosos, demonstrando superioridade em relação a modelos estado-da-arte. O trabalho evidencia que ancorar as decisões de classificação em interpretações geradas explicitamente não apenas melhora a acurácia, mas também reduz a dependência de mecanismos implícitos difíceis de inspecionar.
-
-\begin{figure*}[!htbp]
-\centering
-\includegraphics[scale=0.3]{imagens/intmeme.png}
-\caption{Arquitetura do \textit{IntMeme}~\cite{hee2025}.}
-\label{fig:intmeme}
-\end{figure*}
