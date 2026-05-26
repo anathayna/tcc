@@ -1,1 +1,1 @@
-### Identificação de discurso de ódio em memes com aprendizado multimodal
+![](https://github.com/anathayna/tcc/blob/main/assets/zero-shot-arch.png)
