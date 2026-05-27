@@ -1,3 +1,7 @@
-![](https://github.com/anathayna/tcc/blob/main/assets/zero-shot-arch.png)
+# Identificação do discurso de ódio em memes com aprendizado multimodal
 
-![](https://github.com/anathayna/tcc/blob/main/assets/pre-process-arch.png)
+## Experimento 1 - Zero-shot (Baseline)
+
+## Experimento 2 - Pre-processamento
+
+## Experimento 3 - Final-shot
