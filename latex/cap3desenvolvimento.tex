@@ -14,12 +14,19 @@ A pesquisa foi estruturada em três experimentos progressivos, no \textbf{Experi
 
 \begin{figure*}[!htbp]
     \centering
-    \includegraphics[scale=0.35]{imagens/zero-shot-arch.png}
+    \includegraphics[width=0.65\textwidth]{imagens/zero-shot-arch.png}
     \caption{Arquitetura do \textbf{Experimento 1} (\textit{zero-shot}).}
     \label{fig:zero-shot-arch}
 \end{figure*}
 
-No \textbf{Experimento 2} (pré-processamento), a arquitetura é expandida com a introdução de dois módulos de agrupamento não supervisionado. O primeiro realiza o \textit{clustering} semântico dos textos via DBSCAN sobre \textit{embeddings} gerados pelo modelo \textit{SentenceTransformer}. O segundo realiza o \textit{clustering} visual via DBSCAN sobre \textit{embeddings} extraídos por uma ResNet-18. Os índices de cluster resultantes são incorporados ao modelo como \textit{embeddings} aprendíveis, enriquecendo a representação multimodal e auxiliando na separação dos confundidores benignos do banco de dados.
+No \textbf{Experimento 2} (pré-processamento) ilustrado na Figura~\ref{fig:pre-process-arch}, a arquitetura é expandida com a introdução de dois módulos de agrupamento não supervisionado. O primeiro realiza o \textit{clustering} semântico dos textos via DBSCAN sobre \textit{embeddings} gerados pelo modelo \textit{SentenceTransformer}. O segundo realiza o \textit{clustering} visual via DBSCAN sobre \textit{embeddings} extraídos por uma ResNet-18. Os índices de cluster resultantes são incorporados ao modelo como \textit{embeddings} aprendíveis, enriquecendo a representação multimodal e auxiliando na separação dos confundidores benignos do banco de dados.
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=0.65\textwidth]{imagens/pre-process-arch.png}
+    \caption{Arquitetura do \textbf{Experimento 2} (pré-processamento).}
+    \label{fig:pre-process-arch}
+\end{figure*}
 
 No \textbf{Experimento 3} (\textit{final-shot}), é implementado o pipeline completo. Ele integra quatro módulos: o \textbf{HateCLIPper}, responsável pela fusão das representações visuais e textuais do CLIP; o \textbf{RGCL} (\textit{Relational Graph Convolutional Learning}), que propaga informação contextual entre os nós visuais e textuais por meio de uma rede de convolução em grafos; o \textbf{IntMeme Fallback}, árbitro acionado nos casos de alta incerteza; e o \textbf{FuzzyHateGrader}, responsável pela graduação contínua do ódio na saída final.
 
