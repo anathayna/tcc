@@ -7,3 +7,4 @@
 ![](https://github.com/anathayna/tcc/blob/main/assets/pre-process-arch.png)
 
 ## Experimento 3 - Final-shot
+![](https://github.com/anathayna/tcc/blob/main/assets/final-shot-arch.png)
