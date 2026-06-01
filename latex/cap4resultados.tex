@@ -21,6 +21,14 @@ Ao aplicar o pipeline de classificação com Lógica Fuzzy (dividido em 5 catego
 
 Por fim, o estudo de ablação validou a arquitetura proposta: as abordagens unimodais ("Somente Imagem" e "Somente Texto") obtiveram acurácias menores (63,60\% e 63,25\%, respectivamente), enquanto o "Modelo Completo" obteve o melhor desempenho geral em termos de Acurácia (68,65\%) e AUC-ROC (0,7336).
 
+%Experimento 3
+
+Nesta seção, apresentam-se os resultados obtidos a partir da implementação da arquitetura Hate-CLIPper associada à lógica Fuzzy para a identificação de discurso de ódio em memes, utilizando o conjunto de dados Hateful Memes (test_unseen). O modelo principal obteve um AUROC de 0.7878, uma Acurácia de 0.7270 e um F1-Score de 0.5754. A matriz de confusão revelou que o modelo demonstrou boa capacidade de identificar exemplos não odiosos (precisão de 0.85 e recall de 0.53) e uma sensibilidade satisfatória para exemplos odiosos (recall de 0.85, embora com precisão de 0.52), evidenciando o desafio imposto pelos memes de ódio multimodal e pelos confundidores benignos.
+
+Para avaliar a eficácia do mecanismo de fusão multimodal, realizou-se um estudo de ablação testando diferentes abordagens: align, concat, cross e align_concat. A fusão por atenção cruzada (cross) demonstrou o melhor desempenho geral, justificando a sua escolha como arquitetura final.
+
+Além da classificação binária clássica, o modelo foi estendido com um sistema de inferência Fuzzy, que categoriza o nível de ódio em cinco graus linguísticos (Nenhum Ódio, Pouco Ódio, Ambiguidade/Moderado, Ódio e Alto Grau de Ódio) com base nas probabilidades de saída visual e textual. O limiar ótimo (Threshold) para a decisão Fuzzy foi calculado maximizando a métrica F1, resultando em um limiar de 6.83, que demonstrou a viabilidade de uma classificação mais granular do que a abordagem estritamente binária.
+
 \section{Análise crítica e comparação}
 % Discuta as descobertas com base na revisão bibliográfica e na hipótese. Evidencie ganhos e perdas.
 
@@ -36,6 +44,12 @@ Ganhos: A arquitetura com injeção de similaridade de agrupamento (clustering e
 
 Perdas: O principal gargalo encontrado foi a taxa de Falsos Negativos (baixo recall na classe de ódio). A dificuldade do modelo em lidar com o humor ácido e o sarcasmo implícito fez com que muitos memes odiosos passassem despercebidos, especialmente quando a lógica Fuzzy foi aplicada. A redução do F1-score macro no modelo Fuzzy (de 0,61 para 0,53) expõe o custo de se ter um modelo demasiadamente conservador.
 
+%Experimento 3
+
+Ao comparar os resultados alcançados com os baselines estabelecidos pela literatura no Hateful Memes Challenge, nota-se que o modelo proposto (AUROC = 0.7878) supera significativamente o desempenho do modelo unimodal VisualBERT (0.730) e do CLIP zero-shot (0.730). Isso evidencia o ganho representativo proporcionado pelo ajuste fino (fine-tuning) e pela estratégia de fusão cross-modal, corroborando a literatura (Kiela et al., 2020) de que modelos puramente unimodais ou multimodais genéricos têm dificuldades em capturar as complexas interações semânticas entre imagem e texto características deste dataset.
+
+Embora o modelo alcance uma pontuação inferior à do ser humano (AUROC = 0.820) e ao Hate-CLIPper original otimizado com cross-validation complexa (0.859), o desempenho é robusto. O ganho mais evidente do modelo proposto reside na aplicação da lógica Fuzzy, que permite lidar com a incerteza intrínseca aos memes. Em vez de uma classificação rígida e sujeita a altos índices de falsos positivos (o que pode levar à censura indevida em plataformas reais), a abordagem Fuzzy oferece uma gradação. A perda principal recai sobre a precisão da classe odiosa, o que reflete a dificuldade do modelo em distinguir benign confounders (memes que imitam a estrutura de discurso de ódio, mas não o são). A decisão de otimizar o limiar pelo F1-Score mitigou parcialmente esse efeito, garantindo um equilíbrio mais adequado para conjuntos de dados desbalanceados.
+
 \section{Discussão}
 % Relacione os resultados aos objetivos e à hipótese, explicitando se o critério de sucesso foi atingido.
 
@@ -50,3 +64,9 @@ Os resultados obtidos dialogam diretamente com os objetivos gerais e específico
 A hipótese inicial de que a combinação de processamento de linguagem natural, visão computacional e regras baseadas em incerteza (entropia/Fuzzy) melhoraria a representação do problema foi confirmada, em especial pela métrica AUC-ROC, que atesta a boa capacidade do modelo em separar as classes (0,7336).
 
 Entretanto, o critério de sucesso sob a ótica de sensibilidade (recall) aponta que ainda há espaço para aprofundamento. A dificuldade de capturar discursos de ódio altamente sutis sugere que as features visuais e textuais, mesmo que multimodais, às vezes carecem de "conhecimento de mundo" (commonsense knowledge) para entender referências socioculturais. Em suma, o modelo atinge seu propósito primário de forma satisfatória e inova ao mitigar falsos positivos via lógica Fuzzy, servindo como uma prova de conceito robusta e abrindo caminho para futuras pesquisas que integrem raciocínio de senso comum (ex: LLMs multimodais) na etapa de fusão das features.
+
+%Experimento 3
+
+Os resultados obtidos permitem afirmar que o objetivo central da pesquisa — identificar e classificar discursos de ódio em memes utilizando aprendizado de máquina multimodal — foi alcançado com sucesso. A hipótese de que a combinação da extração de características independentes (via CLIP) com uma camada de fusão eficiente e um sistema de inferência Fuzzy melhoraria a interpretação de memes complexos foi confirmada, uma vez que o modelo superou os baselines básicos e proveu explicabilidade por meio da categorização Fuzzy.
+
+O critério de sucesso foi atingido tanto em termos quantitativos (superando a barreira do AUROC de 0.730) quanto qualitativos (oferecendo graus de ódio em vez de rótulos binários rígidos). A arquitetura provou que o contexto de um meme de ódio não reside apenas na imagem ou apenas no texto, mas na interseção semântica de ambos, capturada de forma eficaz pela fusão cross. Para trabalhos futuros, sugere-se a exploração de modelos de fundação mais recentes ou o aprimoramento das regras Fuzzy baseadas em features regionais das imagens, buscando aproximar a capacidade do modelo ao nível de compreensão humana.
