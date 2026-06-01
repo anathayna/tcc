@@ -315,29 +315,7 @@ O pré-treinamento do BERT é realizado por meio de dois objetivos. O primeiro �
 A Figura~\ref{fig:bert-model} ilustra as duas etapas do ciclo de vida do BERT. No pré-treinamento, a entrada é composta por sequências de tokens iniciadas pelo marcador especial \texttt{[CLS]} e delimitadas pelo marcador \texttt{[SEP]}, sendo cada token representado por um vetor que combina \textit{embeddings} de conteúdo, de posição e de
 segmento. No \textit{fine-tuning}, os parâmetros obtidos no pré-treinamento são utilizados como ponto de partida e ajustados de forma supervisionada para tarefas específicas, como análise de sentimentos, resposta a perguntas e reconhecimento de entidades nomeadas.
 
-\subsection{Grandes Modelos de Linguagem}
-
-A consolidação do paradigma do BERT
-motivou o desenvolvimento de modelos cada vez maiores. Pesquisadores
-observaram que, ao escalar simultaneamente o número de parâmetros, o volume
-de dados de treinamento e o poder computacional empregado, modelos baseados
-na arquitetura \textit{Transformer} passavam a exibir capacidades qualitativas
-ausentes em versões menores \cite{wei2022emergent}. Essa constatação impulsionou uma nova
-geração de sistemas conhecidos como Grandes Modelos de Linguagem
-(\textit{Large Language Models}, LLMs).
-
-Enquanto o BERT utiliza apenas o codificador
-(\textit{encoder}) do \textit{Transformer} para produzir representações
-contextualizadas, os LLMs adotam predominantemente a arquitetura de
-decodificador (\textit{decoder-only}), treinada com o objetivo de
-modelagem de linguagem autorregressiva. Dado um prefixo de texto, o modelo
-aprende a prever o próximo \textit{token}, repetindo o processo
-autorregressivamente até um critério de parada \cite{brown2020gpt3}.
-Treinados em grandes dados textuais extraídos da \textit{internet}, modelos
-como a família GPT \cite{brown2020gpt3} e LLaMA \cite{touvron2023llama}
-atingiram dezenas de bilhões de parâmetros e demonstraram desempenho notável
-em tarefas de geração de texto, resposta a perguntas, raciocínio e síntese
-de informações.
+% Os \textit{SentenceTransformers} generalizaram essa abordagem para uma biblioteca extensível que suporta múltiplas arquiteturas de \textit{Transformer} e diferentes objetivos de treinamento, incluindo similaridade semântica, recuperação de informação densa e agrupamento de textos. Os \textit{sentence embeddings} resultantes são vetores densos de dimensão fixa que capturam o significado global de uma sentença, permitindo comparações eficientes por meio de métricas como a similaridade cosseno sem a necessidade de processar pares conjuntamente. Essa propriedade torna os \textit{sentence embeddings} particularmente adequados para tarefas como busca semântica, detecção de paráfrases, agrupamento de textos e extração de características textuais em sistemas de classificação multimodal.
 
 \section{Visão Computacional}
  
@@ -577,6 +555,8 @@ A primeira etapa na construção de um sistema \textit{fuzzy} consiste em defini
 Os modelos de aprendizado profundo capturam implicitamente essa gradação ao produzirem escores probabilísticos contínuos, que funcionam como funções de pertinência: um escore próximo de 1 indica alta pertinência à classe odiosa, enquanto valores intermediários refletem incerteza semântica. No sistema proposto neste trabalho, esses escores contínuos são interpretados por meio de conjuntos \textit{fuzzy} que mapeiam o grau de ódio em categorias linguísticas graduais, como ``muito baixo'', ``baixo'', ``médio'', ``alto'' e ``muito alto'', conforme ilustrado na Figura~\ref{fig:fuzzy-variavel}.
 
 A etapa de \textbf{defuzzificação} \cite{Klir1995} é responsável por converter o resultado das operações de inferência \textit{fuzzy}, expressos como um conjunto \textit{fuzzy}, em um valor numérico preciso (\textit{crisp}) que representa a saída final do sistema. O método mais comum é o \textbf{centro de gravidade} (ou centroide), que calcula a média ponderada de todos os valores da variável de saída, utilizando os respectivos graus de pertinência como pesos. No contexto deste trabalho, a defuzzificação permite transformar a distribuição de pertinência em um escore final interpretável, facilitando tanto a tomada de decisão do sistema de moderação quanto a explicabilidade das classificações para revisores humanos.
+
+A entropia de Shannon \cite{shannon1948}, originalmente proposta no âmbito da teoria da informação, quantifica a incerteza ou desordem associada a uma distribuição de probabilidade. No contexto da lógica \textit{fuzzy}, a entropia de Shannon pode ser adaptada para medir o grau de \textit{fuzziness}, ou seja, a ambiguidade semântica intrínseca a um conjunto \textit{fuzzy} \cite{deluca1972}. Graus de pertinência próximos de 0{,}5 indicam alta ambiguidade, pois o elemento pertence tanto quanto não pertence ao conjunto, enquanto valores próximos dos extremos 0 ou 1 denotam baixa ambiguidade e maior confiança na classificação. Essa medida permite, portanto, quantificar de forma explícita a incerteza associada a cada predição do sistema.
 
 \section{Banco de dados \textit{Hateful Memes}}
 
