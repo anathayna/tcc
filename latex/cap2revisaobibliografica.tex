@@ -14,15 +14,14 @@ O discurso de ódio nas redes sociais é um fenômeno complexo e multidimensiona
 
 Diversos autores definem o discurso de ódio como qualquer manifestação que busca incitar hostilidade, violência ou discriminação contra determinados grupos sociais \cite{sanguinetti2018, fortuna2018}. Tem um impacto amplo, gerando estresse psicológico, exclusão social e contribuindo para a polarização de comunidades \textit{online} \cite{waseem2017}. Em resposta, plataformas de redes sociais têm adotado políticas de moderação de conteúdo que envolvem detecção automática, remoção de publicações e divulgação de relatórios de transparência. Contudo, a eficácia dessas medidas tem sido limitada, pois as decisões variam conforme o tipo de conteúdo, o contexto e os critérios internos das plataformas \cite{dergacheva2023}. 
 
-Nesse contexto, formatos comunicativos como os memes, com sua ironia e sutileza, agravam o desafio, complicando a aplicação consistente de políticas de moderação e o equilíbrio entre liberdade de expressão e proteção dos usuários \cite{anImage2023}. Portanto, compreender o papel desses memes como vetores de disseminação do discurso de ódio, especialmente em expressões visuais e humorísticas, torna-se essencial.
+Nesse contexto, formatos comunicativos como os memes, marcados pela sua ironia e sutileza, agravam o desafio, complicando a aplicação consistente de políticas de moderação e o equilíbrio entre liberdade de expressão e proteção dos usuários \cite{anImage2023}. Por isso, compreender o papel dos memes como um novo meio de comunicação digital e também como vetores de disseminação do discurso de ódio, especialmente em expressões visuais e humorísticas, torna-se essencial.
 
-% https://indicadores.safernet.org.br/
 % Judith Butler
 % Tarcizio Silva
 
 \section{Memes como meio de comunicação digital}
 
-O termo “meme”, cunhado por Richard Dawkins em O Gene Egoísta \cite{Dawkins1976}, refere-se a unidades culturais que se replicam e se difundem na cultura humana de forma análoga aos genes na biologia. Na cultura digital contemporânea, essas unidades se propagam principalmente no meio digital, impulsionadas pela velocidade de compartilhamento e pelo amplo alcance das redes sociais \cite{shifman2013memes}. Os memes consolidaram-se como formas distintivas de comunicação digital, combinando imagens e textos para transmitir mensagens frequentemente marcadas por humor, ironia ou sátira, cuja compreensão depende fortemente do contexto cultural e social do público \cite{horta2015meme}.
+O termo “meme”, cunhado por Richard Dawkins em ``O Gene Egoísta'' \cite{Dawkins1976}, refere-se a unidades culturais que se replicam e se difundem na cultura humana de forma análoga aos genes na biologia. Na cultura digital contemporânea, essas unidades se propagam principalmente no meio digital, impulsionadas pela velocidade de compartilhamento e pelo amplo alcance das redes sociais \cite{shifman2013memes}. Os memes consolidaram-se como formas distintivas de comunicação digital, combinando imagens e textos para transmitir mensagens frequentemente marcadas por humor, ironia ou sátira, cuja compreensão depende fortemente do contexto cultural e social do público \cite{horta2015meme}.
 
 Estudos recentes mostram que memes não apenas refletem tendências culturais e discursos sociais, mas também desempenham papel ativo na construção e disseminação de mensagens, inclusive aquelas de teor odioso ou discriminatório \cite{peixoto2020circulacao}. Essa capacidade de veicular múltiplos sentidos, muitas vezes de modo ambíguo, desafia mecanismos tradicionais de moderação, pois exige a análise integrada de informações visuais e textuais, bem como de seus contextos de circulação \cite{ArticleHatefulMemesChallenge2020}.
 
@@ -32,8 +31,7 @@ Nesse cenário, a aplicação de técnicas de aprendizado de máquina tornou-se 
 
 A moderação de conteúdo surgiu nos primórdios da internet, na década de 80, com fóruns \textit{online} onde moderadores voluntários aprovavam postagens para preservar discussões civilizadas \cite{Ackermann2020}. Essa prática evoluiu para políticas privadas em plataformas modernas, impulsionada pelo combate a \textit{spam}, assédio e discursos de ódio. Com o crescimento exponencial do acesso à internet, a moderação se tornou em uma operação de escala industrial, levando gigantes de tecnologia a contratar milhares de revisores para analisar denúncias, um trabalho muitas vezes invisível e marginalizado \cite{gillespie2018, gray2019}. Hoje, diante de bilhões de postagens diárias, o foco está sobre a moderação automatizada, na qual algoritmos de inteligência artificial filtram a maior parte do conteúdo proibido antes mesmo de qualquer intervenção humana \cite{gillespie2020}.
 
-As abordagens tradicionais de moderação automatizada são predominantemente baseadas em modelos unimodais que analisam apenas o texto por meio de Processamento de Linguagem Natural ou apenas a imagem por meio de Visão Computacional. Porém, os memes são inerentemente multimodais, e o ódio frequentemente só se manifesta na combinação entre as duas modalidades. Isso torna 
-necessário o uso de modelos multimodais capazes de processar texto e imagem de forma integrada, o que exige uma compreensão sólida das técnicas de aprendizado de máquina.
+As abordagens tradicionais de moderação automatizada são predominantemente baseadas em modelos unimodais que analisam apenas o texto por meio de Processamento de Linguagem Natural ou apenas a imagem por meio de Visão Computacional. Porém, os memes são inerentemente multimodais, e o ódio frequentemente só se manifesta na combinação entre as duas modalidades \cite{ArticleHatefulMemesChallenge2020}. Isso torna necessário o uso de modelos multimodais capazes de processar texto e imagem de forma integrada, o que exige uma compreensão sólida das técnicas de aprendizado de máquina.
 
 \section{Aprendizado de Máquina}
  
@@ -254,6 +252,18 @@ a classe vencedora de cada modelo, a votação suave preserva a
 granularidade probabilística das predições individuais, tornando-a
 compatível com limiares de decisão variáveis e com métricas como a AUROC.
 
+\subsection{Agrupamento e DBSCAN}
+
+O agrupamento (\textit{clustering}) é uma técnica de aprendizado não supervisionado que organiza um conjunto de dados em grupos de tal forma que os elementos de um mesmo grupo apresentem alta similaridade entre si e baixa similaridade em relação aos demais \cite{jain1999}, o algoritmo descobre automaticamente a estrutura latente dos dados a partir de uma medida de distância ou densidade.
+
+O algoritmo \textit{k}-médias (\textit{k-means}) \cite{macqueen1967} é um dos métodos de agrupamento mais amplamente utilizados. Ele particiona os dados em grupos pré-definidos, atribuindo iterativamente cada ponto ao centroide mais próximo, onde o centroide é o ponto central do grupo, definido pela média de seus elementos, esse processo se repete até a convergência, quando os centroides não se alteram mais. Embora eficiente, o \textit{k-means} assume que os grupos têm forma esférica e requer que o número de grupos $k$ seja informado, o que pode ser limitante quando a estrutura dos dados é desconhecida ou quando há pontos atípicos no conjunto.
+
+O \textbf{DBSCAN} (\textit{Density-Based Spatial Clustering of Applications with Noise}) \cite{ester1996} é um algoritmo de agrupamento baseado em densidade que supera as limitações do \textit{k-means}. Em vez de assumir formas geométricas específicas, o DBSCAN define um agrupamento como uma região de alta densidade separada de outras regiões por zonas de baixa densidade. O algoritmo opera com dois hiperparâmetros: o raio de vizinhança e o número mínimo de pontos necessários para que uma região seja considerada densa. Cada ponto é classificado em uma de três categorias: (i) \textbf{ponto núcleo} (\textit{core point}), caso possua ao menos vizinhos dentro do raio; (ii) \textbf{ponto de borda} (\textit{border point}), caso esteja dentro do raio de um ponto núcleo mas não satisfaça o critério de densidade por si só; ou (iii) \textbf{ruído} (\textit{noise}), caso não pertença a nenhuma região densa e seja tratado como ponto fora do padrão (\textit{outlier}). O DBSCAN é capaz de descobrir agrupamentos de formas arbitrárias e identificar automaticamente anomalias, sem exigir que o número de grupos seja especificado previamente.
+
+\subsection{Estudo de Ablação}
+
+O estudo de ablação (\textit{ablation study}) é uma metodologia experimental amplamente utilizada em aprendizado profundo para avaliar a contribuição individual de cada componente de um modelo ou sistema \cite{meyes2019}. Inspirado em técnicas de neurociência experimental, o procedimento consiste em remover ou desativar sistematicamente um componente por vez e medir o impacto dessa remoção no desempenho final. Essa análise permite identificar quais elementos são essenciais e quais apresentam contribuição marginal, embasando decisões de projeto e validando as escolhas arquiteturais realizadas. Em trabalhos multimodais, o estudo de ablação frequentemente avalia o papel de cada modalidade de forma isolada, quantificando o ganho obtido pela integração em relação às abordagens unimodais.
+
 \section{Processamento de Linguagem Natural}
 
 O \textit{Processamento de Linguagem Natural} (PLN) é uma subárea da inteligência artificial dedicada a capacitar computadores a compreender, interpretar e gerar linguagem humana de forma natural \cite{jurafsky2026}, representando textos em formatos numéricos que preservem informações semânticas e sintáticas.
@@ -378,7 +388,7 @@ O VisualBERT \cite{visualbert2019} foi um marco ao fundir representações visua
     \label{fig:visualbert-arch}
 \end{figure*}
 
-Enquanto o VisualBERT utiliza a fusão precoce, integrando texto e imagem diretamente em um único \textit{Transformer}, o CLIP (\textit{Contrastive Language-Image Pre-training}) \cite{clip2021} adota a fusão tardia, processando cada modalidade separadamente antes de alinhar suas representações. O CLIP não é um modelo único, mas sim um \textit{framework} de aprendizado multimodal, com dois \textit{encoders} independentes, um visual em arquiteturas como ResNet-50 ou ViT-L/14 (\textit{Vision Transformer}), e outro textual, fixo e similar ao GPT-2.
+Enquanto o VisualBERT utiliza a fusão precoce, integrando texto e imagem diretamente em um único \textit{Transformer}, o CLIP (\textit{Contrastive Language-Image Pre-training}) \cite{clip2021} adota a fusão tardia, processando cada modalidade separadamente antes de alinhar suas representações. O CLIP não é um modelo único, mas sim um \textit{framework} de aprendizado multimodal, com dois \textit{encoders} independentes, um visual em arquiteturas como o ViT-L/14 (\textit{Vision Transformer}), e outro textual, fixo e similar ao GPT-2.
 
 O CLIP foi treinado com aproximadamente 400 milhões de pares de imagem e texto
 extraídos da internet, e sua principal inovação está no \textbf{aprendizado
