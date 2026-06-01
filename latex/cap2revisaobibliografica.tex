@@ -37,7 +37,8 @@ As abordagens tradicionais de moderação automatizada são predominantemente ba
  
 O Aprendizado de Máquina é uma subárea da inteligência
 artificial que desenvolve algoritmos capazes de aprender padrões a partir de dados, sem
-serem explicitamente programados para cada tarefa \cite{mitchell1997}. Esses algoritmos ajustam seus parâmetros internos com base em exemplos e generalizam o conhecimento adquirido para dados não vistos anteriormente.
+serem explicitamente programados para cada tarefa \cite{mitchell1997}. Esses algoritmos ajustam seus parâmetros internos (valores numéricos que definem 
+o comportamento do modelo) com base em exemplos e generalizam o conhecimento adquirido para dados não vistos anteriormente.
  
 As abordagens de aprendizado de máquina são geralmente classificadas em três paradigmas
 principais. No \textbf{aprendizado supervisionado}, o modelo é treinado com pares de
@@ -55,8 +56,8 @@ generalização \cite{goodfellow2016}.
 
 Embora existam diversos algoritmos de aprendizado de máquina clássicos, tarefas que envolvem
 dados de alta dimensionalidade, como imagens e texto, demandam modelos capazes de extrair
-representações abstratas automaticamente. Nesse contexto, as \textbf{redes neurais
-artificiais} emergem como uma das abordagens mais expressivas.
+representações abstratas automaticamente. Nesse contexto, as redes neurais
+artificiais emergem como uma das abordagens mais expressivas.
 
 
 \subsection{Redes Neurais Artificiais}
@@ -97,17 +98,17 @@ parâmetro é calculado pela regra da cadeia e utilizado pelo algoritmo de
     \label{fig:artificial-neural-network}
 \end{figure}
 
-Embora as redes neurais sejam robustas, seu desempenho em tarefas de alta complexidade, como reconhecimento de imagens e processamento de linguagem natural, é limitado quando aplicadas diretamente a dados de alta dimensão. O aumento no número de camadas e neurônios, necessário para capturar tais padrões, torna o treinamento instável e computacionalmente inviável com as técnicas da época \cite{goodfellow2016}. Esses desafios motivaram o desenvolvimento de arquiteturas mais profundas e especializadas, consolidadas sob o termo \textbf{aprendizado profundo}.
+Embora as redes neurais sejam robustas, seu desempenho em tarefas de alta complexidade, como reconhecimento de imagens e processamento de linguagem natural, é limitado quando aplicadas diretamente a dados de alta dimensão. O aumento no número de camadas e neurônios, necessário para capturar tais padrões, torna o treinamento instável e computacionalmente inviável com as técnicas da época \cite{goodfellow2016}. Esses desafios motivaram o desenvolvimento de arquiteturas mais profundas e especializadas, consolidadas sob o termo aprendizado profundo.
 
 \subsection{Aprendizado Profundo}
 
-O aprendizado profundo (\textit{Deep Learning}) é uma subárea do aprendizado de máquina que utiliza redes neurais com muitas camadas ocultas, para conseguir processar grandes volumes de dados não estruturados para reconhecer padrões complexos e executar tarefas com alta precisão \cite{lecun2015}.
+O aprendizado profundo (\textit{deep learning}) é uma subárea do aprendizado de máquina que utiliza redes neurais com muitas camadas ocultas, para conseguir processar grandes volumes de dados não estruturados para reconhecer padrões complexos e executar tarefas com alta precisão \cite{lecun2015}.
 
 Dentre as arquiteturas de aprendizado profundo, destacam-se as Redes Neurais Recorrentes (RNNs), voltadas para dados sequenciais como o texto, e as Redes Neurais Convolucionais (CNNs), voltadas para dados com estrutura espacial como as imagens.
 
 \subsection{Redes Neurais Recorrentes}
  
-As Redes Neurais Recorrentes (\textit{Recurrent Neural Networks}) são arquiteturas de aprendizado profundo projetadas para processar dados sequenciais, como texto, áudio e séries temporais \cite{elman1990}. Diferentemente das redes \textit{feedforward}, nas quais a informação flui em uma única direção da entrada à saída, as RNNs introduzem conexões recorrentes que permitem ao modelo manter um \textbf{estado oculto} que é atualizado a cada passo da sequência. Esse estado oculto funciona como uma forma de memória de curto prazo, ao processar cada novo elemento da sequência, a rede não considera apenas a entrada atual, mas também o estado produzido no passo anterior. Dessa forma, a informação se propaga ao longo do tempo, permitindo que o modelo leve em conta o contexto acumulado dos elementos anteriores ao fazer sua predição.
+As Redes Neurais Recorrentes (\textit{Recurrent Neural Networks}, RNNs) são arquiteturas de aprendizado profundo projetadas para processar dados sequenciais, como texto, áudio e séries temporais \cite{elman1990}. Diferentemente das redes \textit{feedforward}, nas quais a informação flui em uma única direção da entrada à saída, as RNNs introduzem conexões recorrentes que permitem ao modelo manter um \textbf{estado oculto} que é atualizado a cada passo da sequência. Esse estado oculto funciona como uma forma de memória de curto prazo, ao processar cada novo elemento da sequência, a rede não considera apenas a entrada atual, mas também o estado produzido no passo anterior. Dessa forma, a informação se propaga ao longo do tempo, permitindo que o modelo leve em conta o contexto acumulado dos elementos anteriores ao fazer sua predição.
  
 Apesar dessa capacidade de modelagem sequencial, as RNNs clássicas apresentam
 uma limitação estrutural em capturar \textbf{dependências de longo alcance}, isto é, relações semânticas ou temporais entre
@@ -121,7 +122,7 @@ impedindo que o modelo aprenda relações entre elementos distantes
 numericamente instável.
  
 A arquitetura \textit{Long Short-Term Memory} (LSTM) \cite{hochreiter1997} foi proposta
-para mitigar esse problema, introduzindo \textbf{mecanismos de porta} (\textit{gates}) que controlam seletivamente quais informações são
+para mitigar esse problema, introduzindo mecanismos de porta (\textit{gates}) que controlam seletivamente quais informações são
 retidas, descartadas ou transmitidas no estado da célula. Embora as LSTMs tenham
 representado um avanço significativo, ambas as arquiteturas permanecem inerentemente
 sequenciais, cada passo depende do anterior, o que limita a paralelização durante o
@@ -142,53 +143,58 @@ ocorre quando o modelo memoriza os dados de treinamento em vez de aprender
 padrões generalizáveis, resultando em desempenho degradado em dados não
 vistos \cite{goodfellow2016}.
 
-O treinamento é organizado em épocas (\textit{epochs}), que
+Para estruturar esse processo, o treinamento é organizado em épocas (\textit{epochs}), que
 corresponde a uma passagem completa do otimizador por todos os exemplos do
-conjunto de treinamento \cite{goodfellow2016}. Na prática, o conjunto de
-treinamento é dividido em \textit{mini-batches} de tamanho fixo, e
-o gradiente é calculado e os parâmetros são atualizados uma vez por
-\textit{mini-batch}. Dessa forma, uma única época é composta por múltiplas
-iterações de atualização. O modelo é avaliado no conjunto de validação ao
-final de cada época, permitindo monitorar sua capacidade de generalização
-ao longo do treinamento.
+conjunto de treinamento \cite{goodfellow2016}. Na prática, o conjunto de treinamento é dividido em
+pequenos subconjuntos de tamanho fixo, e o gradiente é calculado e os
+parâmetros são atualizados uma vez por subconjunto, de modo que uma única
+época é composta por múltiplas iterações de atualização. Ao final de cada
+época, o modelo é avaliado no conjunto de validação, permitindo monitorar
+sua capacidade de generalização ao longo do treinamento. Um hiperparâmetro
+crítico nesse acompanhamento é a taxa de aprendizado, cuja configuração
+afeta diretamente a qualidade da convergência.
 
-Manter a taxa de aprendizado constante ao longo do treinamento é subótimo:
+Manter a taxa de aprendizado constante ao longo das épocas não é ideal, pois
 valores altos aceleram a convergência inicial, mas podem impedir que o
-modelo se ajuste a mínimos precisos nas épocas finais; valores baixos,
-por sua vez, tornam o aprendizado inicial proibitivamente lento
+modelo se ajuste a mínimos precisos nas épocas finais; e valores baixos,
+por sua vez, tornam o aprendizado inicial lento
 \cite{loshchilov2017}. Os agendadores de taxa de aprendizado
-(\textit{learning rate schedulers}) ajustam esse hiperparâmetro
-automaticamente ao longo do treinamento.
+(\textit{learning rate schedulers}) resolvem esse problema ajustando esse hiperparâmetro automaticamente ao longo
+do treinamento.
  
 O \textit{Cosine Annealing} \cite{loshchilov2017} reduz a taxa de
-aprendizado seguindo uma curva cosseno: parte de um valor máximo no início
+aprendizado seguindo uma curva cosseno, parte de um valor máximo no início
 do treinamento e decai suavemente até um valor mínimo próximo de zero,
 seguindo o formato de meio período de uma função cosseno. Essa trajetória
 evita tanto a estagnação em mínimos locais rasos, quanto as oscilações ao
 redor do mínimo global nas épocas finais, onde a taxa reduzida favorece um
-ajuste fino mais preciso. Em sua variante com reinicializações quentes
-(\textit{Cosine Annealing with Warm Restarts}), a taxa é periodicamente
-restaurada ao valor máximo, promovendo escapes de mínimos locais ao longo
-do treinamento.
+ajuste fino mais preciso.
 
-O \textit{Dropout} \cite{srivastava2014} é uma técnica de
-regularização que, durante o treinamento, desativa aleatoriamente uma
-fração dos neurônios de uma camada a cada iteração, zerando suas ativações.
-Ao impedir que o modelo se apoie excessivamente em qualquer subconjunto de
-neurônios, o \textit{Dropout} força a rede a aprender representações distribuídas e
-mais robustas, reduzindo o \textit{overfitting}. Na inferência, todos os
-neurônios são ativados e suas saídas são escalonadas pela taxa de Dropout,
-mantendo a consistência com o comportamento esperado durante o treinamento.
- 
-A parada antecipada (\textit{early stopping}) \cite{prechelt1998}
-é uma estratégia complementar de regularização que monitora o desempenho do
-modelo no conjunto de validação ao final de cada época e interrompe o
-treinamento quando esse desempenho deixa de melhorar por um número
-predefinido de épocas consecutivas, denominado paciência
+Enquanto os agendadores de taxa de aprendizado atuam sobre a dinâmica de
+otimização, as técnicas de regularização intervêm na própria rede para
+reduzir o \textit{overfitting}. O \textit{dropout} \cite{srivastava2014},
+por exemplo, desativa aleatoriamente uma fração dos neurônios de uma camada
+a cada iteração durante o treinamento, zerando suas ativações. Ao impedir
+que o modelo se apoie excessivamente em qualquer subconjunto de neurônios, o
+\textit{dropout} força a rede a aprender representações distribuídas e mais
+robustas. Na inferência, todos os neurônios são ativados e suas saídas são
+escalonadas pela taxa de \textit{dropout}, mantendo a consistência com o
+comportamento esperado durante o treinamento.
+
+A parada antecipada (\textit{early stopping}) \cite{prechelt1998} atua de
+forma complementar ao \textit{dropout}, enquanto um reduz o
+\textit{overfitting} durante cada iteração, a parada antecipada monitora o
+desempenho do modelo no conjunto de validação ao final de cada época e
+interrompe o treinamento quando esse desempenho deixa de melhorar por um
+número predefinido de épocas consecutivas, denominado paciência
 (\textit{patience}). Ao encerrar o treinamento antes que o modelo comece a
 memorizar ruídos do conjunto de treinamento, a parada antecipada preserva a
 capacidade de generalização sem exigir que o número total de épocas seja
 fixado manualmente.
+
+%Para tarefas de classificação binária, como a detecção de memes odiosos, a função de perda mais utilizada é a \textbf{entropia cruzada binária} (\textit{Binary Cross-Entropy}) \cite{goodfellow2016}. A função penaliza fortemente predições confiantes e incorretas, incentivando o modelo a calibrar adequadamente suas probabilidades. Na prática, a média da BCE sobre todos os exemplos do \textit{mini-batch} constitui o sinal de supervisão que orienta a retropropagação.
+
+%O \textbf{Adam} (\textit{Adaptive Moment Estimation}) \cite{kingma2015} é um otimizador adaptativo que mantém, para cada parâmetro, estimativas da média e da variância dos gradientes recentes e as utiliza para escalar individualmente cada atualização, permitindo convergência mais estável com menor sensibilidade à escolha da taxa de aprendizado inicial. O \textbf{AdamW} \cite{loshchilov2019} estende o Adam ao desacoplar a regularização $L_2$ do cálculo do gradiente: em vez de incorporar a penalização de peso na função de perda, ela é aplicada diretamente na regra de atualização dos parâmetros. Esse desacoplamento corrige uma inconsistência do Adam com a regularização $L_2$ convencional e melhora a capacidade de generalização, tornando o AdamW o otimizador padrão em modelos de grande escala baseados em \textit{Transformer}.
 
 \subsection{Aprendizado por conjunto}
  
@@ -260,6 +266,10 @@ O algoritmo \textit{k}-médias (\textit{k-means}) \cite{macqueen1967} é um dos 
 
 O \textbf{DBSCAN} (\textit{Density-Based Spatial Clustering of Applications with Noise}) \cite{ester1996} é um algoritmo de agrupamento baseado em densidade que supera as limitações do \textit{k-means}. Em vez de assumir formas geométricas específicas, o DBSCAN define um agrupamento como uma região de alta densidade separada de outras regiões por zonas de baixa densidade. O algoritmo opera com dois hiperparâmetros: o raio de vizinhança e o número mínimo de pontos necessários para que uma região seja considerada densa. Cada ponto é classificado em uma de três categorias: (i) \textbf{ponto núcleo} (\textit{core point}), caso possua ao menos vizinhos dentro do raio; (ii) \textbf{ponto de borda} (\textit{border point}), caso esteja dentro do raio de um ponto núcleo mas não satisfaça o critério de densidade por si só; ou (iii) \textbf{ruído} (\textit{noise}), caso não pertença a nenhuma região densa e seja tratado como ponto fora do padrão (\textit{outlier}). O DBSCAN é capaz de descobrir agrupamentos de formas arbitrárias e identificar automaticamente anomalias, sem exigir que o número de grupos seja especificado previamente.
 
+%O algoritmo \textbf{K-Medoides} (\textit{K-Medoids}) \cite{kaufman1990} é uma variante do \textit{k-means} projetada para ser mais robusta à presença de ruído e \textit{outliers}. A diferença central reside no representante de cada grupo: enquanto o \textit{k-means} define o centro como a média aritmética dos elementos, o \textit{K-Medoids} exige que o representante, denominado \textit{medoide}, seja necessariamente um ponto real do conjunto de dados. Em cada iteração, o algoritmo identifica, dentro de cada grupo, o ponto que minimiza a soma das distâncias aos demais membros e o elege como novo medoide. Essa restrição confere ao método maior robustez quando a média dos pontos não corresponde a um elemento representativo real, situação comum em distribuições assimétricas ou conjuntos com ruído intenso.
+
+%O \textit{K-Nearest Neighbors} (KNN) \cite{cover1967} é um algoritmo de aprendizado supervisionado baseado em instâncias que classifica um novo exemplo pela classe majoritária entre os $k$ vizinhos mais próximos no espaço de características, segundo alguma métrica de distância, como a distância euclidiana ou a similaridade de cosseno. Por não construir um modelo explícito durante o treinamento, o KNN é descrito como um método de aprendizado preguiçoso (\textit{lazy learning}): toda a computação é adiada para o momento da predição. Embora sua simplicidade seja atrativa, o custo computacional na fase de inferência escala linearmente com o tamanho do conjunto de dados, pois exige a comparação do novo ponto com todos os exemplos armazenados. No contexto de sistemas de recuperação por similaridade semântica, o KNN é amplamente utilizado para encontrar os $k$ exemplos mais similares a uma consulta no espaço de \textit{embeddings}.
+
 \subsection{Estudo de Ablação}
 
 O estudo de ablação (\textit{ablation study}) é uma metodologia experimental amplamente utilizada em aprendizado profundo para avaliar a contribuição individual de cada componente de um modelo ou sistema \cite{meyes2019}. Inspirado em técnicas de neurociência experimental, o procedimento consiste em remover ou desativar sistematicamente um componente por vez e medir o impacto dessa remoção no desempenho final. Essa análise permite identificar quais elementos são essenciais e quais apresentam contribuição marginal, embasando decisões de projeto e validando as escolhas arquiteturais realizadas. Em trabalhos multimodais, o estudo de ablação frequentemente avalia o papel de cada modalidade de forma isolada, quantificando o ganho obtido pela integração em relação às abordagens unimodais.
@@ -279,6 +289,11 @@ termos e qualquer relação semântica entre eles. Um marco importante foi a int
     entre os pares é aproximadamente constante \cite{Mikolov2013}.}
     \label{fig:word-embeddings}
 \end{figure*}
+
+%A semelhança entre representações vetoriais é frequentemente medida pela \textbf{similaridade de cosseno}, que quantifica o cosseno do ângulo entre dois vetores em vez de sua distância absoluta, tornando a medida invariante à magnitude de cada vetor:
+
+%Valores próximos de 1 indicam alta similaridade semântica; valores próximos de 0 indicam ortogonalidade; valores negativos indicam dissimilaridade. Essa métrica é amplamente empregada na comparação de \textit{word embeddings} e \textit{sentence embeddings}, bem como no alinhamento de representações visuais e textuais em modelos multimodais.
+
 
 Apesar desse avanço, os \textit{word embeddings} tradicionais são estáticos onde cada palavra tem um vetor fixo, independentemente do contexto, sendo dificíl representar linguagens ambíguas e irônicas. Essa limitação motivou o desenvolvimento de representações contextualizadas, em que o vetor de uma palavra é calculado dinamicamente em função de todo o seu contexto, como os \textit{Transformers} \cite{GoogleTeamTransformers}.
 
@@ -317,18 +332,24 @@ segmento. No \textit{fine-tuning}, os parâmetros obtidos no pré-treinamento s�
 
 % Os \textit{SentenceTransformers} generalizaram essa abordagem para uma biblioteca extensível que suporta múltiplas arquiteturas de \textit{Transformer} e diferentes objetivos de treinamento, incluindo similaridade semântica, recuperação de informação densa e agrupamento de textos. Os \textit{sentence embeddings} resultantes são vetores densos de dimensão fixa que capturam o significado global de uma sentença, permitindo comparações eficientes por meio de métricas como a similaridade cosseno sem a necessidade de processar pares conjuntamente. Essa propriedade torna os \textit{sentence embeddings} particularmente adequados para tarefas como busca semântica, detecção de paráfrases, agrupamento de textos e extração de características textuais em sistemas de classificação multimodal.
 
+\subsection{Transfer Learning}
+
+O \textit{transfer learning} (aprendizado por transferência) é um paradigma do aprendizado profundo no qual o conhecimento adquirido por um modelo durante o treinamento em uma tarefa é reutilizado como ponto de partida para uma tarefa diferente, porém relacionada \cite{goodfellow2016}. Em vez de inicializar os parâmetros aleatoriamente, o modelo parte de representações já enriquecidas por exposição a grandes volumes de dados, reduzindo substancialmente a necessidade de dados rotulados e o custo computacional na tarefa-alvo.
+
+Na prática, o ciclo típico compreende duas fases, o \textbf{pré-treinamento}, no qual o modelo é treinado em corpus de larga escala com objetivos auto-supervisionados, adquirindo representações gerais e transferíveis; e o \textbf{ajuste fino} (\textit{fine-tuning}), no qual esses parâmetros são refinados de forma supervisionada em um conjunto anotado específico à tarefa desejada, podendo-se atualizar todos os pesos do modelo ou apenas suas camadas superiores. Essa separação entre aprendizado geral e adaptação especializada é particularmente vantajosa em domínios com escassez de dados rotulados.
+
 \section{Visão Computacional}
  
 A visão computacional é o campo da inteligência artificial dedicado a extrair informações estruturadas a partir de dados visuais, como imagens e vídeos \cite{szeliski2022}. Suas tarefas fundamentais incluem classificação de imagens, detecção de objetos, segmentação semântica e extração de características visuais, que formam a base para sistemas de reconhecimento e compreensão visual.
 
 \subsection{Redes Neurais Convolucionais}
  
-As Redes Neurais Convolucionais (\textit{Convolutional Neural Networks}) são uma classe de arquiteturas de aprendizado profundo projetadas para processar dados com estrutura espacial, como imagens \cite{lecun1998}. Em vez de conectar cada neurônio a todos os neurônios da camada anterior, as CNNs exploram a localidade espacial, por meio de pequenos filtros convolucionais que deslizam sobre a entrada, detectando padrões locais de forma eficiente e com compartilhamento de parâmetros.
+As Redes Neurais Convolucionais (\textit{Convolutional Neural Networks}, CNN) são uma classe de arquiteturas de aprendizado profundo projetadas para processar dados com estrutura espacial, como imagens \cite{lecun1998}. Em vez de conectar cada neurônio a todos os neurônios da camada anterior, as CNNs exploram a localidade espacial, por meio de pequenos filtros convolucionais que deslizam sobre a entrada, detectando padrões locais de forma eficiente e com compartilhamento de parâmetros.
 
 \begin{figure*}[!htbp]
     \centering
     \includegraphics[scale=0.35]{imagens/CNNs.png}
-    \caption{Arquitetura de uma Rede Neural Convolucional aplicada à classificação de imagens \cite{swapna2020cnn}. A partir de uma imagem de entrada (zebra), um kernel deslizante extrai padrões locais ao longo de três blocos de Convolução + ReLU intercalados por camadas de \textit{Pooling}, formando mapas de características hierárquicos. A saída desse estágio é linearizada por uma camada \textit{Flatten} e processada por camadas totalmente conectadas, culminando em uma distribuição de probabilidade, 70\% de probabilidade para a classe ``Zebra'', 20\% para ``Horse'' e 10\% para ``Dog''.}
+    \caption{Arquitetura de uma CNN aplicada à classificação de imagens \cite{swapna2020cnn}. A partir de uma imagem de entrada (\textit{zebra}), um \textit{kernel} deslizante extrai padrões locais ao longo de três blocos de Convolução + ReLU intercalados por camadas de \textit{pooling}, formando mapas de características hierárquicos. A saída desse estágio é linearizada por uma camada \textit{flatten} e processada por camadas totalmente conectadas, culminando em uma distribuição de probabilidade, 70\% de probabilidade para a classe ``\textit{Zebra}'', 20\% para ``\textit{Horse}'' e 10\% para ``\textit{Dog}''.}
     \label{fig:cnn}
 \end{figure*}
 
@@ -348,6 +369,10 @@ Mais recentemente, o \textit{Vision Transformer} (ViT) \cite{dosovitskiy2021} tr
 \end{figure*}
 
 A Figura~\ref{fig:vit-arch} ilustra a arquitetura do \textit{Vision Transformer} (ViT). O processo inicia-se com a divisão da imagem de entrada em \textit{patches} retangulares de tamanho fixo, que são linearizados e projetados em vetores de dimensão constante por meio de uma projeção linear (Linear Projection of Flattened Patches). A cada vetor é somado um embedding de posição, de modo a preservar a informação espacial relativa de cada \textit{patch} na sequência. Concatena-se ainda um \textit{token} especial de classe, representado pela posição 0, cuja representação final será utilizada para a classificação. A sequência de tokens resultante é então alimentada no \textit{Transformer Encoder}, composto por blocos idênticos empilhados. Cada bloco aplica, em ordem: normalização, atenção multi-cabeça, uma conexão residual, nova normalização e um bloco MLP com outra conexão residual. Ao final do encoder, a representação do token é passada a uma cabeça de classificação (MLP Head), que produz as probabilidades sobre as classes de saída.
+
+\subsection{Reconhecimento Óptico de Caracteres}
+
+O Reconhecimento Óptico de Caracteres (\textit{Optical Character Recognition}, OCR) é uma técnica de visão computacional que automatiza a extração de texto a partir de imagens, convertendo representações visuais de caracteres em sequências de texto codificadas digitalmente \cite{mori1992}. Soluções modernas de OCR combinam redes neurais convolucionais para localização e segmentação de regiões de texto com modelos sequenciais para decodificação dos caracteres, atingindo alta precisão em fontes e estilos variados.
 
 \section{Aprendizado Multimodal}
 
@@ -550,9 +575,11 @@ A lógica \textit{fuzzy} \cite{Zadeh1965} estende a lógica booleana clássica a
 \label{fig:fuzzy-variavel}
 \end{figure}
 
-A primeira etapa na construção de um sistema \textit{fuzzy} consiste em definir as funções de pertinência (\textit{membership functions}) que traduzem valores numéricos contínuos em graus de pertencimento a cada conjunto linguístico \cite{ross2010}.
+A primeira etapa na construção de um sistema \textit{fuzzy} é a \textbf{fuzzificação}, que consiste em definir as funções de pertinência que traduzem valores numéricos contínuos em graus de pertencimento a cada conjunto linguístico \cite{ross2010}. 
  
 Os modelos de aprendizado profundo capturam implicitamente essa gradação ao produzirem escores probabilísticos contínuos, que funcionam como funções de pertinência: um escore próximo de 1 indica alta pertinência à classe odiosa, enquanto valores intermediários refletem incerteza semântica. No sistema proposto neste trabalho, esses escores contínuos são interpretados por meio de conjuntos \textit{fuzzy} que mapeiam o grau de ódio em categorias linguísticas graduais, como ``muito baixo'', ``baixo'', ``médio'', ``alto'' e ``muito alto'', conforme ilustrado na Figura~\ref{fig:fuzzy-variavel}.
+
+A segunda etapa é a \textbf{inferência \textit{fuzzy}}, na qual um conjunto de regras de inferência baseadas em contexto é aplicado sobre os graus de pertinência obtidos na fuzzificação \cite{ross2010}. Cada regra assume a forma \textit{SE} $\langle$antecedente$\rangle$ \textit{ENTÃO} $\langle$consequente$\rangle$, em que o antecedente pode combinar múltiplas condições por meio de operadores lógicos \textit{fuzzy}, como a interseção e a união. A ativação de cada regra é determinada pelo grau de satisfação de seus antecedentes, e o conjunto de todas as regras ativadas produz um conjunto \textit{fuzzy} de saída que representa a distribuição de pertinência sobre as categorias de ódio, servindo de entrada para a etapa de defuzzificação.
 
 A etapa de \textbf{defuzzificação} \cite{Klir1995} é responsável por converter o resultado das operações de inferência \textit{fuzzy}, expressos como um conjunto \textit{fuzzy}, em um valor numérico preciso (\textit{crisp}) que representa a saída final do sistema. O método mais comum é o \textbf{centro de gravidade} (ou centroide), que calcula a média ponderada de todos os valores da variável de saída, utilizando os respectivos graus de pertinência como pesos. No contexto deste trabalho, a defuzzificação permite transformar a distribuição de pertinência em um escore final interpretável, facilitando tanto a tomada de decisão do sistema de moderação quanto a explicabilidade das classificações para revisores humanos.
 
