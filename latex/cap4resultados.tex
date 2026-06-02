@@ -3,70 +3,81 @@
 
 \section{Apresentação dos resultados}
 
-% Experimento 1
+\subsection{Experimento 1 — Classificação \textit{Zero-Shot}}
 
-Os experimentos conduzidos avaliaram a capacidade do modelo CLIP (ViT-L/14) em identificar discurso de ódio em memes utilizando uma abordagem zero-shot. No cenário multimodal tradicional (baseline), o modelo obteve uma acurácia de 53,85\% e uma área sob a curva (AUC-ROC) de 0,5392. O F1-score para a classe "ódio" foi de 0,45, com precisão de 0,41 e revocação de 0,50.
+O CLIP ViT-L/14 em modo \textit{zero-shot} obteve acurácia de 53,85\% e AUC-ROC de 0,5392 sobre o conjunto \texttt{test\_unseen} (2.000 amostras). Para a classe de ódio, a precisão foi de 0,41, a revocação de 0,50 e o F1-Score de 0,45; o F1 macro entre as classes ficou em 0,53, apenas marginalmente acima do acaso.
 
-Ao aplicar a abordagem de Lógica Fuzzy baseada na entropia das predições, a acurácia global subiu para 59,30\%. No entanto, a revocação para a classe de ódio caiu drasticamente para 0,17 (F1-score de 0,24). A distribuição revelou que a grande maioria dos memes foi classificada na categoria "Ambiguidade/Moderado".
+A aplicação do \textbf{Classificador Fuzzy Unificado} sobre as probabilidades do CLIP resultou em acurácia de 59,30\%. O sistema tornou-se mais conservador: a precisão para a classe de ódio subiu para 0,40, mas a revocação caiu para 0,17 (F1-Score de 0,24). A distribuição das categorias revelou que 62,4\% das amostras foram alocadas em \textit{Ambiguidade/Moderado} (1.247 de 2.000), reflexo direto da alta entropia das predições zero-shot.
 
-Por fim, o estudo de ablação demonstrou que a análise unimodal "Somente Texto" alcançou a maior acurácia (61,80\%), superando tanto a abordagem "Somente Imagem" (53,05\%) quanto a estratégia "Multimodal" original (53,85\%).
+O estudo de ablação por modalidade evidenciou um resultado contraintuitivo: a abordagem \textbf{Somente Texto} alcançou a maior acurácia (61,80\%), superando tanto \textbf{Somente Imagem} (53,05\%) quanto o modo \textbf{Multimodal} (53,85\%). Isso indica que, sem ajuste fino, o CLIP não consegue capturar a justaposição contraditória entre imagem e texto que caracteriza os memes de ódio.
 
-% Experimento 2
+\subsection{Experimento 2 — Pré-processamento com Agrupamento Semântico}
 
-Os resultados obtidos a partir do treinamento e avaliação do modelo multimodal demonstram a eficácia da abordagem proposta na identificação de discursos de ódio. O modelo base, utilizando os embeddings do CLIP combinados com as representações dos clusters (texto e imagem), atingiu uma acurácia de 67,55% e uma área sob a curva ROC (AUC-ROC) de 0,7318 no conjunto de teste não visto (unseen). O Average Precision (AP) da curva Precision-Recall foi de 0,6074.
+O \texttt{MultimodalModel} com enriquecimento por clusters obteve acurácia de 67,55\%, AUC-ROC de 0,7318 e \textit{Average Precision} de 0,6074 em \texttt{test\_unseen}. O modelo apresentou tendência conservadora: precisão de 0,62 e revocação de 0,36 para a classe de ódio (F1 de 0,45); F1 macro de 0,61.
 
-Na avaliação detalhada do relatório de classificação, o modelo obteve precisão de 0,62 e recall de 0,36 para a classe de ódio (1), evidenciando uma tendência conservadora, resultando em um F1-Score macro de 0,61.
+Com a \textbf{Lógica Fuzzy}, a acurácia binarizada manteve-se em 66,60\%, mas o comportamento mudou significativamente, a precisão para ódio subiu para 0,72, enquanto a revocação caiu para 0,18 (F1 de 0,29). O sistema deslocou a maioria das amostras para \textit{Nenhum Ódio} (758) e \textit{Ambiguidade/Moderado} (562), classificando apenas 188 exemplos como ódio efetivo (\textit{Ódio}: 146; \textit{Alto Grau}: 42).
 
-Ao aplicar o pipeline de classificação com Lógica Fuzzy (dividido em 5 categorias: Nenhum Ódio, Pouco Ódio, Ambiguidade/Moderado, Ódio, Alto Grau de Ódio), a acurácia na predição binarizada manteve-se em 66,60\%. No entanto, observou-se uma mudança no comportamento do classificador: a precisão para a classe de ódio aumentou para 0,72, mas o recall caiu significativamente para 0,18. Isso indica que a lógica Fuzzy tornou o sistema mais cauteloso, classificando muitos exemplos como "Ambiguidade/Moderado" em vez de afirmar categoricamente tratar-se de ódio.
+O estudo de ablação com cinco configurações demonstrou a contribuição incremental de cada componente, conforme a Tabela~\ref{tab:ablacao_exp2}.
 
-Por fim, o estudo de ablação validou a arquitetura proposta: as abordagens unimodais ("Somente Imagem" e "Somente Texto") obtiveram acurácias menores (63,60\% e 63,25\%, respectivamente), enquanto o "Modelo Completo" obteve o melhor desempenho geral em termos de Acurácia (68,65\%) e AUC-ROC (0,7336).
+\begin{table}[htbp]
+\centering
+\caption{Estudo de ablação — Experimento 2 (\texttt{test\_unseen}, 2.000 amostras)}
+\label{tab:ablacao_exp2}
+\begin{tabular}{lcccc}
+\hline
+\textbf{Configuração} & \textbf{Acurácia} & \textbf{AUC-ROC} & \textbf{F1 macro} & \textbf{F1 ódio} \\
+\hline
+Somente Imagem    & 63,60\% & 0,7188 & 0,44 & 0,10 \\
+Somente Texto     & 63,25\% & 0,6310 & 0,48 & 0,20 \\
+CLIP Multimodal   & 67,60\% & 0,7321 & 0,66 & 0,58 \\
++ Cluster Texto   & 67,90\% & 0,7318 & 0,65 & 0,49 \\
+Modelo Completo   & \textbf{68,65\%} & \textbf{0,7336} & 0,63 & 0,49 \\
+\hline
+\end{tabular}
+\end{table}
 
-%Experimento 3
+\subsection{Experimento 3 — Pipeline Completo com HateCLIPper}
 
-Nesta seção, apresentam-se os resultados obtidos a partir da implementação da arquitetura Hate-CLIPper associada à lógica Fuzzy para a identificação de discurso de ódio em memes, utilizando o conjunto de dados Hateful Memes (test_unseen). O modelo principal obteve um AUROC de 0.7878, uma Acurácia de 0.7270 e um F1-Score de 0.5754. A matriz de confusão revelou que o modelo demonstrou boa capacidade de identificar exemplos não odiosos (precisão de 0.85 e recall de 0.53) e uma sensibilidade satisfatória para exemplos odiosos (recall de 0.85, embora com precisão de 0.52), evidenciando o desafio imposto pelos memes de ódio multimodal e pelos confundidores benignos.
+O HateCLIPper com fusão \textit{cross} (FIM) e limiar ótimo de 0,0119 (determinado por maximização do F1 em \texttt{dev\_seen}) obteve \textbf{AUROC de 0,8121}, \textbf{Acurácia de 75,55\%} e \textbf{F1-Score de 0,6407} em \texttt{test\_unseen}. O modelo demonstrou alta sensibilidade para a classe de ódio (revocação de 0,86, precisão de 0,55) e boa especificidade para não ódio (precisão de 0,87, revocação de 0,58), refletindo o ajuste do limiar para maximizar F1 em detrimento da precisão.
 
-Para avaliar a eficácia do mecanismo de fusão multimodal, realizou-se um estudo de ablação testando diferentes abordagens: align, concat, cross e align_concat. A fusão por atenção cruzada (cross) demonstrou o melhor desempenho geral, justificando a sua escolha como arquitetura final.
+O estudo de ablação entre os quatro modos de fusão confirma a superioridade do modo \textit{cross}, conforme a Tabela~\ref{tab:ablacao_exp3}.
 
-Além da classificação binária clássica, o modelo foi estendido com um sistema de inferência Fuzzy, que categoriza o nível de ódio em cinco graus linguísticos (Nenhum Ódio, Pouco Ódio, Ambiguidade/Moderado, Ódio e Alto Grau de Ódio) com base nas probabilidades de saída visual e textual. O limiar ótimo (Threshold) para a decisão Fuzzy foi calculado maximizando a métrica F1, resultando em um limiar de 6.83, que demonstrou a viabilidade de uma classificação mais granular do que a abordagem estritamente binária.
+\begin{table}[htbp]
+\centering
+\caption{Estudo de ablação — modos de fusão do HateCLIPper (\texttt{test\_unseen})}
+\label{tab:ablacao_exp3}
+\begin{tabular}{lcccc}
+\hline
+\textbf{Fusão} & \textbf{Val AUROC} & \textbf{Test AUROC} & \textbf{Acurácia} & \textbf{F1 macro} \\
+\hline
+align        & 0,7944 & 0,8156 & 75,40\% & 0,6227 \\
+concat       & 0,7536 & 0,7778 & 72,10\% & 0,5798 \\
+\textbf{cross} & \textbf{0,7962} & \textbf{0,8141} & \textbf{75,90\%} & \textbf{0,6456} \\
+align\_concat & 0,7529 & 0,7798 & — & — \\
+\hline
+\end{tabular}
+\end{table}
+
+O \textbf{Sistema Fuzzy Mamdani} aplicado sobre os \textit{scores} visuais e textuais independentes do HateCLIPper produziu um limiar ótimo de 7,17 (escala de 0 a 100). A distribuição sobre \texttt{test\_unseen} resultou em: \textit{Inofensivo} 1.063 (53,2\%), \textit{Questionável} 300 (15,0\%), \textit{Moderado} 279 (14,0\%), \textit{Crítico} 217 (10,9\%) e \textit{Extremo} 141 (7,1\%).
 
 \section{Análise crítica e comparação}
-% Discuta as descobertas com base na revisão bibliográfica e na hipótese. Evidencie ganhos e perdas.
 
-A avaliação revela descobertas contraintuitivas em relação à premissa multimodal. O fato de o modelo "Somente Texto" (61,80\%) superar o "Multimodal" (53,85\%) indica que, no contexto zero-shot, o CLIP falha em capturar a justaposição contraditória que caracteriza os memes de ódio. O conjunto de dados Hateful Memes utiliza "confundidores benignos" projetados justamente para enganar modelos que não realizam um raciocínio profundo entre as modalidades. Como o CLIP foi pré-treinado para alinhar imagens e textos que descrevem o mesmo contexto, ele se confunde quando a imagem e o texto possuem significados opostos ou irônicos.
+\subsection{Progressão entre experimentos}
 
-A implementação da lógica Fuzzy trouxe ganhos importantes em termos de explicabilidade. Ao mapear a incerteza (entropia) do modelo para a categoria "Ambiguidade/Moderado", o sistema reduziu falsos positivos extremos, uma característica desejável em moderação real (onde casos dúbios vão para revisão humana). A perda, no entanto, foi o conservadorismo excessivo do sistema binário resultante: a baixa revocação (17\%) indica que uma porção massiva de memes de ódio reais foi enquadrada como benigna ou moderada.
+A evolução progressiva dos três experimentos evidencia ganhos consistentes: a acurácia passou de 53,85\% (\textit{zero-shot}) para 67,55\% (pré-processamento com clusters) e 75,55\% (\textit{fine-tuning} com HateCLIPper), com o AUROC saltando de 0,5392 para 0,7318 e 0,8121, respectivamente. O resultado do Experimento~3 aproxima-se do nível humano reportado no \textit{Hateful Memes Challenge} (AUROC $= 0{,}820$), superando os \textit{baselines} do VisualBERT e do CLIP \textit{zero-shot} da literatura (ambos com AUROC $\approx 0{,}730$), embora ainda aquém do HateCLIPper original com \textit{cross-validation} complexa (AUROC $= 0{,}859$).
 
-%Experimento 2
+\subsection{Papel da lógica \textit{fuzzy}}
 
-A análise crítica dos resultados evidencia que a união de diferentes modalidades (texto e imagem) é fundamental para a resolução do desafio imposto pelo dataset Hateful Memes. Como esperado a partir da revisão bibliográfica sobre os "confundidores benignos" (benign confounders), modelos unimodais são insuficientes para capturar a semântica irônica ou depreciativa de um meme. Isso é comprovado pelo estudo de ablação, onde a transição de um modelo puramente textual ou visual para o CLIP Multimodal trouxe ganhos significativos em todas as métricas.
+Em todos os experimentos, a lógica \textit{fuzzy} introduziu um \textit{trade-off} consistente: maior precisão para ódio (redução de falsos positivos) em troca de menor revocação (aumento de falsos negativos). No Experimento~1, a revocação caiu de 0,50 para 0,17; no Experimento~2, de 0,36 para 0,18. Esse comportamento é desejável em cenários de moderação real, onde classificar erroneamente conteúdo benigno como ódio tem custo alto, mas impõe a necessidade de revisão humana para os casos enquadrados como \textit{Ambiguidade/Moderado}. No Experimento~3, o sistema Mamdani com dois antecedentes independentes (score visual e textual) produz uma graduação mais informativa do que a abordagem baseada em entropia dos experimentos anteriores, pois captura assimetrias entre as modalidades.
 
-Ganhos: A arquitetura com injeção de similaridade de agrupamento (clustering espacial usando DBSCAN) juntamente ao CLIP provou ser vantajosa, culminando na melhor curva ROC (0,7336). Além disso, a introdução da lógica Fuzzy agregou interpretabilidade ao sistema. Em contextos do mundo real (como moderação de redes sociais), ter um modelo que acusa "Ambiguidade/Moderado" (baseado na entropia) e fornece alta precisão (72\%) nos casos que classifica como ódio extremo ajuda a reduzir o banimento injusto de usuários (falsos positivos).
+\subsection{Limitações}
 
-Perdas: O principal gargalo encontrado foi a taxa de Falsos Negativos (baixo recall na classe de ódio). A dificuldade do modelo em lidar com o humor ácido e o sarcasmo implícito fez com que muitos memes odiosos passassem despercebidos, especialmente quando a lógica Fuzzy foi aplicada. A redução do F1-score macro no modelo Fuzzy (de 0,61 para 0,53) expõe o custo de se ter um modelo demasiadamente conservador.
-
-%Experimento 3
-
-Ao comparar os resultados alcançados com os baselines estabelecidos pela literatura no Hateful Memes Challenge, nota-se que o modelo proposto (AUROC = 0.7878) supera significativamente o desempenho do modelo unimodal VisualBERT (0.730) e do CLIP zero-shot (0.730). Isso evidencia o ganho representativo proporcionado pelo ajuste fino (fine-tuning) e pela estratégia de fusão cross-modal, corroborando a literatura (Kiela et al., 2020) de que modelos puramente unimodais ou multimodais genéricos têm dificuldades em capturar as complexas interações semânticas entre imagem e texto características deste dataset.
-
-Embora o modelo alcance uma pontuação inferior à do ser humano (AUROC = 0.820) e ao Hate-CLIPper original otimizado com cross-validation complexa (0.859), o desempenho é robusto. O ganho mais evidente do modelo proposto reside na aplicação da lógica Fuzzy, que permite lidar com a incerteza intrínseca aos memes. Em vez de uma classificação rígida e sujeita a altos índices de falsos positivos (o que pode levar à censura indevida em plataformas reais), a abordagem Fuzzy oferece uma gradação. A perda principal recai sobre a precisão da classe odiosa, o que reflete a dificuldade do modelo em distinguir benign confounders (memes que imitam a estrutura de discurso de ódio, mas não o são). A decisão de otimizar o limiar pelo F1-Score mitigou parcialmente esse efeito, garantindo um equilíbrio mais adequado para conjuntos de dados desbalanceados.
+O principal gargalo em todos os experimentos é a baixa revocação para a classe de ódio, especialmente após a aplicação da lógica \textit{fuzzy}. A dificuldade em capturar sarcasmo, ironia e referências socioculturais implícitas não é resolvida apenas pela fusão de modalidades, exigindo formas de raciocínio de senso comum que os modelos atuais não incorporam plenamente.
 
 \section{Discussão}
-% Relacione os resultados aos objetivos e à hipótese, explicitando se o critério de sucesso foi atingido.
 
-Os resultados evidenciam que o critério de sucesso para uma detecção robusta e autônoma de discurso de ódio não foi integralmente atingido com a abordagem zero-shot. Embora a acurácia base esteja ligeiramente acima do acaso (comprovando que há algum aprendizado latente de conceitos sensíveis), o modelo demonstra severas limitações em interpretar o contexto cruzado (cross-modal) inerente aos memes odiosos. A hipótese de que o CLIP conseguiria generalizar o conceito de "ódio" para memes de forma puramente zero-shot mostrou-se frágil diante das armadilhas semânticas (confundidores).
+Os resultados confirmam a hipótese central de que a fusão multimodal supervisionada supera abordagens \textit{zero-shot} e unimodais na detecção de discurso de ódio em memes. O fato de o modo \textit{Somente Texto} superar o \textit{Multimodal} no Experimento~1 e de as abordagens unimodais do Experimento~2 ficarem abaixo do CLIP Multimodal, demonstra que o benefício da multimodalidade só se manifesta com treinamento supervisionado adequado.
 
-Apesar de não apresentar métricas prontas para o ambiente de produção, este experimento atinge seu objetivo primordial: estabelecer uma linha de base sólida e evidenciar o problema. Ele comprova que a simples fusão de extração de similaridades não é suficiente para o problema de discurso de ódio em memes. Trabalhos futuros e experimentos subsequentes devem focar no ajuste fino (fine-tuning) dos pesos multimodais ou na adoção de arquiteturas que propiciem etapas de raciocínio inferencial mais elaboradas para detectar o sarcasmo e a ironia multimodal.
+A progressão dos experimentos cumpre os objetivos específicos desta pesquisa: estabelecer uma linha de base (\textit{zero-shot}), investigar o enriquecimento por agrupamento semântico (pré-processamento) e implementar um \textit{fine-tuning} completo com fusão cruzada (HateCLIPper). A integração da lógica \textit{fuzzy} em todos os estágios acrescenta interpretabilidade ao sistema, convertendo probabilidades brutas em categorias linguísticas que refletem a gradação inerente ao discurso de ódio.
 
-% Experimento 2
-
-Os resultados obtidos dialogam diretamente com os objetivos gerais e específicos deste trabalho, que visavam desenvolver e avaliar um sistema multimodal capaz de classificar discursos de ódio em memes, lidando com a complexidade intrínseca dessa mídia. O pipeline desenvolvido — que passa pela extração vetorial com CLIP, clusterização e defuzzificação — atingiu os critérios de sucesso na medida em que superou significativamente linhas de base unimodais e entregou uma ferramenta interativa e interpretável.
-
-A hipótese inicial de que a combinação de processamento de linguagem natural, visão computacional e regras baseadas em incerteza (entropia/Fuzzy) melhoraria a representação do problema foi confirmada, em especial pela métrica AUC-ROC, que atesta a boa capacidade do modelo em separar as classes (0,7336).
-
-Entretanto, o critério de sucesso sob a ótica de sensibilidade (recall) aponta que ainda há espaço para aprofundamento. A dificuldade de capturar discursos de ódio altamente sutis sugere que as features visuais e textuais, mesmo que multimodais, às vezes carecem de "conhecimento de mundo" (commonsense knowledge) para entender referências socioculturais. Em suma, o modelo atinge seu propósito primário de forma satisfatória e inova ao mitigar falsos positivos via lógica Fuzzy, servindo como uma prova de conceito robusta e abrindo caminho para futuras pesquisas que integrem raciocínio de senso comum (ex: LLMs multimodais) na etapa de fusão das features.
-
-%Experimento 3
-
-Os resultados obtidos permitem afirmar que o objetivo central da pesquisa — identificar e classificar discursos de ódio em memes utilizando aprendizado de máquina multimodal — foi alcançado com sucesso. A hipótese de que a combinação da extração de características independentes (via CLIP) com uma camada de fusão eficiente e um sistema de inferência Fuzzy melhoraria a interpretação de memes complexos foi confirmada, uma vez que o modelo superou os baselines básicos e proveu explicabilidade por meio da categorização Fuzzy.
-
-O critério de sucesso foi atingido tanto em termos quantitativos (superando a barreira do AUROC de 0.730) quanto qualitativos (oferecendo graus de ódio em vez de rótulos binários rígidos). A arquitetura provou que o contexto de um meme de ódio não reside apenas na imagem ou apenas no texto, mas na interseção semântica de ambos, capturada de forma eficaz pela fusão cross. Para trabalhos futuros, sugere-se a exploração de modelos de fundação mais recentes ou o aprimoramento das regras Fuzzy baseadas em features regionais das imagens, buscando aproximar a capacidade do modelo ao nível de compreensão humana.
+%Trabalhos futuros devem explorar modelos de fundação multimodais mais recentes, a incorporação de raciocínio de senso comum (\textit{commonsense knowledge}) na etapa de fusão, e o refinamento das regras \textit{fuzzy} com base em características regionais das imagens, buscando aproximar o desempenho ao nível de compreensão humana.
