@@ -73,6 +73,22 @@ estrutura e no funcionamento do sistema nervoso biológico \cite{rosenblatt1958}
     \label{fig:perceptron}
 \end{figure*}
 
+A escolha da função de ativação determina como a saída do neurônio é calculada e influencia diretamente a capacidade do modelo de aprender padrões não lineares. Duas funções de ativação são especialmente relevantes no contexto deste trabalho. A \textbf{sigmoide} ($\sigma$) mapeia qualquer valor real para o intervalo aberto $(0, 1)$, conforme a equação:
+
+\begin{equation}
+\sigma(x) = \frac{1}{1 + e^{-x}}
+\label{eq:sigmoid}
+\end{equation}
+
+Essa propriedade torna a sigmoide adequada para tarefas de \textbf{classificação binária}, na qual a saída pode ser interpretada diretamente como a probabilidade de um exemplo pertencer à classe positiva. Em problemas de \textbf{classificação multiclasse}, a função \textit{Softmax} generaliza a sigmoide, convertendo um vetor de pontuações brutas (\textit{logits}) $\mathbf{z} = (z_1, \ldots, z_K)$ em uma distribuição de probabilidade sobre $K$ classes:
+
+\begin{equation}
+\text{Softmax}(z_i) = \frac{e^{z_i}}{\displaystyle\sum_{j=1}^{K} e^{z_j}}, \quad i = 1, \ldots, K
+\label{eq:softmax}
+\end{equation}
+
+Cada valor $\text{Softmax}(z_i)$ representa a probabilidade estimada de pertencimento à classe $i$, e a soma de todas as probabilidades é sempre igual a 1.
+
 Isoladamente, um único neurônio consegue apenas separar classes linearmente separáveis.
 Para modelar padrões não lineares e de maior complexidade, os neurônios são organizados
 em camadas: uma \textbf{camada de entrada}, responsável por receber os dados brutos; uma
@@ -130,172 +146,14 @@ treinamento e dificulta a captura de contextos muito longos. Essa limitação mo
 desenvolvimento de uma abordagem radicalmente diferente, baseada exclusivamente em
 atenção: o \textit{Transformer}.
 
-\subsection{Técnicas de Otimização e Regularização}
- 
-O processo de treinamento de uma rede neural consiste em ajustar
-iterativamente seus parâmetros para minimizar uma função de perda
-que quantifica o erro entre as predições do modelo e os rótulos esperados.
-Esse processo de minimização é conduzido por um otimizador, que
-determina como os parâmetros são atualizados a cada passo com base no
-gradiente da função de perda \cite{goodfellow2016}. Paralelamente, técnicas
-de regularização visam evitar o \textit{overfitting}, que
-ocorre quando o modelo memoriza os dados de treinamento em vez de aprender
-padrões generalizáveis, resultando em desempenho degradado em dados não
-vistos \cite{goodfellow2016}.
-
-Para estruturar esse processo, o treinamento é organizado em épocas (\textit{epochs}), que
-corresponde a uma passagem completa do otimizador por todos os exemplos do
-conjunto de treinamento \cite{goodfellow2016}. Na prática, o conjunto de treinamento é dividido em
-pequenos subconjuntos de tamanho fixo, e o gradiente é calculado e os
-parâmetros são atualizados uma vez por subconjunto, de modo que uma única
-época é composta por múltiplas iterações de atualização. Ao final de cada
-época, o modelo é avaliado no conjunto de validação, permitindo monitorar
-sua capacidade de generalização ao longo do treinamento. Um hiperparâmetro
-crítico nesse acompanhamento é a taxa de aprendizado, cuja configuração
-afeta diretamente a qualidade da convergência.
-
-Manter a taxa de aprendizado constante ao longo das épocas não é ideal, pois
-valores altos aceleram a convergência inicial, mas podem impedir que o
-modelo se ajuste a mínimos precisos nas épocas finais; e valores baixos,
-por sua vez, tornam o aprendizado inicial lento
-\cite{loshchilov2017}. Os agendadores de taxa de aprendizado
-(\textit{learning rate schedulers}) resolvem esse problema ajustando esse hiperparâmetro automaticamente ao longo
-do treinamento.
- 
-O \textit{Cosine Annealing} \cite{loshchilov2017} por sua vez reduz a taxa de
-aprendizado seguindo uma curva cosseno, parte de um valor máximo no início
-do treinamento e decai suavemente até um valor mínimo próximo de zero,
-seguindo o formato de meio período de uma função cosseno. Essa trajetória
-evita tanto a estagnação em mínimos locais rasos, quanto as oscilações ao
-redor do mínimo global nas épocas finais, onde a taxa reduzida favorece um
-ajuste fino mais preciso.
-
-Enquanto os agendadores de taxa de aprendizado atuam sobre a dinâmica de
-otimização, as técnicas de regularização intervêm na própria rede para
-reduzir o \textit{overfitting}. O \textit{dropout} \cite{srivastava2014},
-por exemplo, desativa aleatoriamente uma fração dos neurônios de uma camada
-a cada iteração durante o treinamento, zerando suas ativações. Ao impedir
-que o modelo se apoie excessivamente em qualquer subconjunto de neurônios, o
-\textit{dropout} força a rede a aprender representações distribuídas e mais
-robustas. Na inferência, todos os neurônios são ativados e suas saídas são
-escalonadas pela taxa de \textit{dropout}, mantendo a consistência com o
-comportamento esperado durante o treinamento.
-
-A parada antecipada (\textit{early stopping}) \cite{prechelt1998} atua de
-forma complementar ao \textit{dropout}, enquanto um reduz o
-\textit{overfitting} durante cada iteração, a parada antecipada monitora o
-desempenho do modelo no conjunto de validação ao final de cada época e
-interrompe o treinamento quando esse desempenho deixa de melhorar por um
-número predefinido de épocas consecutivas, denominado paciência
-(\textit{patience}). Ao encerrar o treinamento antes que o modelo comece a
-memorizar ruídos do conjunto de treinamento, a parada antecipada preserva a
-capacidade de generalização sem exigir que o número total de épocas seja
-fixado manualmente.
-
-%Para tarefas de classificação binária, como a detecção de memes odiosos, a função de perda mais utilizada é a \textbf{entropia cruzada binária} (\textit{Binary Cross-Entropy}) \cite{goodfellow2016}. A função penaliza fortemente predições confiantes e incorretas, incentivando o modelo a calibrar adequadamente suas probabilidades. Na prática, a média da BCE sobre todos os exemplos do \textit{mini-batch} constitui o sinal de supervisão que orienta a retropropagação.
-
-%O \textbf{Adam} (\textit{Adaptive Moment Estimation}) \cite{kingma2015} é um otimizador adaptativo que mantém, para cada parâmetro, estimativas da média e da variância dos gradientes recentes e as utiliza para escalar individualmente cada atualização, permitindo convergência mais estável com menor sensibilidade à escolha da taxa de aprendizado inicial. O \textbf{AdamW} \cite{loshchilov2019} estende o Adam ao desacoplar a regularização $L_2$ do cálculo do gradiente: em vez de incorporar a penalização de peso na função de perda, ela é aplicada diretamente na regra de atualização dos parâmetros. Esse desacoplamento corrige uma inconsistência do Adam com a regularização $L_2$ convencional e melhora a capacidade de generalização, tornando o AdamW o otimizador padrão em modelos de grande escala baseados em \textit{Transformer}.
-
-\subsection{Aprendizado por conjunto}
- 
-O aprendizado por conjunto (\textit{ensemble learning}) é uma
-estratégia de aprendizado de máquina que combina as predições de múltiplos
-modelos base, denominados aprendizes (\textit{learners}), com o
-objetivo de produzir uma predição final mais robusta e precisa do que
-qualquer modelo individualmente \cite{dietterich2000}. A motivação central
-reside no princípio estatístico de que erros cometidos por modelos distintos
-tendem a ser descorrelacionados, ao agregar suas saídas, os erros individuais
-se cancelam parcialmente, reduzindo a variância e o viés da predição
-combinada \cite{breiman1996}.
- 
-As principais estratégias de \textit{ensemble} diferem na forma como os aprendizes
-são treinados e em como suas saídas são combinadas: enquanto alguns métodos
-treinam os modelos de forma independente e depois agregam suas predições por
-votação ou média, outros os treinam sequencialmente, de modo que cada novo
-aprendiz corrija os erros dos anteriores. Em todos os casos, a predição final
-resulta da combinação das saídas individuais, e não de um único modelo
-isolado.
- 
-O \textit{bagging} (\textit{Bootstrap Aggregating}) \cite{breiman1996}
-treina cada aprendiz de forma independente sobre uma amostra distinta obtida
-por reamostragem com reposição (\textit{bootstrap}) do conjunto de
-treinamento original. A diversidade entre os modelos, decorrente das
-diferentes amostras de treino, reduz a variância do \textit{ensemble} sem aumentar o
-viés. A predição final é obtida por votação majoritária em classificação ou
-por média em regressão. O \textit{Random Forest} \cite{breiman2001} é o
-algoritmo de bagging mais amplamente utilizado, combinando árvores de
-decisão treinadas sobre subconjuntos aleatórios de dados e de atributos.
- 
-O \textit{boosting} \cite{freund1997} treina os aprendizes de forma
-sequencial: cada modelo subsequente é treinado para corrigir os erros
-cometidos pelo conjunto de modelos anteriores, atribuindo maior peso às
-amostras classificadas incorretamente. O resultado final é uma combinação
-ponderada dos aprendizes, em que modelos mais precisos recebem maior peso.
-Algoritmos como o \textit{AdaBoost} \cite{freund1997} e o
-\textit{Gradient Boosting} \cite{friedman2001} tornaram-se referências em
-tarefas de classificação estruturada, apresentando resultados
-estado-da-arte em diversas competições e benchmarks.
- 
-O \textit{stacking} (\textit{stacked generalization}) \cite{wolpert1992}
-adota uma abordagem hierárquica: os aprendizes de nível base são treinados
-sobre os dados originais e suas predições, utilizadas como novas
-características, alimentam um \textit{metamodelo} (\textit{meta-learner})
-que aprende a combinar as saídas de forma ótima. Diferentemente do bagging
-e do boosting, o stacking é adequado para combinar modelos heterogêneos,
-isto é, aprendizes com arquiteturas e insumos distintos, pois o metamodelo
-aprende os pontos fortes e as limitações de cada base para ponderá-los
-adequadamente.
- 
-Em problemas de classificação binária, uma forma direta de combinação é a
-\textbf{votação suave} (\textit{soft voting}), na qual a probabilidade
-predita pela classe positiva é calculada como a média das probabilidades individuais dos aprendizes.
- 
-Na votação suave, cada aprendiz produz uma probabilidade de que a entrada
-pertença à classe positiva, e a predição final é calculada como a média
-dessas probabilidades, podendo atribuir pesos distintos a modelos mais
-confiáveis. Diferentemente da votação por maioria, que considera apenas
-a classe vencedora de cada modelo, a votação suave preserva a
-granularidade probabilística das predições individuais, tornando-a
-compatível com limiares de decisão variáveis e com métricas como a AUROC.
-
-\subsection{Agrupamento e DBSCAN}
-
-O agrupamento (\textit{clustering}) é uma técnica de aprendizado não supervisionado que organiza um conjunto de dados em grupos de tal forma que os elementos de um mesmo grupo apresentem alta similaridade entre si e baixa similaridade em relação aos demais \cite{jain1999}, o algoritmo descobre automaticamente a estrutura latente dos dados a partir de uma medida de distância ou densidade.
-
-O algoritmo \textit{k}-médias (\textit{k-means}) \cite{macqueen1967} é um dos métodos de agrupamento mais amplamente utilizados. Ele particiona os dados em grupos pré-definidos, atribuindo iterativamente cada ponto ao centroide mais próximo, onde o centroide é o ponto central do grupo, definido pela média de seus elementos, esse processo se repete até a convergência, quando os centroides não se alteram mais. Embora eficiente, o \textit{k-means} assume que os grupos têm forma esférica e requer que o número de grupos $k$ seja informado, o que pode ser limitante quando a estrutura dos dados é desconhecida ou quando há pontos atípicos no conjunto.
-
-O \textbf{DBSCAN} (\textit{Density-Based Spatial Clustering of Applications with Noise}) \cite{ester1996} é um algoritmo de agrupamento baseado em densidade que supera as limitações do \textit{k-means}. Em vez de assumir formas geométricas específicas, o DBSCAN define um agrupamento como uma região de alta densidade separada de outras regiões por zonas de baixa densidade. O algoritmo opera com dois hiperparâmetros: o raio de vizinhança e o número mínimo de pontos necessários para que uma região seja considerada densa. Cada ponto é classificado em uma de três categorias: (i) \textbf{ponto núcleo} (\textit{core point}), caso possua ao menos vizinhos dentro do raio; (ii) \textbf{ponto de borda} (\textit{border point}), caso esteja dentro do raio de um ponto núcleo mas não satisfaça o critério de densidade por si só; ou (iii) \textbf{ruído} (\textit{noise}), caso não pertença a nenhuma região densa e seja tratado como ponto fora do padrão (\textit{outlier}). O DBSCAN é capaz de descobrir agrupamentos de formas arbitrárias e identificar automaticamente anomalias, sem exigir que o número de grupos seja especificado previamente.
-
-%O algoritmo \textbf{K-Medoides} (\textit{K-Medoids}) \cite{kaufman1990} é uma variante do \textit{k-means} projetada para ser mais robusta à presença de ruído e \textit{outliers}. A diferença central reside no representante de cada grupo: enquanto o \textit{k-means} define o centro como a média aritmética dos elementos, o \textit{K-Medoids} exige que o representante, denominado \textit{medoide}, seja necessariamente um ponto real do conjunto de dados. Em cada iteração, o algoritmo identifica, dentro de cada grupo, o ponto que minimiza a soma das distâncias aos demais membros e o elege como novo medoide. Essa restrição confere ao método maior robustez quando a média dos pontos não corresponde a um elemento representativo real, situação comum em distribuições assimétricas ou conjuntos com ruído intenso.
-
-%O \textit{K-Nearest Neighbors} (KNN) \cite{cover1967} é um algoritmo de aprendizado supervisionado baseado em instâncias que classifica um novo exemplo pela classe majoritária entre os $k$ vizinhos mais próximos no espaço de características, segundo alguma métrica de distância, como a distância euclidiana ou a similaridade de cosseno. Por não construir um modelo explícito durante o treinamento, o KNN é descrito como um método de aprendizado preguiçoso (\textit{lazy learning}): toda a computação é adiada para o momento da predição. Embora sua simplicidade seja atrativa, o custo computacional na fase de inferência escala linearmente com o tamanho do conjunto de dados, pois exige a comparação do novo ponto com todos os exemplos armazenados. No contexto de sistemas de recuperação por similaridade semântica, o KNN é amplamente utilizado para encontrar os $k$ exemplos mais similares a uma consulta no espaço de \textit{embeddings}.
-
-\subsection{Estudo de Ablação}
-
-O estudo de ablação (\textit{ablation study}) é uma metodologia experimental amplamente utilizada em aprendizado profundo para avaliar a contribuição individual de cada componente de um modelo ou sistema \cite{meyes2019}. Inspirado em técnicas de neurociência experimental, o procedimento consiste em remover ou desativar sistematicamente um componente por vez e medir o impacto dessa remoção no desempenho final. Essa análise permite identificar quais elementos são essenciais e quais apresentam contribuição marginal, embasando decisões de projeto e validando as escolhas arquiteturais realizadas. Em trabalhos multimodais, o estudo de ablação frequentemente avalia o papel de cada modalidade de forma isolada, quantificando o ganho obtido pela integração em relação às abordagens unimodais.
-
 \section{Processamento de Linguagem Natural}
 
-O \textit{Processamento de Linguagem Natural} (PLN) é uma subárea da inteligência artificial dedicada a capacitar computadores a compreender, interpretar e gerar linguagem humana de forma natural \cite{jurafsky2026}, representando textos em formatos numéricos que preservem informações semânticas e sintáticas.
-
-Abordagens tradicionais, como \textit{bag-of-words}, representam documentos como vetores de contagem de palavras, ignorando a ordem dos
-termos e qualquer relação semântica entre eles. Um marco importante foi a introdução dos \textit{word embeddings}, que mapeiam palavras em vetores densos em um espaço vetorial contínuo, onde a proximidade geométrica reflete similaridade de significado \cite{Bengio2003}. O modelo \textit{Word2Vec} \cite{Mikolov2013}, consolidou essa ideia ao demonstrar que operações algébricas simples nesses vetores capturam relações semânticas e analógicas.
-
-\begin{figure*}[!htbp]
-    \centering
-    \includegraphics[scale=0.35]{imagens/word-embeddings.png}
-    \caption{Exemplos de relações semânticas e sintáticas capturadas por
-    \textit{word embeddings}. As setas indicam que o vetor de deslocamento
-    entre os pares é aproximadamente constante \cite{Mikolov2013}.}
-    \label{fig:word-embeddings}
-\end{figure*}
-
-%A semelhança entre representações vetoriais é frequentemente medida pela \textbf{similaridade de cosseno}, que quantifica o cosseno do ângulo entre dois vetores em vez de sua distância absoluta, tornando a medida invariante à magnitude de cada vetor:
-
-%Valores próximos de 1 indicam alta similaridade semântica; valores próximos de 0 indicam ortogonalidade; valores negativos indicam dissimilaridade. Essa métrica é amplamente empregada na comparação de \textit{word embeddings} e \textit{sentence embeddings}, bem como no alinhamento de representações visuais e textuais em modelos multimodais.
-
-
-Apesar desse avanço, os \textit{word embeddings} tradicionais são estáticos onde cada palavra tem um vetor fixo, independentemente do contexto, sendo dificíl representar linguagens ambíguas e irônicas. Essa limitação motivou o desenvolvimento de representações contextualizadas, em que o vetor de uma palavra é calculado dinamicamente em função de todo o seu contexto, como os \textit{Transformers} \cite{GoogleTeamTransformers}.
+O \textit{Processamento de Linguagem Natural} (PLN) é uma subárea da inteligência artificial 
+dedicada a capacitar computadores a compreender, interpretar e gerar linguagem humana de forma 
+natural \cite{jurafsky2026}, representando textos em formatos numéricos que preservem informações 
+semânticas e sintáticas. Para isso, diversas arquiteturas foram propostas ao longo dos anos, 
+culminando nos modelos baseados em \textit{Transformers}, que estabeleceram o estado da arte 
+em praticamente todas as tarefas de PLN \cite{GoogleTeamTransformers}.
 
 \subsection{\textit{Transformer}}
  
@@ -336,7 +194,9 @@ segmento. No \textit{fine-tuning}, os parâmetros obtidos no pré-treinamento s�
 
 O aprendizado por transferência (\textit{transfer learning}) é um paradigma do aprendizado profundo no qual o conhecimento adquirido por um modelo durante o treinamento em uma tarefa é reutilizado como ponto de partida para uma tarefa diferente, porém relacionada \cite{goodfellow2016}. Em vez de inicializar os parâmetros aleatoriamente, o modelo parte de representações já enriquecidas por exposição a grandes volumes de dados, reduzindo substancialmente a necessidade de dados rotulados e o custo computacional na tarefa-alvo.
 
-Na prática, o ciclo típico compreende duas fases, o \textbf{pré-treinamento}, no qual o modelo é treinado em corpus de larga escala com objetivos auto-supervisionados, adquirindo representações gerais e transferíveis; e o \textbf{ajuste fino} (\textit{fine-tuning}), no qual esses parâmetros são refinados de forma supervisionada em um conjunto anotado específico à tarefa desejada, podendo-se atualizar todos os pesos do modelo ou apenas suas camadas superiores. Essa separação entre aprendizado geral e adaptação especializada é particularmente vantajosa em domínios com escassez de dados rotulados.
+Na prática, o ciclo típico compreende duas fases: o \textbf{pré-treinamento}, no qual o modelo é treinado em corpus de larga escala com objetivos auto-supervisionados, adquirindo representações gerais e transferíveis; e a \textbf{adaptação}, na qual esses parâmetros são especializados para a tarefa-alvo. Essa separação é particularmente vantajosa em domínios com escassez de dados rotulados, pois o modelo já parte de representações ricas em vez de pesos aleatórios.
+
+A forma de adaptação varia conforme os recursos disponíveis e a proximidade entre as tarefas. Na \textbf{extração de características} (\textit{feature extraction}), os pesos do modelo pré-treinado são completamente congelados e apenas uma camada de classificação adicionada ao topo é treinada; o modelo funciona exclusivamente como extrator de representações. No \textbf{ajuste fino} (\textit{fine-tuning}), todos os parâmetros são atualizados de forma supervisionada, permitindo que o modelo adapte suas representações internas à tarefa-alvo. Uma variante intermediária é o \textbf{descongelamento progressivo} (\textit{progressive unfreezing}), no qual somente as últimas camadas do modelo são liberadas para atualização, preservando as representações gerais aprendidas nas camadas mais profundas e reduzindo o risco de sobreajuste. Por fim, no \textbf{aprendizado zero-shot}, o modelo pré-treinado é aplicado diretamente a novas tarefas sem qualquer ajuste adicional, generalizando para classes ou domínios não vistos durante o treinamento com base na riqueza de suas representações.
 
 \section{Visão Computacional}
  
@@ -393,17 +253,7 @@ O VisualBERT \cite{visualbert2019} foi um marco ao fundir representações visua
 
 Enquanto o VisualBERT utiliza a fusão precoce, integrando texto e imagem diretamente em um único \textit{Transformer}, o CLIP (\textit{Contrastive Language-Image Pre-training}) \cite{clip2021} adota a fusão tardia, processando cada modalidade separadamente antes de alinhar suas representações. O CLIP não é um modelo único, mas sim um \textit{framework} de aprendizado multimodal, com dois \textit{encoders} independentes, um visual em arquiteturas como o ViT-L/14 (\textit{Vision Transformer}), e outro textual, fixo e similar ao GPT-2.
 
-O CLIP foi treinado com aproximadamente 400 milhões de pares de imagem e texto
-extraídos da internet, e sua principal inovação está no \textbf{aprendizado
-contrastivo}: uma estratégia de treinamento em que o modelo aprende a
-aproximar, em um espaço vetorial comum, as representações de pares
-semanticamente relacionados, como uma imagem e sua descrição correta,
-enquanto afasta as representações de pares não correspondentes. Em vez de
-classificar categorias fixas, o modelo aprende por comparação, o que lhe
-confere capacidade de generalização para conceitos não vistos durante o
-treinamento.
-
-Durante o treinamento, o \textit{framework} aprende a mapear imagens e textos para um mesmo espaço vetorial, aproximando as representações matemáticas de uma imagem e sua respectiva descrição textual, enquanto afasta as representações de pares que não correspondem. Essa característica permite ao CLIP uma capacidade de generalização e de \textit{zero-shot learning} (aprendizado com zero exemplos), tornando-o uma ferramenta robusta para extrair características, capturando nuances semânticas complexas que seriam difíceis de obter com modelos treinados separadamente.
+O CLIP foi treinado com aproximadamente 400 milhões de pares de imagem e texto extraídos da internet, e sua principal inovação está no \textbf{aprendizado contrastivo}: uma estratégia de treinamento em que o modelo aprende a aproximar, em um espaço vetorial comum, as representações de pares semanticamente relacionados, como uma imagem e sua descrição correta, enquanto afasta as representações de pares não correspondentes. Em vez de classificar categorias fixas, o modelo aprende por comparação, o que lhe confere capacidade de generalização para conceitos não vistos durante o treinamento, incluindo a realização de \textit{zero-shot learning} (classificação sem exemplos rotulados), comparando a representação de uma nova imagem com os \textit{embeddings} de rótulos textuais candidatos e selecionando o de maior similaridade de cosseno.
 
 \begin{figure*}[!htbp]
 	\centering
@@ -415,6 +265,88 @@ Durante o treinamento, o \textit{framework} aprende a mapear imagens e textos pa
 A Figura~\ref{fig:clip-pipeline} ilustra o pipeline do CLIP em duas fases. Na \textbf{Fase 1 (Pré-treinamento Contrastivo)}, pares de imagem e texto são processados simultaneamente: as imagens passam pelo \textit{Image Encoder}, que as converte em vetores de representação, enquanto as descrições textuais associadas passam pelo \textit{Text Encoder}, produzindo vetores no mesmo espaço latente (também chamados de \textit{embeddings}). O treinamento otimiza a similaridade cosseno dos pares corretos, maximizando-a na diagonal da matriz de similaridade, enquanto penaliza os pares incorretos fora dela. Na \textbf{Fase 2 (Classificação \textit{Zero-Shot})}, uma nova imagem é codificada pelo \textit{Image Encoder} e seu vetor é comparado aos \textit{embeddings} de rótulos textuais candidatos, como \textit{``a photo of a dog''}, gerados pelo \textit{Text Encoder}. Sem nenhum treinamento adicional, o modelo seleciona a classe cuja representação textual apresenta maior similaridade com a representação visual da imagem, como ilustrado pelo exemplo do cachorro na figura. 
 
 Assim, enquanto VisualBERT integra modalidades cedo via \textit{Transformer} compartilhado, CLIP alinha via contraste em espaço separado, capturando nuances semânticas complexas. No entanto, para memes com ``contraste de ódio'' irônico (de sutil a explícito), esses modelos binários (odioso e não odioso) demandam modelagem de graus intermediários.
+
+\section{Técnicas de Otimização e Regularização}
+ 
+O processo de treinamento de uma rede neural consiste em ajustar
+iterativamente seus parâmetros para minimizar uma função de perda
+que quantifica o erro entre as predições do modelo e os rótulos esperados.
+Esse processo de minimização é conduzido por um otimizador, que
+determina como os parâmetros são atualizados a cada passo com base no
+gradiente da função de perda \cite{goodfellow2016}. Paralelamente, técnicas
+de regularização visam evitar o \textit{overfitting}, que
+ocorre quando o modelo memoriza os dados de treinamento em vez de aprender
+padrões generalizáveis, resultando em desempenho degradado em dados não
+vistos \cite{goodfellow2016}.
+
+Para estruturar esse processo, o treinamento é organizado em épocas (\textit{epochs}), que
+corresponde a uma passagem completa do otimizador por todos os exemplos do
+conjunto de treinamento \cite{goodfellow2016}. Na prática, o conjunto de treinamento é dividido em
+pequenos subconjuntos de tamanho fixo, e o gradiente é calculado e os
+parâmetros são atualizados uma vez por subconjunto, de modo que uma única
+época é composta por múltiplas iterações de atualização. Ao final de cada
+época, o modelo é avaliado no conjunto de validação, permitindo monitorar
+sua capacidade de generalização ao longo do treinamento. Um hiperparâmetro
+crítico nesse acompanhamento é a taxa de aprendizado, cuja configuração
+afeta diretamente a qualidade da convergência.
+
+Manter a taxa de aprendizado constante ao longo das épocas não é ideal, pois
+valores altos aceleram a convergência inicial, mas podem impedir que o
+modelo se ajuste a mínimos precisos nas épocas finais; e valores baixos,
+por sua vez, tornam o aprendizado inicial lento
+\cite{loshchilov2017}. Os agendadores de taxa de aprendizado
+(\textit{learning rate schedulers}) resolvem esse problema ajustando esse hiperparâmetro automaticamente ao longo
+do treinamento.
+
+O \textit{Cosine Annealing} \cite{loshchilov2017} por sua vez reduz a taxa de
+aprendizado seguindo uma curva cosseno, parte de um valor máximo no início
+do treinamento e decai suavemente até um valor mínimo próximo de zero,
+seguindo o formato de meio período de uma função cosseno. Essa trajetória
+evita tanto a estagnação em mínimos locais rasos, quanto as oscilações ao
+redor do mínimo global nas épocas finais, onde a taxa reduzida favorece um
+ajuste fino mais preciso.
+
+Enquanto os agendadores de taxa de aprendizado atuam sobre a dinâmica de
+otimização, as técnicas de regularização intervêm na própria rede para
+reduzir o \textit{overfitting}. O \textit{dropout} \cite{srivastava2014},
+por exemplo, desativa aleatoriamente uma fração dos neurônios de uma camada
+a cada iteração durante o treinamento, zerando suas ativações. Ao impedir
+que o modelo se apoie excessivamente em qualquer subconjunto de neurônios, o
+\textit{dropout} força a rede a aprender representações distribuídas e mais
+robustas. Na inferência, todos os neurônios são ativados e suas saídas são
+escalonadas pela taxa de \textit{dropout}, mantendo a consistência com o
+comportamento esperado durante o treinamento.
+
+A parada antecipada (\textit{early stopping}) \cite{prechelt1998} atua de
+forma complementar ao \textit{dropout}, enquanto um reduz o
+\textit{overfitting} durante cada iteração, a parada antecipada monitora o
+desempenho do modelo no conjunto de validação ao final de cada época e
+interrompe o treinamento quando esse desempenho deixa de melhorar por um
+número predefinido de épocas consecutivas, denominado paciência
+(\textit{patience}). Ao encerrar o treinamento antes que o modelo comece a
+memorizar ruídos do conjunto de treinamento, a parada antecipada preserva a
+capacidade de generalização sem exigir que o número total de épocas seja
+fixado manualmente.
+
+%Para tarefas de classificação binária, como a detecção de memes odiosos, a função de perda mais utilizada é a \textbf{entropia cruzada binária} (\textit{Binary Cross-Entropy}) \cite{goodfellow2016}. A função penaliza fortemente predições confiantes e incorretas, incentivando o modelo a calibrar adequadamente suas probabilidades. Na prática, a média da BCE sobre todos os exemplos do \textit{mini-batch} constitui o sinal de supervisão que orienta a retropropagação.
+
+%O \textbf{Adam} (\textit{Adaptive Moment Estimation}) \cite{kingma2015} é um otimizador adaptativo que mantém, para cada parâmetro, estimativas da média e da variância dos gradientes recentes e as utiliza para escalar individualmente cada atualização, permitindo convergência mais estável com menor sensibilidade à escolha da taxa de aprendizado inicial. O \textbf{AdamW} \cite{loshchilov2019} estende o Adam ao desacoplar a regularização $L_2$ do cálculo do gradiente: em vez de incorporar a penalização de peso na função de perda, ela é aplicada diretamente na regra de atualização dos parâmetros. Esse desacoplamento corrige uma inconsistência do Adam com a regularização $L_2$ convencional e melhora a capacidade de generalização, tornando o AdamW o otimizador padrão em modelos de grande escala baseados em \textit{Transformer}.
+
+\subsection{Agrupamento e DBSCAN}
+
+O agrupamento (\textit{clustering}) é uma técnica de aprendizado não supervisionado que organiza um conjunto de dados em grupos de tal forma que os elementos de um mesmo grupo apresentem alta similaridade entre si e baixa similaridade em relação aos demais \cite{jain1999}, o algoritmo descobre automaticamente a estrutura latente dos dados a partir de uma medida de distância ou densidade.
+
+O algoritmo \textit{k}-médias (\textit{k-means}) \cite{macqueen1967} é um dos métodos de agrupamento mais amplamente utilizados. Ele particiona os dados em grupos pré-definidos, atribuindo iterativamente cada ponto ao centroide mais próximo, onde o centroide é o ponto central do grupo, definido pela média de seus elementos, esse processo se repete até a convergência, quando os centroides não se alteram mais. Embora eficiente, o \textit{k-means} assume que os grupos têm forma esférica e requer que o número de grupos $k$ seja informado, o que pode ser limitante quando a estrutura dos dados é desconhecida ou quando há pontos atípicos no conjunto.
+
+O \textbf{DBSCAN} (\textit{Density-Based Spatial Clustering of Applications with Noise}) \cite{ester1996} é um algoritmo de agrupamento baseado em densidade que supera as limitações do \textit{k-means}. Em vez de assumir formas geométricas específicas, o DBSCAN define um agrupamento como uma região de alta densidade separada de outras regiões por zonas de baixa densidade. O algoritmo opera com dois hiperparâmetros: o raio de vizinhança e o número mínimo de pontos necessários para que uma região seja considerada densa. Cada ponto é classificado em uma de três categorias: (i) \textbf{ponto núcleo} (\textit{core point}), caso possua ao menos vizinhos dentro do raio; (ii) \textbf{ponto de borda} (\textit{border point}), caso esteja dentro do raio de um ponto núcleo mas não satisfaça o critério de densidade por si só; ou (iii) \textbf{ruído} (\textit{noise}), caso não pertença a nenhuma região densa e seja tratado como ponto fora do padrão (\textit{outlier}). O DBSCAN é capaz de descobrir agrupamentos de formas arbitrárias e identificar automaticamente anomalias, sem exigir que o número de grupos seja especificado previamente.
+
+Um conceito associado ao agrupamento é o de \textbf{medoide}: o ponto de um grupo que melhor representa seus demais membros, definido como aquele que minimiza a soma das distâncias (ou maximiza a similaridade) em relação a todos os outros elementos do mesmo grupo \cite{kaufman1990}. Diferentemente do centroide — calculado como a média aritmética dos vetores e que pode não corresponder a nenhum ponto real do conjunto —, o medoide é sempre um exemplo concreto dos dados. Essa propriedade é especialmente útil quando é necessário identificar um elemento representativo interpretável dentro de cada grupo, como o texto ou a imagem mais central de um cluster.
+
+O \textit{K-Nearest Neighbors} (KNN) \cite{cover1967} é um algoritmo baseado em instâncias que, dado um novo exemplo, identifica os $k$ pontos mais próximos no espaço de características segundo alguma métrica de distância, como a distância euclidiana ou a similaridade de cosseno. Por não construir um modelo explícito durante o treinamento, o KNN é descrito como um método de aprendizado preguiçoso (\textit{lazy learning}): toda a computação é adiada para o momento da predição. No contexto de sistemas de recuperação por similaridade semântica, o KNN é amplamente utilizado para encontrar os exemplos mais similares a uma consulta no espaço de \textit{embeddings}, permitindo, por exemplo, atribuir novos exemplos ao grupo de treinamento mais próximo.
+
+\subsection{Estudo de Ablação}
+
+O estudo de ablação (\textit{ablation study}) é uma metodologia experimental amplamente utilizada em aprendizado profundo para avaliar a contribuição individual de cada componente de um modelo ou sistema \cite{meyes2019}. Inspirado em técnicas de neurociência experimental, o procedimento consiste em remover ou desativar sistematicamente um componente por vez e medir o impacto dessa remoção no desempenho final. Essa análise permite identificar quais elementos são essenciais e quais apresentam contribuição marginal, embasando decisões de projeto e validando as escolhas arquiteturais realizadas. Em trabalhos multimodais, o estudo de ablação frequentemente avalia o papel de cada modalidade de forma isolada, quantificando o ganho obtido pela integração em relação às abordagens unimodais.
 
 \section{Métricas de Avaliação}
 
