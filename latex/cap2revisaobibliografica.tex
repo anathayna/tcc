@@ -162,7 +162,7 @@ por sua vez, tornam o aprendizado inicial lento
 (\textit{learning rate schedulers}) resolvem esse problema ajustando esse hiperparâmetro automaticamente ao longo
 do treinamento.
  
-O \textit{Cosine Annealing} \cite{loshchilov2017} reduz a taxa de
+O \textit{Cosine Annealing} \cite{loshchilov2017} por sua vez reduz a taxa de
 aprendizado seguindo uma curva cosseno, parte de um valor máximo no início
 do treinamento e decai suavemente até um valor mínimo próximo de zero,
 seguindo o formato de meio período de uma função cosseno. Essa trajetória
@@ -368,7 +368,7 @@ Mais recentemente, o \textit{Vision Transformer} (ViT) \cite{dosovitskiy2021} tr
     \label{fig:vit-arch}
 \end{figure*}
 
-A Figura~\ref{fig:vit-arch} ilustra a arquitetura do \textit{Vision Transformer} (ViT). O processo inicia-se com a divisão da imagem de entrada em \textit{patches} retangulares de tamanho fixo, que são linearizados e projetados em vetores de dimensão constante por meio de uma projeção linear (Linear Projection of Flattened Patches). A cada vetor é somado um embedding de posição, de modo a preservar a informação espacial relativa de cada \textit{patch} na sequência. Concatena-se ainda um \textit{token} especial de classe, representado pela posição 0, cuja representação final será utilizada para a classificação. A sequência de tokens resultante é então alimentada no \textit{Transformer Encoder}, composto por blocos idênticos empilhados. Cada bloco aplica, em ordem: normalização, atenção multi-cabeça, uma conexão residual, nova normalização e um bloco MLP com outra conexão residual. Ao final do encoder, a representação do token é passada a uma cabeça de classificação (MLP Head), que produz as probabilidades sobre as classes de saída.
+A Figura~\ref{fig:vit-arch} ilustra a arquitetura do \textit{Vision Transformer} (ViT). O processo inicia-se com a divisão da imagem de entrada em \textit{patches} retangulares de tamanho fixo, que são linearizados e projetados em vetores de dimensão constante por meio de uma projeção linear. A cada vetor é somado um embedding de posição, de modo a preservar a informação espacial relativa de cada \textit{patch} na sequência. Concatena-se ainda um \textit{token} especial de classe, representado pela posição 0, cuja representação final será utilizada para a classificação. A sequência de tokens resultante é então alimentada no \textit{Transformer Encoder}, composto por blocos idênticos empilhados. Cada bloco aplica, em ordem: normalização, atenção multi-cabeça, uma conexão residual, nova normalização e um bloco MLP com outra conexão residual. Ao final do encoder, a representação do token é passada a uma cabeça de classificação (MLP Head), que produz as probabilidades sobre as classes de saída.
 
 \subsection{Reconhecimento Óptico de Caracteres}
 
