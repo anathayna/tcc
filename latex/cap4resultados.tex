@@ -112,7 +112,7 @@ Com a lógica \textit{fuzzy}, a acurácia binarizada manteve-se em 66,60\%, mas 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.75\textwidth]{imagens/exp2_fuzzy.png}
-    \caption{Distribuição das categorias fuzzy — Experimento 2. O deslocamento para \textit{Nenhum Ódio} reflete o conservadorismo do modelo após agrupamento semântico.}
+    \caption{Distribuição das categorias fuzzy — Experimento 2.}
     \label{fig:exp2_fuzzy}
 \end{figure}
 
@@ -120,25 +120,65 @@ Com a lógica \textit{fuzzy}, a acurácia binarizada manteve-se em 66,60\%, mas 
 
 O HateCLIPper com fusão \textit{cross} (FIM) e limiar ótimo de 0,0119 (determinado por maximização do F1 em \texttt{dev\_seen}) obteve \textbf{AUROC de 0,8121}, \textbf{Acurácia de 75,55\%} e \textbf{F1-Score de 0,6407} em \texttt{test\_unseen}. O modelo demonstrou alta sensibilidade para a classe de ódio (revocação de 0,86, precisão de 0,55) e boa especificidade para não ódio (precisão de 0,87, revocação de 0,58), refletindo o ajuste do limiar para maximizar F1 em detrimento da precisão.
 
-O estudo de ablação entre os quatro modos de fusão confirma a superioridade do modo \textit{cross}, conforme a Tabela~\ref{tab:ablacao_exp3}.
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imagens/exp3_confusion_matrix.png}
+        \caption{Matriz de confusão — Experimento 3 (\textit{final-shot}).}
+        \label{fig:exp3_cm}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imagens/exp3_roc.png}
+        \caption{Curva ROC — Experimento 3 (\textit{final-shot}).}
+        \label{fig:exp3_roc}
+    \end{minipage}
+\end{figure}
+
+A matriz de confusão da Figura~\ref{fig:exp3_cm} reflete o efeito do limiar baixo (0,0119): o modelo favorece a revocação da classe odiosa, reduzindo falsos negativos ao custo de mais falsos positivos em relação aos experimentos anteriores. A curva ROC da Figura~\ref{fig:exp3_roc} evidencia o melhor poder discriminativo alcançado nos três experimentos.
+
+\begin{figure*}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{imagens/exp3_exemplos.png}
+    \caption{Exemplos de classificação do Experimento 3. Da esquerda para a direita: verdadeiro positivo, verdadeiro negativo, falso positivo e falso negativo. Imagens do \textit{Hateful Memes Dataset} \cite{ArticleHatefulMemesChallenge2020}.}
+    \label{fig:exp3_exemplos}
+\end{figure*}
+
+O estudo de ablação avaliou quatro modos de fusão do HateCLIPper treinados nas mesmas condições. O modo \textit{cross} foi selecionado por apresentar o melhor AUROC de validação e F1 no conjunto de teste. A Tabela~\ref{tab:ablacao_exp3} e a Figura~\ref{fig:exp3_ablacao} apresentam a comparação entre os modos.
 
 \begin{table}[htbp]
 \centering
-\caption{Estudo de ablação — modos de fusão do HateCLIPper (\texttt{test\_unseen})}
+\caption{Estudo de ablação — modos de fusão do HateCLIPper (\texttt{test\_unseen}).}
 \label{tab:ablacao_exp3}
 \begin{tabular}{lcccc}
 \hline
 \textbf{Fusão} & \textbf{Val AUROC} & \textbf{Test AUROC} & \textbf{Acurácia} & \textbf{F1 macro} \\
 \hline
-align        & 0,7944 & 0,8156 & 75,40\% & 0,6227 \\
-concat       & 0,7536 & 0,7778 & 72,10\% & 0,5798 \\
+align          & 0,7944 & 0,8156 & 75,40\% & 0,6227 \\
+concat         & 0,7536 & 0,7778 & 72,10\% & 0,5798 \\
 \textbf{cross} & \textbf{0,7962} & \textbf{0,8141} & \textbf{75,90\%} & \textbf{0,6456} \\
-align\_concat & 0,7529 & 0,7798 & — & — \\
+align\_concat  & 0,7529 & 0,7798 &    ---  &    --- \\
 \hline
 \end{tabular}
 \end{table}
 
-O \textbf{Sistema Fuzzy Mamdani} aplicado sobre os \textit{scores} visuais e textuais independentes do HateCLIPper produziu um limiar ótimo de 7,17 (escala de 0 a 100). A distribuição sobre \texttt{test\_unseen} resultou em: \textit{Inofensivo} 1.063 (53,2\%), \textit{Questionável} 300 (15,0\%), \textit{Moderado} 279 (14,0\%), \textit{Crítico} 217 (10,9\%) e \textit{Extremo} 141 (7,1\%).
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.75\textwidth]{imagens/exp3_ablacao.png}
+    \caption{Estudo de ablação — Experimento 3.}
+    \label{fig:exp3_ablacao}
+\end{figure}
+
+O Sistema Fuzzy Mamdani aplicado sobre os \textit{scores} visuais e textuais independentes do HateCLIPper produziu um limiar ótimo de 7,17 (escala de 0 a 100). 
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.75\textwidth]{imagens/exp3_fuzzy.png}
+    \caption{Distribuição das categorias fuzzy — Experimento 3.}
+    \label{fig:exp3_fuzzy}
+\end{figure}
 
 \section{Análise crítica e comparação}
 
