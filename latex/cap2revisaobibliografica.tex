@@ -73,14 +73,14 @@ estrutura e no funcionamento do sistema nervoso biológico \cite{rosenblatt1958}
     \label{fig:perceptron}
 \end{figure*}
 
-A escolha da função de ativação determina como a saída do neurônio é calculada e influencia diretamente a capacidade do modelo de aprender padrões não lineares. Duas funções de ativação são especialmente relevantes no contexto deste trabalho. A \textbf{sigmoide} ($\sigma$) mapeia qualquer valor real para o intervalo aberto $(0, 1)$, conforme a equação:
+A escolha da função de ativação determina como a saída do neurônio é calculada e influencia diretamente a capacidade do modelo de aprender padrões não lineares. Uma das funções de ativação é a \textbf{sigmoide} ($\sigma$) que mapeia qualquer valor real para o intervalo aberto $(0, 1)$, conforme a equação:
 
 \begin{equation}
 \sigma(x) = \frac{1}{1 + e^{-x}}
 \label{eq:sigmoid}
 \end{equation}
 
-Essa propriedade torna a sigmoide adequada para tarefas de \textbf{classificação binária}, na qual a saída pode ser interpretada diretamente como a probabilidade de um exemplo pertencer à classe positiva. Em problemas de \textbf{classificação multiclasse}, a função \textit{Softmax} generaliza a sigmoide, convertendo um vetor de pontuações brutas (\textit{logits}) $\mathbf{z} = (z_1, \ldots, z_K)$ em uma distribuição de probabilidade sobre $K$ classes:
+Essa propriedade torna a sigmoide adequada para tarefas de classificação binária, na qual a saída pode ser interpretada diretamente como a probabilidade de um exemplo pertencer à classe positiva. Em problemas de \textbf{classificação multiclasse}, a função \textit{Softmax} generaliza a sigmoide, convertendo um vetor de pontuações brutas (\textit{logits}) $\mathbf{z} = (z_1, \ldots, z_K)$ em uma distribuição de probabilidade sobre $K$ classes:
 
 \begin{equation}
 \text{Softmax}(z_i) = \frac{e^{z_i}}{\displaystyle\sum_{j=1}^{K} e^{z_j}}, \quad i = 1, \ldots, K
