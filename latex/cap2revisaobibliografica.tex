@@ -36,38 +36,21 @@ As abordagens tradicionais de moderação automatizada são predominantemente ba
 
 \section{Aprendizado de Máquina}
  
-O Aprendizado de Máquina é uma subárea da inteligência
-artificial que desenvolve algoritmos capazes de aprender padrões a partir de dados, sem
-serem explicitamente programados para cada tarefa \cite{mitchell1997}. Esses algoritmos ajustam seus parâmetros internos (valores numéricos que definem 
-o comportamento do modelo) com base em exemplos e generalizam o conhecimento adquirido para dados não vistos anteriormente.
+O aprendizado de máquina é uma subárea da inteligência artificial que desenvolve algoritmos capazes de aprender padrões a partir de dados, sem serem explicitamente programados para cada tarefa \cite{samuel1959}. Esses algoritmos ajustam seus parâmetros internos, que são valores numéricos aprendidos durante o treinamento que determinam o comportamento do modelo, e com base em exemplos, generalizam o conhecimento adquirido para dados não vistos anteriormente.
  
-As abordagens de aprendizado de máquina são geralmente classificadas em três paradigmas
-principais. No \textbf{aprendizado supervisionado}, o modelo é treinado com pares de
-entrada e saída rotulados, aprendendo a mapear entradas e saídas corretas. No \textbf{aprendizado não
-supervisionado}, o modelo recebe apenas os dados de entrada, sem rótulos, e busca
-identificar e agrupar padrões. Já no \textbf{aprendizado por reforço}, um agente aprende a tomar decisões em um ambiente por
-meio de recompensas e penalidades, sem supervisão direta.
+As abordagens de aprendizado de máquina são geralmente classificadas em três paradigmas principais. No \textbf{aprendizado supervisionado}, o modelo é treinado com pares de entrada e saída rotulados, aprendendo a mapear entradas e saídas corretas. No \textbf{aprendizado não
+supervisionado}, o modelo recebe apenas os dados de entrada, sem rótulos, e busca identificar e agrupar padrões. Já no \textbf{aprendizado por reforço}, um agente aprende a tomar decisões em um ambiente por meio de recompensas e penalidades, sem supervisão direta \cite{russell2020}.
  
-Um conceito central em aprendizado supervisionado é a divisão dos dados em conjuntos de
-\textbf{treinamento}, \textbf{validação} e \textbf{teste}. O modelo é ajustado sobre os
-dados de treinamento, seus hiperparâmetros são selecionados com base no desempenho de
-validação e sua qualidade final é medida no conjunto de teste, mantido isolado durante
-todo o desenvolvimento para garantir uma estimativa imparcial da capacidade de
-generalização \cite{goodfellow2016}.
+Um conceito central em aprendizado supervisionado é a divisão dos dados em conjuntos de \textbf{treinamento}, \textbf{validação} e \textbf{teste}. O modelo é ajustado sobre os dados de treinamento, seus hiperparâmetros (configurações definidas antes do treinamento) são selecionados com base no desempenho de validação e seu desempenho final é medido no conjunto de teste, mantido isolado durante todo o desenvolvimento para garantir uma estimativa imparcial da capacidade de generalização \cite{mitchell1997, goodfellow2016}.
 
-Embora existam diversos algoritmos de aprendizado de máquina clássicos, tarefas que envolvem
-dados de alta dimensionalidade, como imagens e texto, demandam modelos capazes de extrair
-representações abstratas automaticamente. Nesse contexto, as redes neurais
-artificiais emergem como uma das abordagens mais expressivas.
+Embora existam diversos algoritmos de aprendizado de máquina clássicos, tarefas que envolvem dados de alta dimensionalidade, como imagens e textos, demandam modelos capazes de extrair representações abstratas automaticamente. Nesse contexto, as redes neurais artificiais emergem como uma das abordagens mais expressivas.
 
 
 \subsection{Redes Neurais Artificiais}
 
 %vies
 
-As redes neurais artificiais são modelos computacionais inspirados, de forma abstrata, na
-estrutura e no funcionamento do sistema nervoso biológico \cite{rosenblatt1958}. A unidade fundamental é o
-\textbf{neurônio artificial} (ou \textit{perceptron}), que recebe um conjunto de entradas, pondera cada uma por um peso, soma os resultados com um viés e aplica uma \textbf{função de ativação} para produzir uma saída, conforme ilustrado na Figura~\ref{fig:perceptron}.
+As redes neurais artificiais são modelos computacionais inspirados, de forma abstrata, na estrutura e no funcionamento do sistema nervoso biológico \cite{rosenblatt1958}, sendo capazes de aprender por meio de tentativas e erros, além de generalizar padrões a partir de exemplos. A unidade fundamental é o \textbf{neurônio artificial} (ou \textit{perceptron}), que recebe um conjunto de entradas, pondera cada uma por um peso, soma os resultados com um viés na função linear, e por fim aplica uma \textbf{função de ativação} para produzir uma saída, conforme ilustrado na Figura~\ref{fig:perceptron}.
 
 \begin{figure*}[!htbp]
     \centering
@@ -76,21 +59,21 @@ estrutura e no funcionamento do sistema nervoso biológico \cite{rosenblatt1958}
     \label{fig:perceptron}
 \end{figure*}
 
-A escolha da função de ativação determina como a saída do neurônio é calculada e influencia diretamente a capacidade do modelo de aprender padrões não lineares. Uma das funções de ativação é a \textbf{sigmoide} ($\sigma$) que mapeia qualquer valor real para o intervalo aberto $(0, 1)$, conforme a equação:
+A escolha da função de ativação determina como a saída do neurônio é calculada e influencia diretamente a capacidade do modelo de aprender padrões não lineares. Uma das funções de ativação mais clássicas é a \textit{sigmoide} ($\sigma$) que mapeia qualquer valor real para o intervalo aberto $(0, 1)$, permitindo uma interpretação probabilística da saída conforme a equação:
 
 \begin{equation}
 \sigma(x) = \frac{1}{1 + e^{-x}}
 \label{eq:sigmoid}
 \end{equation}
 
-Essa propriedade torna a sigmoide adequada para tarefas de classificação binária, na qual a saída pode ser interpretada diretamente como a probabilidade de um exemplo pertencer à classe positiva. Em problemas de \textbf{classificação multiclasse}, a função \textit{Softmax} generaliza a sigmoide, convertendo um vetor de pontuações brutas (\textit{logits}) $\mathbf{z} = (z_1, \ldots, z_K)$ em uma distribuição de probabilidade sobre $K$ classes:
+Essa propriedade torna a \textit{sigmoide} adequada para tarefas de classificação binária, na qual a saída pode ser interpretada diretamente como a probabilidade de um exemplo pertencer à classe positiva ou negativa. Em problemas de \textbf{classificação multiclasse}, a função \textit{softmax} generaliza a \textit{sigmoide}, convertendo um vetor de pontuações brutas (\textit{logits}) $\mathbf{z} = (z_1, \ldots, z_K)$ em uma distribuição de probabilidade sobre $K$ classes:
 
 \begin{equation}
 \text{Softmax}(z_i) = \frac{e^{z_i}}{\displaystyle\sum_{j=1}^{K} e^{z_j}}, \quad i = 1, \ldots, K
 \label{eq:softmax}
 \end{equation}
 
-Cada valor $\text{Softmax}(z_i)$ representa a probabilidade estimada de pertencimento à classe $i$, e a soma de todas as probabilidades é sempre igual a 1.
+\noindent O uso da exponencial garante que todos os valores sejam positivos e amplifica as diferenças entre as pontuações, tornando a classe de maior \textit{logit} ainda mais dominante. Cada valor $\text{Softmax}(z_i)$ representa a probabilidade estimada de pertencimento à classe $i$, e por construção a soma de todas as probabilidades é sempre igual a $1$, o que torna a saída diretamente interpretável como uma distribuição de probabilidade.
 
 Isoladamente, um único neurônio consegue apenas separar classes linearmente separáveis.
 Para modelar padrões não lineares e de maior complexidade, os neurônios são organizados
@@ -100,17 +83,13 @@ ou mais \textbf{camadas ocultas}, que extraem representações intermediárias; 
 denominada \textit{Multilayer Perceptron} (MLP) ou rede neural de alimentação direta
 (\textit{feedforward neural network}), na qual o sinal se propaga exclusivamente da
 entrada para a saída, sem realimentação \cite{goodfellow2016}.
- 
-O aprendizado ocorre pelo ajuste dos pesos e vieses por meio do algoritmo de
-\textbf{retropropagação} (\textit{backpropagation}). A cada iteração, a diferença entre a saída prevista e a saída esperada é quantificada por uma \textbf{função de perda}, o gradiente dessa função em relação a cada
-parâmetro é calculado pela regra da cadeia e utilizado pelo algoritmo de
-\textbf{gradiente descendente} para atualizar os pesos na direção que minimiza o erro
-\cite{rumelhart1986}.
+
+O aprendizado ocorre pelo ajuste iterativo dos pesos e vieses por meio do algoritmo de \textbf{retropropagação} (\textit{backpropagation}). Em cada iteração, a rede realiza uma \textit{passagem direta} (\textit{forward pass}) onde os dados de entrada percorrem todas as camadas até produzir uma saída prevista. A discrepância entre a saída prevista e o valor esperado é então quantificada por uma \textbf{função de perda}. Para minimizar esse erro, a retropropagação computa o gradiente (derivada para funções com múltiplas variáveis) de cada parâmetro utilizando a \textit{regra da cadeia}, propagando o sinal de erro da saída de volta para as camadas iniciais. Por fim, o algoritmo de \textbf{gradiente descendente} utiliza esses gradientes para atualizar os pesos na direção de menor perda, ou seja, minimiza o erro \cite{rumelhart1986}.
 
 \begin{figure}[!htbp]
     \centering
     \includegraphics[scale=0.25]{imagens/artificial-neural-network.png}
-    \caption{Arquitetura de uma rede neural. As setas pretas indicam o fluxo \textit{feed forward},
+    \caption{Arquitetura de uma rede neural. As setas pretas indicam o fluxo \textit{feedforward},
     da camada de entrada até a camada de saída. As setas vermelhas ilustram o processo
     de retropropagação (\textit{backpropagation}), pelo qual o gradiente do erro é
     propagado da saída em direção às camadas anteriores para atualização dos pesos \cite{geeksforgeeks2023ann}.}
