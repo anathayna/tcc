@@ -254,7 +254,7 @@ Modelos multimodais procuram extrair representações conjuntas dessas diferente
 
 \subsection{Modelos de linguagem e visão}
 
-O VisualBERT \cite{visualbert2019} foi um marco ao fundir representações visuais e textuais em um único \textit{encoder}, permitindo que o mecanismo de autoatenção descubra alinhamentos implícitos entre as duas  modalidades. A Figura~\ref{fig:visualbert-arch} ilustra que o modelo é pré-treinado com duas tarefas: modelagem de linguagem mascarada (Objetivo 1), em que \textit{tokens} de texto são ocultados e preditos com base no contexto visual e linguístico, e previsão de alinhamento entre frase e imagem (Objetivo 2), que verifica se uma legenda corresponde à imagem fornecida. Após o pré-treinamento com dados de legendas, o modelo é ajustado para diferentes tarefas específicas. Uma limitação relevante do VisualBERT é sua dependência de detectores de objetos pré-computados para extrair as regiões visuais, o que torna o \textit{pipeline} mais rígido e computacionalmente custoso.
+O VisualBERT \cite{visualbert2019} foi um marco ao fundir representações visuais e textuais em um único \textit{encoder}, permitindo que o mecanismo de autoatenção aprenda alinhamentos implícitos entre as duas modalidades. A Figura~\ref{fig:visualbert-arch} ilustra que o modelo é pré-treinado com duas tarefas: modelagem de linguagem mascarada (Objetivo 1), em que \textit{tokens} de texto são ocultados e preditos com base no contexto visual e linguístico; e a previsão de alinhamento entre frase e imagem (Objetivo 2), que verifica se uma legenda corresponde à imagem fornecida. Após o pré-treinamento em pares imagem–legenda, o modelo é ajustado para diferentes tarefas específicas. Uma limitação relevante do VisualBERT é sua dependência de detectores de objetos pré-computados para extrair as regiões visuais, o que torna o \textit{pipeline} mais rígido e computacionalmente custoso.
 
 \begin{figure*}[!htbp]
 	\centering
@@ -263,22 +263,22 @@ O VisualBERT \cite{visualbert2019} foi um marco ao fundir representações visua
     \label{fig:visualbert-arch}
 \end{figure*}
 
-Enquanto o VisualBERT utiliza a fusão precoce, integrando texto e imagem diretamente em um único \textit{Transformer}, o CLIP (\textit{Contrastive Language-Image Pre-training}) \cite{clip2021} adota a fusão tardia, processando cada modalidade separadamente antes de alinhar suas representações. O CLIP não é um modelo único, mas sim um \textit{framework} de aprendizado multimodal, com dois \textit{encoders} independentes, um visual em arquiteturas como o ViT-L/14 (\textit{Vision Transformer}), e outro textual, fixo e similar ao GPT-2.
+Enquanto o VisualBERT utiliza a fusão precoce, integrando texto e imagem diretamente em um único \textit{Transformer}, o CLIP (\textit{Contrastive Language-Image Pre-training}) \cite{clip2021} adota a fusão tardia, processando cada modalidade separadamente antes de alinhar suas representações. O CLIP não é um modelo único, mas sim um \textit{framework} de aprendizado multimodal, com dois \textit{encoders} independentes, um visual em arquiteturas como o ViT, e outro textual, baseado na arquitetura \textit{Transformer}.
 
-O CLIP foi treinado com aproximadamente 400 milhões de pares de imagem e texto extraídos da internet, e sua principal inovação está no \textbf{aprendizado contrastivo}: uma estratégia de treinamento em que o modelo aprende a aproximar, em um espaço vetorial comum, as representações de pares semanticamente relacionados, como uma imagem e sua descrição correta, enquanto afasta as representações de pares não correspondentes. Em vez de classificar categorias fixas, o modelo aprende por comparação, o que lhe confere capacidade de generalização para conceitos não vistos durante o treinamento, incluindo a realização de \textit{zero-shot learning} (classificação sem exemplos rotulados), comparando a representação de uma nova imagem com os \textit{embeddings} de rótulos textuais candidatos e selecionando o de maior similaridade de cosseno.
+O CLIP foi treinado com aproximadamente 400 milhões de pares de imagem e texto extraídos da internet, e sua principal inovação está no \textbf{aprendizado contrastivo}, uma estratégia de treinamento em que o modelo aprende a aproximar, em um espaço vetorial comum, as representações de pares semanticamente relacionados, como uma imagem e sua descrição correta, enquanto afasta as representações de pares não correspondentes. Em vez de classificar categorias fixas, o modelo aprende por comparação, o que lhe confere capacidade de generalização para conceitos não vistos durante o treinamento, incluindo a realização de \textit{zero-shot learning} (classificação sem exemplos rotulados), comparando a representação de uma nova imagem com os \textit{embeddings} de rótulos textuais candidatos e selecionando o de maior similaridade de cosseno.
 
 \begin{figure*}[!htbp]
 	\centering
 	\includegraphics[scale=0.2]{imagens/CLIP.png}
-    \caption{Pipeline de treinamento e uso do CLIP \cite{clip2021}.}
+    \caption{\textit{Pipeline} de treinamento e uso do CLIP \cite{clip2021}.}
     \label{fig:clip-pipeline}
 \end{figure*}
 
-A Figura~\ref{fig:clip-pipeline} ilustra o pipeline do CLIP em duas fases. Na \textbf{Fase 1 (Pré-treinamento Contrastivo)}, pares de imagem e texto são processados simultaneamente: as imagens passam pelo \textit{Image Encoder}, que as converte em vetores de representação, enquanto as descrições textuais associadas passam pelo \textit{Text Encoder}, produzindo vetores no mesmo espaço latente (também chamados de \textit{embeddings}). O treinamento otimiza a similaridade cosseno dos pares corretos, maximizando-a na diagonal da matriz de similaridade, enquanto penaliza os pares incorretos fora dela. Na \textbf{Fase 2 (Classificação \textit{Zero-Shot})}, uma nova imagem é codificada pelo \textit{Image Encoder} e seu vetor é comparado aos \textit{embeddings} de rótulos textuais candidatos, como \textit{``a photo of a dog''}, gerados pelo \textit{Text Encoder}. Sem nenhum treinamento adicional, o modelo seleciona a classe cuja representação textual apresenta maior similaridade com a representação visual da imagem, como ilustrado pelo exemplo do cachorro na figura. 
+A Figura~\ref{fig:clip-pipeline} ilustra o \textit{pipeline} do CLIP em duas fases. Na \textbf{Fase 1 (Pré-treinamento Contrastivo)}, pares de imagem e texto são processados simultaneamente, onde as imagens passam pelo \textit{Image Encoder}, que as converte em vetores de representação, enquanto as descrições textuais associadas passam pelo \textit{Text Encoder}, produzindo vetores no mesmo espaço latente. O treinamento otimiza a similaridade cosseno dos pares corretos, maximizando-a na diagonal da matriz de similaridade, enquanto penaliza os pares incorretos fora dela. Na \textbf{Fase 2 (Classificação \textit{Zero-Shot})}, uma nova imagem é codificada pelo \textit{Image Encoder} e seu vetor é comparado aos \textit{embeddings} de rótulos textuais candidatos, como \textit{``a photo of a dog''}, gerados pelo \textit{Text Encoder}. Sem nenhum treinamento adicional, o modelo seleciona a classe cuja representação textual apresenta maior similaridade com a representação visual da imagem, como ilustrado pelo exemplo do cachorro na figura. 
 
-Assim, enquanto VisualBERT integra modalidades cedo via \textit{Transformer} compartilhado, CLIP alinha via contraste em espaço separado, capturando nuances semânticas complexas. No entanto, para memes com ``contraste de ódio'' irônico (de sutil a explícito), esses modelos binários (odioso e não odioso) demandam modelagem de graus intermediários.
+%No entanto, para memes com ``contraste de ódio'' irônico (de sutil a explícito), esses modelos binários (odioso e não odioso) demandam modelagem de graus intermediários.
 
-\subsection{Aprendizado por Transferência}
+\section{Aprendizado por Transferência}
 
 O aprendizado por transferência (\textit{transfer learning}) é um paradigma do aprendizado profundo no qual o conhecimento adquirido por um modelo durante o treinamento em uma tarefa é reutilizado como ponto de partida para uma tarefa diferente, porém relacionada \cite{goodfellow2016}. Em vez de inicializar os parâmetros aleatoriamente, o modelo parte de representações já enriquecidas por exposição a grandes volumes de dados, reduzindo substancialmente a necessidade de dados rotulados e o custo computacional na tarefa-alvo.
 
@@ -293,7 +293,7 @@ iterativamente seus parâmetros para minimizar uma função de perda
 que quantifica o erro entre as predições do modelo e os rótulos esperados.
 Esse processo de minimização é conduzido por um otimizador, que
 determina como os parâmetros são atualizados a cada passo com base no
-gradiente da função de perda \cite{goodfellow2016}. Paralelamente, técnicas
+gradiente da função de perda. Paralelamente, técnicas
 de regularização visam evitar o \textit{overfitting}, que
 ocorre quando o modelo memoriza os dados de treinamento em vez de aprender
 padrões generalizáveis, resultando em desempenho degradado em dados não
@@ -301,7 +301,7 @@ vistos \cite{goodfellow2016}.
 
 Para estruturar esse processo, o treinamento é organizado em épocas (\textit{epochs}), que
 corresponde a uma passagem completa do otimizador por todos os exemplos do
-conjunto de treinamento \cite{goodfellow2016}. Na prática, o conjunto de treinamento é dividido em
+conjunto de treinamento. Na prática, o conjunto de treinamento é dividido em
 pequenos subconjuntos de tamanho fixo, e o gradiente é calculado e os
 parâmetros são atualizados uma vez por subconjunto, de modo que uma única
 época é composta por múltiplas iterações de atualização. Ao final de cada
