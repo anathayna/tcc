@@ -48,8 +48,6 @@ Embora existam diversos algoritmos de aprendizado de máquina clássicos, tarefa
 
 \subsection{Redes Neurais Artificiais}
 
-%vies
-
 As redes neurais artificiais são modelos computacionais inspirados, de forma abstrata, na estrutura e no funcionamento do sistema nervoso biológico \cite{rosenblatt1958}, sendo capazes de aprender por meio de tentativas e erros, além de generalizar padrões a partir de exemplos. A unidade fundamental é o \textbf{neurônio artificial} (ou \textit{perceptron}), que recebe um conjunto de entradas, pondera cada uma por um peso, soma os resultados com um viés na função linear, e por fim aplica uma \textbf{função de ativação} para produzir uma saída, conforme ilustrado na Figura~\ref{fig:perceptron}.
 
 \begin{figure*}[!htbp]
@@ -58,6 +56,8 @@ As redes neurais artificiais são modelos computacionais inspirados, de forma ab
     \caption{Estrutura de um neurônio artificial \cite{perceptron}.}
     \label{fig:perceptron}
 \end{figure*}
+
+O \textbf{viés} (\textit{bias}) desempenha um papel duplo, tecnicamente ele é um parâmetro somado à combinação linear das entradas antes da aplicação da função de ativação, funcionando como um limiar ajustável que permite ao neurônio disparar mesmo quando todas as entradas são nulas. Sem ele, a superfície de decisão do modelo seria obrigada a passar pela origem do espaço de características, reduzindo a capacidade de ajuste do modelo. Com ele, o modelo ganha um grau de liberdade a mais, tornando o aprendizado mais flexível e eficaz \cite{goodfellow2016}. Agora socialmente, carrega um sentido distinto e crítico chamado de \textbf{viés algorítmico}, que acontece quando os dados utilizados no treinamento refletem desigualdades sociais e estigmatizam grupos minorizados. Nesses casos, o modelo aprende, reproduz e amplifica as discriminações presentes na sociedade, causando impactos reais em contratações, concessão de crédito e reconhecimento facial \cite{barocas2023}. Assim, compreender o viés em redes neurais exige uma dupla leitura, a matemática que o torna indispensável para o modelo, e a ética que o coloca como um dos principais desafios para o desenvolvimento de sistemas de inteligência artificial justos e responsáveis.
 
 A escolha da função de ativação determina como a saída do neurônio é calculada e influencia diretamente a capacidade do modelo de aprender padrões não lineares. Uma das funções de ativação mais clássicas é a \textit{sigmoide} ($\sigma$) que mapeia qualquer valor real para o intervalo aberto $(0, 1)$, permitindo uma interpretação probabilística da saída conforme a equação:
 
@@ -73,7 +73,7 @@ Essa propriedade torna a \textit{sigmoide} adequada para tarefas de classificaç
 \label{eq:softmax}
 \end{equation}
 
-\noindent O uso da exponencial garante que todos os valores sejam positivos e amplifica as diferenças entre as pontuações, tornando a classe de maior \textit{logit} ainda mais dominante. Cada valor $\text{Softmax}(z_i)$ representa a probabilidade estimada de pertencimento à classe $i$, e por construção a soma de todas as probabilidades é sempre igual a $1$, o que torna a saída diretamente interpretável como uma distribuição de probabilidade.
+O uso da exponencial garante que todos os valores sejam positivos e amplifica as diferenças entre as pontuações, tornando a classe de maior \textit{logit} ainda mais dominante. Cada valor $\text{Softmax}(z_i)$ representa a probabilidade estimada de pertencimento à classe $i$, e por construção a soma de todas as probabilidades é sempre igual a $1$, o que torna a saída diretamente interpretável como uma distribuição de probabilidade.
 
 Isoladamente, um único neurônio consegue apenas separar classes linearmente separáveis.
 Para modelar padrões não lineares e de maior complexidade, os neurônios são organizados
@@ -104,6 +104,15 @@ O aprendizado profundo (\textit{deep learning}) é uma subárea do aprendizado d
 
 Dentre as arquiteturas de aprendizado profundo, destacam-se as Redes Neurais Recorrentes (RNNs), voltadas para dados sequenciais como o texto, e as Redes Neurais Convolucionais (CNNs), voltadas para dados com estrutura espacial como as imagens.
 
+\section{Processamento de Linguagem Natural}
+
+O processamento de linguagem natural (PLN) é uma subárea da inteligência artificial 
+dedicada a capacitar computadores a compreender, interpretar e gerar linguagem humana de forma 
+natural \cite{jurafsky2026}, representando textos em formatos numéricos que preservem informações 
+semânticas e sintáticas. Para isso, diversas arquiteturas foram
+propostas ao longo dos anos, desde as RNNs, até os modelos baseados em \textit{Transformers} \cite{GoogleTeamTransformers},
+que passaram a estabelecer o estado da arte em praticamente todas as tarefas de PLN.
+
 \subsection{Redes Neurais Recorrentes}
  
 As redes neurais recorrentes (\textit{recurrent neural networks}) são arquiteturas de aprendizado profundo projetadas para processar dados sequenciais, como texto, áudio e séries temporais \cite{elman1990}. Diferentemente das redes \textit{feedforward}, nas quais a informação flui em uma única direção da entrada à saída, as RNNs introduzem conexões recorrentes que permitem ao modelo manter um \textbf{estado oculto} que é atualizado a cada passo da sequência. Esse estado oculto funciona como uma forma de memória de curto prazo, ao processar cada novo elemento da sequência, a rede não considera apenas a entrada atual, mas também o estado produzido no passo anterior. Dessa forma, a informação se propaga ao longo do tempo, permitindo que o modelo leve em conta o contexto acumulado dos elementos anteriores ao fazer sua predição.
@@ -125,25 +134,39 @@ retidas, descartadas ou transmitidas no estado da célula. Embora as LSTMs tenha
 representado um avanço significativo, ambas as arquiteturas permanecem inerentemente
 sequenciais, cada passo depende do anterior, o que limita a paralelização durante o
 treinamento e dificulta a captura de contextos muito longos. Essa limitação motivou o
-desenvolvimento de uma abordagem radicalmente diferente, baseada exclusivamente em
-atenção: o \textit{Transformer}.
-
-\section{Processamento de Linguagem Natural}
-
-O processamento de linguagem natural (PLN) é uma subárea da inteligência artificial 
-dedicada a capacitar computadores a compreender, interpretar e gerar linguagem humana de forma 
-natural \cite{jurafsky2026}, representando textos em formatos numéricos que preservem informações 
-semânticas e sintáticas. Para isso, diversas arquiteturas foram propostas ao longo dos anos, 
-culminando nos modelos baseados em \textit{Transformers}, que estabeleceram o estado da arte 
-em praticamente todas as tarefas de PLN \cite{GoogleTeamTransformers}.
+desenvolvimento de uma abordagem radicalmente diferente: o \textit{Transformer}.
 
 \subsection{\textit{Transformer}}
+
+O mecanismo de atenção foi proposto inicialmente como uma forma de contornar
+essas limitações em modelos \textit{encoder-decoder} (codificador-decodificador)
+para tradução automática \cite{bahdanau2015}, onde o \textit{encoder} processava
+toda a frase e a comprimia em um único vetor de tamanho fixo, e por sua vez o
+\textit{decoder} lia esse único vetor e tentava gerar a frase traduzida.
+Compactar uma frase longa em um único vetor gerava uma perda muito grande de
+informações, e o desempenho do modelo despencava conforme o tamanho da frase
+aumentava. Em vez disso, o modelo mantém uma sequência de vetores, que são as saídas
+de cada posição do codificador, e ao gerar cada palavra da tradução, o modelo aprende
+a atribuir pesos diferentes a cada posição da sequência de entrada, focando nas
+partes mais relevantes em cada etapa. A eficácia desse mecanismo fez com que os
+pesquisadores propusessem uma arquitetura baseada exclusivamente em atenção.
  
-Antes dos \textit{Transformer}, as arquiteturas predominantes para modelagem sequencial de linguagem eram as redes recorrentes. Embora fossem capazes de processar sequências, essas redes apresentavam dificuldades em capturar dependências de longo alcance, devido ao problema do desaparecimento do gradiente ao longo de sequências longas, além de serem inerentemente sequenciais, o que limitava sua paralelização durante o treinamento.
- 
-O mecanismo de atenção foi proposto inicialmente como uma forma de contornar essas limitações em modelos \textit{encoder-decoder} para tradução automática \cite{bahdanau2015}, que ao gerar cada palavra da tradução, o modelo aprende a atribuir pesos diferentes a cada posição da sequência de entrada, focando nas partes mais relevantes em cada etapa. A eficácia desse mecanismo fez com que propuseram eliminar completamente a recorrência e as convoluções, construindo uma arquitetura baseada exclusivamente em atenção: o \textit{Transformer}.
- 
-A arquitetura \textit{Transformer} é composta por blocos de atenção multi-cabeça (\textit{multi-head attention}), nos quais múltiplas projeções paralelas da atenção permitem ao modelo capturar simultaneamente diferentes tipos de relações entre os \textit{tokens} da sequência \cite{GoogleTeamTransformers}. A autoatenção (\textit{self-attention}) permite que cada posição da sequência considere todas as demais ao construir sua representação, independentemente da distância entre elas. Como a arquitetura não possui estrutura sequencial intrínseca, informações sobre a posição relativa dos \textit{tokens} são incorporadas por meio de codificações posicionais. Cada bloco também inclui redes de alimentação direta por posição (\textit{feedforward}) e operações de normalização de camada complementam cada bloco. Essa combinação resultou em ganhos expressivos de qualidade e desempenho em tradução automática e rapidamente se tornou a base de modelos estado da arte em linguagem natural.
+A arquitetura \textit{Transformer} é composta por blocos de atenção multi-cabeça (\textit{multi-head attention}), nos quais múltiplas projeções paralelas da atenção permitem ao modelo capturar simultaneamente diferentes tipos de relações entre os \textit{tokens} da sequência \cite{GoogleTeamTransformers}. Dentro de cada cabeça de atenção, opera o mecanismo de autoatenção (\textit{self-attention}) que permite a cada posição da sequência consultar todas as demais ao construir sua representação, independentemente da distância entre elas. Como a arquitetura não possui estrutura sequencial intrínseca, informações sobre a posição relativa dos \textit{tokens} são incorporadas por meio de codificações posicionais (\textit{positional encodings}). Cada bloco também inclui redes de alimentação direta por posição (\textit{feedforward}), responsável por ampliar a capacidade representacional do modelo, e operações de normalização de camada (\textit{layer normalization}) são aplicadas ao longo do bloco para estabilizar o treinamento. Essa combinação resultou ganhos expressivos de qualidade e desempenho em tradução automática e rapidamente se tornou a base de modelos estado da arte em linguagem natural.
+
+A Figura~\ref{fig:attention-model} apresenta a arquitetura do \textit{Transformer}, composta por um \textit{encoder} (lado esquerdo) e um \textit{decoder} (lado direito) organizados em camadas empilhadas. 
+
+O \textit{encoder} é responsável por ler e representar a sequência de entrada. Cada \textit{token} é uma unidade mínima em que o texto é segmentado, o que corresponde a uma palavra ou subpalavra, onde é convertido em um vetor numérico denso (\textit{embedding}), que captura relações semânticas em um espaço de alta dimensão. Esses vetores recebem uma codificação posicional e percorrem blocos de atenção multi-cabeça e redes \textit{feed-forward}, produzindo uma representação contextualizada da entrada. Cada subcamada é seguida por uma normalização, que estabiliza o treinamento e preserva o gradiente ao longo das camadas, produzindo ao final uma representação contextualizada da entrada. 
+
+O \textit{decoder}, por sua vez, consome essa representação para gerar a saída de forma autorregressiva, ou seja, a cada passo passo produz um \textit{token} com base nos anteriormente gerados. Os tokens de saída são convertidos em vetores, somada a uma codificação posicional, e então processados por três subcamadas por bloco, cada uma seguida de normalização. A \textit{Masked Multi-Head Attention} aplica uma máscara para impedir o acesso a posições futuras durante o 
+treinamento, preservando a propriedade autorregressiva. A 
+atenção multi-cabeça cruzada (\textit{cross-attention}), 
+incorpora as representações produzidas pelo \textit{encoder}, permitindo 
+que o \textit{decoder} foque nas partes mais relevantes da entrada a 
+cada passo de geração, e por fim, há uma subcamada \textit{Feed Forward}. Após o último bloco, a saída passa por uma camada linear que projeta os 
+vetores para o tamanho do vocabulário, seguida de uma função 
+\textit{Softmax}, que converte os valores em uma distribuição de 
+probabilidades para determinar o \textit{token} mais provável a ser 
+gerado.
 
 \begin{figure*}[!htbp]
     \centering
@@ -152,13 +175,13 @@ A arquitetura \textit{Transformer} é composta por blocos de atenção multi-cab
     \label{fig:attention-model}
 \end{figure*}
 
-A Figura~\ref{fig:attention-model} apresenta a arquitetura do \textit{Transformer}, composta por um codificador (\textit{encoder}) e um decodificador (\textit{decoder}) organizados em camadas empilhadas. O \textit{encoder} é responsável por ler e representar a sequência de entrada. Cada \textit{token} é uma unidade mínima em que o texto é segmentado, o que corresponde a uma palavra ou subpalavra, onde é convertido em um vetor numérico denso (\textit{embedding}), que captura relações semânticas em um espaço de alta dimensão. Esses vetores recebem uma codificação posicional e percorrem blocos de atenção e redes \textit{feed-forward}, produzindo uma representação contextualizada da entrada. O \textit{decoder}, por sua vez, consome essa representação para gerar a saída de forma autorregressiva: a cada passo, produz um \textit{token} com base nos já gerados por meio de atenção mascarada e no estado do \textit{encoder}, por meio de atenção cruzada, aplicando ao final uma camada linear seguida de \textit{softmax}, função que converte os valores em uma distribuição de probabilidades sobre o vocabulário para determinar o \textit{token} mais provável.
+Embora o \textit{Transformer} tenha sido um avanço significativo, os modelos de linguagem da época ainda eram pré-treinados de forma unidirecional, da esquerda para a direita ou da direita para a esquerda, o que limitava a capacidade de capturar o contexto completo de cada \textit{token}. Isso motivou pesquisadores a explorar variantes da arquitetura voltadas exclusivamente à compreensão do texto, como modelos baseados exclusivamente no \textit{encoder}. É nesse cenário que surge o BERT.
 
-\subsection{BERT: Representações Bidirecionais a partir de Transformers}
+\subsection{BERT: Representações Bidirecionais a partir de \textit{Transformer}}
 
-Construído sobre a arquitetura Transformer, o BERT (\textit{Bidirectional Encoder Representations from Transformers}) \cite{devlin2019bert} introduziu uma abordagem de pré-treinamento em larga escala que transformou o estado da arte em diversas tarefas de PLN. Diferentemente de modelos anteriores que processavam o texto da esquerda para a direita, o BERT emprega atenção bidirecional, ao construir a representação de um token, o modelo considera simultaneamente todo o contexto à esquerda e à direita, capturando dependências em ambas as direções.
+Construído sobre a arquitetura \textit{Transformer}, o BERT (\textit{Bidirectional Encoder Representations from Transformers}) \cite{devlin2019bert} introduziu uma abordagem de pré-treinamento em larga escala que transformou o estado da arte em diversas tarefas de PLN. Diferentemente de modelos anteriores que processavam o texto forma unidirecional, o BERT emprega atenção bidirecional, ao construir a representação de um token, o modelo considera simultaneamente todo o contexto à esquerda e à direita, capturando dependências em ambas as direções.
 
-O pré-treinamento do BERT é realizado por meio de dois objetivos. O primeiro é a Modelagem de Linguagem Mascarada (\textit{Masked Language Modeling}), na qual uma fração aleatória dos \textit{tokens} é ocultada e o modelo é treinado para predizê-los a partir do contexto restante. O segundo é a Predição da Próxima Sentença (\textit{Next Sentence Prediction}), que treina o modelo a determinar se dois segmentos de texto são consecutivos em um documento original \cite{devlin2019bert}. Esses objetivos permitem que o BERT desenvolva representações ricas do idioma sem exigir dados rotulados. Na fase de \textit{fine-tuning}, o modelo pré-treinado é adaptado a tarefas específicas por meio do acréscimo de camadas de saída e do ajuste supervisionado com dados rotulados da tarefa-alvo. Essa separação entre pré-treinamento em larga escala e ajuste fino em domínio específico consolidou-se como paradigma central no desenvolvimento de modelos de PLN modernos.
+O pré-treinamento do BERT é realizado por meio de dois objetivos. O primeiro é a modelagem de linguagem mascarada (\textit{masked language modeling}), na qual uma fração aleatória dos \textit{tokens} é ocultada e o modelo é treinado para predizê-los a partir do contexto restante. O segundo é a predição da próxima sentença (\textit{next sentence prediction}), que treina o modelo a determinar se dois segmentos de texto são consecutivos em um documento original \cite{devlin2019bert}. Esses objetivos permitem que o BERT desenvolva representações ricas do idioma sem exigir dados rotulados. Na fase de \textit{fine-tuning} (ajuste fino), o modelo pré-treinado é adaptado a tarefas específicas por meio do acréscimo de camadas de saída e do ajuste supervisionado com dados rotulados da tarefa-alvo. Essa separação entre pré-treinamento em larga escala e ajuste fino em domínio específico consolidou-se como paradigma central no desenvolvimento de modelos de PLN modernos.
 
 \begin{figure*}[!htbp]
     \centering
@@ -171,14 +194,6 @@ A Figura~\ref{fig:bert-model} ilustra as duas etapas do ciclo de vida do BERT. N
 segmento. No \textit{fine-tuning}, os parâmetros obtidos no pré-treinamento são utilizados como ponto de partida e ajustados de forma supervisionada para tarefas específicas, como análise de sentimentos, resposta a perguntas e reconhecimento de entidades nomeadas.
 
 % Os \textit{SentenceTransformers} generalizaram essa abordagem para uma biblioteca extensível que suporta múltiplas arquiteturas de \textit{Transformer} e diferentes objetivos de treinamento, incluindo similaridade semântica, recuperação de informação densa e agrupamento de textos. Os \textit{sentence embeddings} resultantes são vetores densos de dimensão fixa que capturam o significado global de uma sentença, permitindo comparações eficientes por meio de métricas como a similaridade cosseno sem a necessidade de processar pares conjuntamente. Essa propriedade torna os \textit{sentence embeddings} particularmente adequados para tarefas como busca semântica, detecção de paráfrases, agrupamento de textos e extração de características textuais em sistemas de classificação multimodal.
-
-\subsection{Aprendizado por Transferência}
-
-O aprendizado por transferência (\textit{transfer learning}) é um paradigma do aprendizado profundo no qual o conhecimento adquirido por um modelo durante o treinamento em uma tarefa é reutilizado como ponto de partida para uma tarefa diferente, porém relacionada \cite{goodfellow2016}. Em vez de inicializar os parâmetros aleatoriamente, o modelo parte de representações já enriquecidas por exposição a grandes volumes de dados, reduzindo substancialmente a necessidade de dados rotulados e o custo computacional na tarefa-alvo.
-
-Na prática, o ciclo típico compreende duas fases: o \textbf{pré-treinamento}, no qual o modelo é treinado em corpus de larga escala com objetivos auto-supervisionados, adquirindo representações gerais e transferíveis; e a \textbf{adaptação}, na qual esses parâmetros são especializados para a tarefa-alvo. Essa separação é particularmente vantajosa em domínios com escassez de dados rotulados, pois o modelo já parte de representações ricas em vez de pesos aleatórios.
-
-A forma de adaptação varia conforme os recursos disponíveis e a proximidade entre as tarefas. Na \textbf{extração de características} (\textit{feature extraction}), os pesos do modelo pré-treinado são completamente congelados e apenas uma camada de classificação adicionada ao topo é treinada; o modelo funciona exclusivamente como extrator de representações. No \textbf{ajuste fino} (\textit{fine-tuning}), todos os parâmetros são atualizados de forma supervisionada, permitindo que o modelo adapte suas representações internas à tarefa-alvo. Uma variante intermediária é o \textbf{descongelamento progressivo} (\textit{progressive unfreezing}), no qual somente as últimas camadas do modelo são liberadas para atualização, preservando as representações gerais aprendidas nas camadas mais profundas e reduzindo o risco de sobreajuste. Por fim, no \textbf{aprendizado zero-shot}, o modelo pré-treinado é aplicado diretamente a novas tarefas sem qualquer ajuste adicional, generalizando para classes ou domínios não vistos durante o treinamento com base na riqueza de suas representações.
 
 \section{Visão Computacional}
  
@@ -247,6 +262,14 @@ O CLIP foi treinado com aproximadamente 400 milhões de pares de imagem e texto 
 A Figura~\ref{fig:clip-pipeline} ilustra o pipeline do CLIP em duas fases. Na \textbf{Fase 1 (Pré-treinamento Contrastivo)}, pares de imagem e texto são processados simultaneamente: as imagens passam pelo \textit{Image Encoder}, que as converte em vetores de representação, enquanto as descrições textuais associadas passam pelo \textit{Text Encoder}, produzindo vetores no mesmo espaço latente (também chamados de \textit{embeddings}). O treinamento otimiza a similaridade cosseno dos pares corretos, maximizando-a na diagonal da matriz de similaridade, enquanto penaliza os pares incorretos fora dela. Na \textbf{Fase 2 (Classificação \textit{Zero-Shot})}, uma nova imagem é codificada pelo \textit{Image Encoder} e seu vetor é comparado aos \textit{embeddings} de rótulos textuais candidatos, como \textit{``a photo of a dog''}, gerados pelo \textit{Text Encoder}. Sem nenhum treinamento adicional, o modelo seleciona a classe cuja representação textual apresenta maior similaridade com a representação visual da imagem, como ilustrado pelo exemplo do cachorro na figura. 
 
 Assim, enquanto VisualBERT integra modalidades cedo via \textit{Transformer} compartilhado, CLIP alinha via contraste em espaço separado, capturando nuances semânticas complexas. No entanto, para memes com ``contraste de ódio'' irônico (de sutil a explícito), esses modelos binários (odioso e não odioso) demandam modelagem de graus intermediários.
+
+\subsection{Aprendizado por Transferência}
+
+O aprendizado por transferência (\textit{transfer learning}) é um paradigma do aprendizado profundo no qual o conhecimento adquirido por um modelo durante o treinamento em uma tarefa é reutilizado como ponto de partida para uma tarefa diferente, porém relacionada \cite{goodfellow2016}. Em vez de inicializar os parâmetros aleatoriamente, o modelo parte de representações já enriquecidas por exposição a grandes volumes de dados, reduzindo substancialmente a necessidade de dados rotulados e o custo computacional na tarefa-alvo.
+
+Na prática, o ciclo típico compreende duas fases: o \textbf{pré-treinamento}, no qual o modelo é treinado em corpus de larga escala com objetivos auto-supervisionados, adquirindo representações gerais e transferíveis; e a \textbf{adaptação}, na qual esses parâmetros são especializados para a tarefa-alvo. Essa separação é particularmente vantajosa em domínios com escassez de dados rotulados, pois o modelo já parte de representações ricas em vez de pesos aleatórios.
+
+A forma de adaptação varia conforme os recursos disponíveis e a proximidade entre as tarefas. Na \textbf{extração de características} (\textit{feature extraction}), os pesos do modelo pré-treinado são completamente congelados e apenas uma camada de classificação adicionada ao topo é treinada; o modelo funciona exclusivamente como extrator de representações. No \textbf{ajuste fino} (\textit{fine-tuning}), todos os parâmetros são atualizados de forma supervisionada, permitindo que o modelo adapte suas representações internas à tarefa-alvo. Uma variante intermediária é o \textbf{descongelamento progressivo} (\textit{progressive unfreezing}), no qual somente as últimas camadas do modelo são liberadas para atualização, preservando as representações gerais aprendidas nas camadas mais profundas e reduzindo o risco de sobreajuste. Por fim, no \textbf{aprendizado zero-shot}, o modelo pré-treinado é aplicado diretamente a novas tarefas sem qualquer ajuste adicional, generalizando para classes ou domínios não vistos durante o treinamento com base na riqueza de suas representações.
 
 \section{Técnicas de Otimização e Regularização}
  
