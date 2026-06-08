@@ -579,6 +579,17 @@ multimodais de alto desempenho em outras tarefas ficaram significativamente abai
 desempenho humano, estimado em 84,7\% de AUROC, evidenciando a dificuldade do problema e
 motivando pesquisas futuras na área.
 
+\subsection{\textit{HateDetectron}: Detecção de discurso de ódio em memes por meio de abordagens de aprendizado profundo multimodal}
+
+O \textit{HateDetectron} \cite{velioglu2020} apresentou uma das soluções vencedoras do \textit{Hateful Memes Challenge}, empregando abordagens
+de aprendizado profundo multimodal para a detecção de discurso de ódio em memes. A proposta
+combina modelos pré-treinados de fusão multimodal, como VisualBERT,
+por meio de um conjunto de modelos ajustados ao conjunto de dados do desafio.
+
+Os autores exploraram estratégias de \textit{fine-tuning} em modelos que integram
+representações visuais e textuais, demonstrando que a combinação de múltiplos modelos
+multimodais supera abordagens individuais na tarefa de classificação de memes odiosos. O trabalho destaca a importância de métodos capazes de capturar a semântica conjunta entre imagem e texto e serve como referência de desempenho competitivo no benchmark do Hateful Memes Challenge, alcançando AUROC de 81,1%.
+
 \subsection{\textit{Hate-CLIPper}: Classificação multimodal de memes odiosos com interação multimodal explícita das características CLIP}
 
 A arquitetura do \textit{Hate-CLIPper} \cite{kumar2022} para classificação de memes odiosos explora a interação explícita entre as representações visuais e textuais extraídas pelo CLIP. A motivação central do trabalho é que estratégias convencionais de fusão multimodal, como concatenação simples ou soma ponderada dos vetores de cada modalidade, capturam de forma superficial a relação semântica entre imagem e texto, sendo insuficientes para o raciocínio fino exigido pela detecção de discurso de ódio em memes. Para superar essa limitação, os autores introduzem um mecanismo de interação \textit{cross-modal} explícita baseado no produto externo entre os vetores de características de imagem e texto obtidos pelo CLIP. Essa operação produz a \textit{Feature Interaction Matrix} (FIM), que captura correlações par a par entre cada dimensão das duas modalidades, representando de forma mais rica como conceitos visuais e linguísticos se relacionam dentro de um mesmo meme. Ao ser avaliado no \textit{benchmark} do \textit{Hateful Memes Challenge} (HMC), o \textit{Hate-CLIPper} alcançou AUROC de 85,8.
