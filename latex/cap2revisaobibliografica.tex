@@ -282,9 +282,9 @@ A Figura~\ref{fig:clip-pipeline} ilustra o \textit{pipeline} do CLIP em duas fas
 
 O aprendizado por transferência (\textit{transfer learning}) é um paradigma do aprendizado profundo no qual o conhecimento adquirido por um modelo durante o treinamento em uma tarefa é reutilizado como ponto de partida para uma tarefa diferente, porém relacionada \cite{goodfellow2016}. Em vez de inicializar os parâmetros aleatoriamente, o modelo parte de representações já enriquecidas por exposição a grandes volumes de dados, reduzindo substancialmente a necessidade de dados rotulados e o custo computacional na tarefa-alvo.
 
-Na prática, o ciclo típico compreende duas fases: o \textbf{pré-treinamento}, no qual o modelo é treinado em corpus de larga escala com objetivos auto-supervisionados, adquirindo representações gerais e transferíveis; e a \textbf{adaptação}, na qual esses parâmetros são especializados para a tarefa-alvo. Essa separação é particularmente vantajosa em domínios com escassez de dados rotulados, pois o modelo já parte de representações ricas em vez de pesos aleatórios.
+Na prática, o aprendizado envolve duas fases: o \textbf{pré-treinamento}, onde o modelo é exposto a grandes volumes de dados e aprende a resolver tarefas simples criadas a partir dos próprios dados, desenvolvendo assim representações amplas e reutilizáveis; e a \textbf{adaptação}, onde esses parâmetros são refinados para a tarefa-alvo. Essa separação é útil principalmente em cenários com escassez de dados rotulados, pois o modelo já parte de representações informativas em vez de pesos inicializados aleatoriamente.
 
-A forma de adaptação varia conforme os recursos disponíveis e a proximidade entre as tarefas. Na \textbf{extração de características} (\textit{feature extraction}), os pesos do modelo pré-treinado são completamente congelados e apenas uma camada de classificação adicionada ao topo é treinada; o modelo funciona exclusivamente como extrator de representações. No \textbf{ajuste fino} (\textit{fine-tuning}), todos os parâmetros são atualizados de forma supervisionada, permitindo que o modelo adapte suas representações internas à tarefa-alvo. Uma variante intermediária é o \textbf{descongelamento progressivo} (\textit{progressive unfreezing}), no qual somente as últimas camadas do modelo são liberadas para atualização, preservando as representações gerais aprendidas nas camadas mais profundas e reduzindo o risco de sobreajuste. Por fim, no \textbf{aprendizado zero-shot}, o modelo pré-treinado é aplicado diretamente a novas tarefas sem qualquer ajuste adicional, generalizando para classes ou domínios não vistos durante o treinamento com base na riqueza de suas representações.
+A forma de adaptação varia conforme os recursos disponíveis e a similaridade entre as tarefas. Na \textbf{extração de características} (\textit{feature extraction}), os pesos do modelo pré-treinado são completamente congelados e apenas uma camada de classificação adicionada ao topo é treinada, e o modelo funciona apenas como extrator de representações. No \textbf{ajuste fino} (\textit{fine-tuning}), todos os parâmetros são atualizados de forma supervisionada, permitindo que o modelo adapte suas representações internas à tarefa-alvo. Uma variante intermediária é o \textbf{descongelamento progressivo} (\textit{progressive unfreezing}), em que apenas as últimas camadas do modelo são liberadas para atualização, preservando as representações gerais aprendidas nas camadas mais profundas e reduzindo o risco de sobreajuste. Por fim, no \textbf{aprendizado \textit{zero-shot}}, o modelo pré-treinado é aplicado diretamente a novas tarefas sem qualquer ajuste adicional, generalizando para classes ou domínios não vistos durante o treinamento com base na riqueza de suas representações.
 
 \section{Técnicas de Otimização e Regularização}
  
@@ -302,15 +302,15 @@ vistos \cite{goodfellow2016}.
 Para estruturar esse processo, o treinamento é organizado em épocas (\textit{epochs}), que
 corresponde a uma passagem completa do otimizador por todos os exemplos do
 conjunto de treinamento. Na prática, o conjunto de treinamento é dividido em
-pequenos subconjuntos de tamanho fixo, e o gradiente é calculado e os
+pequenos subconjuntos de tamanho fixo, o gradiente é calculado e os
 parâmetros são atualizados uma vez por subconjunto, de modo que uma única
 época é composta por múltiplas iterações de atualização. Ao final de cada
 época, o modelo é avaliado no conjunto de validação, permitindo monitorar
 sua capacidade de generalização ao longo do treinamento. Um hiperparâmetro
 crítico nesse acompanhamento é a taxa de aprendizado, cuja configuração
-afeta diretamente a qualidade da convergência.
+afeta diretamente a qualidade da convergência, ou seja, os parâmetros do modelo se estabilizam em valores que minimizam a função de perda.
 
-Manter a taxa de aprendizado constante ao longo das épocas não é ideal, pois
+Manter a taxa de aprendizado constante ao longo das épocas não é ideal devido a um dilema, pois
 valores altos aceleram a convergência inicial, mas podem impedir que o
 modelo se ajuste a mínimos precisos nas épocas finais; e valores baixos,
 por sua vez, tornam o aprendizado inicial lento
@@ -318,22 +318,30 @@ por sua vez, tornam o aprendizado inicial lento
 (\textit{learning rate schedulers}) resolvem esse problema ajustando esse hiperparâmetro automaticamente ao longo
 do treinamento.
 
-O \textit{Cosine Annealing} \cite{loshchilov2017} por sua vez reduz a taxa de
-aprendizado seguindo uma curva cosseno, parte de um valor máximo no início
+O \textit{cosine annealing} \cite{loshchilov2017} por sua vez, reduz a taxa de
+aprendizado seguindo uma curva cosseno. O método parte de um valor máximo no início
 do treinamento e decai suavemente até um valor mínimo próximo de zero,
 seguindo o formato de meio período de uma função cosseno. Essa trajetória
 evita tanto a estagnação em mínimos locais rasos, quanto as oscilações ao
 redor do mínimo global nas épocas finais, onde a taxa reduzida favorece um
-ajuste fino mais preciso.
+ajuste fino mais preciso, como ilustrado na Figura \ref{fig:cosine-annealing}.
+
+\begin{figure*}[!htbp]
+	\centering
+	\includegraphics[scale=0.62]{imagens/cosine.png}
+    \caption{Exemplo de \textit{cosine annealing} \cite{loshchilov2017}.}
+    \label{fig:cosine-annealing}
+\end{figure*}
 
 Enquanto os agendadores de taxa de aprendizado atuam sobre a dinâmica de
-otimização, as técnicas de regularização intervêm na própria rede para
-reduzir o \textit{overfitting}. O \textit{dropout} \cite{srivastava2014},
-por exemplo, desativa aleatoriamente uma fração dos neurônios de uma camada
-a cada iteração durante o treinamento, zerando suas ativações. Ao impedir
+otimização, as técnicas de regularização intervêm para
+reduzir o \textit{overfitting}, evitando que o modelo memorize os dados de
+treinamento em vez de aprender padrões genuinamente generalizáveis. Uma das técnicas mais utilizadas é o \textit{dropout} \cite{srivastava2014},
+a cada iteração do treinamento, uma fração dos neurônios de uma camada é
+desativada aleatoriamente, zerando suas ativações. Ao impedir
 que o modelo se apoie excessivamente em qualquer subconjunto de neurônios, o
 \textit{dropout} força a rede a aprender representações distribuídas e mais
-robustas. Na inferência, todos os neurônios são ativados e suas saídas são
+robustas. Na fase de inferência, todos os neurônios são reativados e suas saídas são
 escalonadas pela taxa de \textit{dropout}, mantendo a consistência com o
 comportamento esperado durante o treinamento.
 
@@ -348,7 +356,7 @@ memorizar ruídos do conjunto de treinamento, a parada antecipada preserva a
 capacidade de generalização sem exigir que o número total de épocas seja
 fixado manualmente.
 
-%Para tarefas de classificação binária, como a detecção de memes odiosos, a função de perda mais utilizada é a \textbf{entropia cruzada binária} (\textit{Binary Cross-Entropy}) \cite{goodfellow2016}. A função penaliza fortemente predições confiantes e incorretas, incentivando o modelo a calibrar adequadamente suas probabilidades. Na prática, a média da BCE sobre todos os exemplos do \textit{mini-batch} constitui o sinal de supervisão que orienta a retropropagação.
+Para tarefas de classificação binária, a função de perda mais utilizada é a \textbf{entropia cruzada binária} (\textit{binary cross-entropy}, BCE) \cite{goodfellow2016}. A função penaliza fortemente predições confiantes e incorretas, incentivando o modelo a calibrar adequadamente suas probabilidades. Na prática, a média da BCE sobre todos os exemplos do \textit{mini-batch} constitui o sinal de supervisão que orienta a retropropagação.
 
 %O \textbf{Adam} (\textit{Adaptive Moment Estimation}) \cite{kingma2015} é um otimizador adaptativo que mantém, para cada parâmetro, estimativas da média e da variância dos gradientes recentes e as utiliza para escalar individualmente cada atualização, permitindo convergência mais estável com menor sensibilidade à escolha da taxa de aprendizado inicial. O \textbf{AdamW} \cite{loshchilov2019} estende o Adam ao desacoplar a regularização $L_2$ do cálculo do gradiente: em vez de incorporar a penalização de peso na função de perda, ela é aplicada diretamente na regra de atualização dos parâmetros. Esse desacoplamento corrige uma inconsistência do Adam com a regularização $L_2$ convencional e melhora a capacidade de generalização, tornando o AdamW o otimizador padrão em modelos de grande escala baseados em \textit{Transformer}.
 
@@ -356,13 +364,20 @@ fixado manualmente.
 
 O agrupamento (\textit{clustering}) é uma técnica de aprendizado não supervisionado que organiza um conjunto de dados em grupos de tal forma que os elementos de um mesmo grupo apresentem alta similaridade entre si e baixa similaridade em relação aos demais \cite{jain1999}, o algoritmo descobre automaticamente a estrutura latente dos dados a partir de uma medida de distância ou densidade.
 
-O algoritmo \textit{k}-médias (\textit{k-means}) \cite{macqueen1967} é um dos métodos de agrupamento mais amplamente utilizados. Ele particiona os dados em grupos pré-definidos, atribuindo iterativamente cada ponto ao centroide mais próximo, onde o centroide é o ponto central do grupo, definido pela média de seus elementos, esse processo se repete até a convergência, quando os centroides não se alteram mais. Embora eficiente, o \textit{k-means} assume que os grupos têm forma esférica e requer que o número de grupos $k$ seja informado, o que pode ser limitante quando a estrutura dos dados é desconhecida ou quando há pontos atípicos no conjunto.
+O algoritmo \textit{k}-médias (\textit{k-means}) \cite{macqueen1967} é um dos métodos de agrupamento mais amplamente utilizados. Ele particiona os dados em grupos pré-definidos, atribuindo iterativamente cada ponto ao centroide mais próximo, onde o centroide é o ponto central do grupo, definido pela média de seus elementos, como pode ser visto na Figura \ref{fig:k-means}. Esse processo se repete até a convergência, quando os centroides não se alteram mais. Embora eficiente, o \textit{k-means} assume que os grupos têm forma esférica e requer que o número de grupos $k$ seja informado, o que pode ser limitante quando a estrutura dos dados é desconhecida ou quando há pontos atípicos no conjunto.
+
+\begin{figure*}[!htbp]
+	\centering
+	\includegraphics[scale=0.6]{imagens/k-means.png}
+    \caption{Exemplo de \textit{k-means} \cite{macqueen1967}.}
+    \label{fig:k-means}
+\end{figure*}
 
 O \textbf{DBSCAN} (\textit{Density-Based Spatial Clustering of Applications with Noise}) \cite{ester1996} é um algoritmo de agrupamento baseado em densidade que supera as limitações do \textit{k-means}. Em vez de assumir formas geométricas específicas, o DBSCAN define um agrupamento como uma região de alta densidade separada de outras regiões por zonas de baixa densidade. O algoritmo opera com dois hiperparâmetros: o raio de vizinhança e o número mínimo de pontos necessários para que uma região seja considerada densa. Cada ponto é classificado em uma de três categorias: (i) \textbf{ponto núcleo} (\textit{core point}), caso possua ao menos vizinhos dentro do raio; (ii) \textbf{ponto de borda} (\textit{border point}), caso esteja dentro do raio de um ponto núcleo mas não satisfaça o critério de densidade por si só; ou (iii) \textbf{ruído} (\textit{noise}), caso não pertença a nenhuma região densa e seja tratado como ponto fora do padrão (\textit{outlier}). O DBSCAN é capaz de descobrir agrupamentos de formas arbitrárias e identificar automaticamente anomalias, sem exigir que o número de grupos seja especificado previamente.
 
-Um conceito associado ao agrupamento é o de \textbf{medoide}: o ponto de um grupo que melhor representa seus demais membros, definido como aquele que minimiza a soma das distâncias (ou maximiza a similaridade) em relação a todos os outros elementos do mesmo grupo \cite{kaufman1990}. Diferentemente do centroide — calculado como a média aritmética dos vetores e que pode não corresponder a nenhum ponto real do conjunto —, o medoide é sempre um exemplo concreto dos dados. Essa propriedade é especialmente útil quando é necessário identificar um elemento representativo interpretável dentro de cada grupo, como o texto ou a imagem mais central de um cluster.
+Um conceito associado ao agrupamento é o de \textbf{medoide}, o ponto de um grupo que melhor representa seus demais membros, definido como aquele que minimiza a soma das distâncias, ou maximiza a similaridade, em relação a todos os outros elementos do mesmo grupo \cite{kaufman1990}. Diferentemente do centroide, calculado como a média aritmética dos vetores e que pode não corresponder a nenhum ponto real do conjunto, o medoide é sempre um exemplo concreto dos dados. Essa propriedade é especialmente útil quando é necessário identificar um elemento representativo interpretável dentro de cada grupo, como o texto ou a imagem mais central de um cluster.
 
-O \textit{K-Nearest Neighbors} (KNN) \cite{cover1967} é um algoritmo baseado em instâncias que, dado um novo exemplo, identifica os $k$ pontos mais próximos no espaço de características segundo alguma métrica de distância, como a distância euclidiana ou a similaridade de cosseno. Por não construir um modelo explícito durante o treinamento, o KNN é descrito como um método de aprendizado preguiçoso (\textit{lazy learning}): toda a computação é adiada para o momento da predição. No contexto de sistemas de recuperação por similaridade semântica, o KNN é amplamente utilizado para encontrar os exemplos mais similares a uma consulta no espaço de \textit{embeddings}, permitindo, por exemplo, atribuir novos exemplos ao grupo de treinamento mais próximo.
+O \textit{K-Nearest Neighbors} (KNN) \cite{cover1967} é um algoritmo baseado em instâncias que, dado um novo exemplo, identifica os $k$ pontos mais próximos no espaço de características segundo alguma métrica de distância, como a distância euclidiana ou a similaridade de cosseno. Por não construir um modelo explícito durante o treinamento, o KNN é descrito como um método de aprendizado preguiçoso (\textit{lazy learning}), toda a computação é adiada para o momento da predição. No contexto de sistemas de recuperação por similaridade semântica, o KNN é amplamente utilizado para encontrar os exemplos mais similares a uma consulta no espaço de \textit{embeddings}, permitindo, por exemplo, atribuir novos exemplos ao grupo de treinamento mais próximo.
 
 \subsection{Estudo de Ablação}
 
@@ -388,7 +403,7 @@ A matriz de confusão é uma representação tabular que sintetiza os resultados
 \end{tabular}
 \end{table}
  
-No contexto da detecção de memes odiosos, a classe positiva corresponde ao meme classificado como odioso. Um \textit{Verdadeiro Positivo} (VP) ocorre quando o modelo identifica corretamente um meme odioso; um \textit{Verdadeiro Negativo} (VN), quando classifica corretamente um meme não odioso. Os erros são de dois tipos: o \textit{Falso Positivo} (FP), em que um conteúdo inofensivo é incorretamente sinalizado como odioso, implicando uma censura indevida, e o \textit{Falso Negativo} (FN), em que um meme efetivamente odioso passa sem detecção, perpetuando seu alcance nocivo \cite{fawcett2006}. A distinção entre esses dois tipos de erro tem implicações práticas distintas para sistemas de moderação, e a matriz de confusão fornece a base para o cálculo das demais métricas descritas a seguir.
+No contexto da detecção de memes odiosos, a classe positiva corresponde ao meme classificado como odioso. Um \textit{Verdadeiro Positivo} (VP) ocorre quando o modelo identifica corretamente um meme odioso; um \textit{Verdadeiro Negativo} (VN), quando classifica corretamente um meme não odioso. Os erros são de dois tipos: o \textit{Falso Positivo} (FP), em que um conteúdo inofensivo é incorretamente sinalizado como odioso, implicando uma censura indevida, e o \textit{Falso Negativo} (FN), em que um meme efetivamente odioso passa sem detecção, perpetuando seu alcance nocivo. A distinção entre esses dois tipos de erro tem implicações práticas distintas para sistemas de moderação, e a matriz de confusão fornece a base para o cálculo das demais métricas descritas a seguir.
 
 A \textbf{acurácia} é a métrica mais intuitiva de avaliação, expressa pela proporção de exemplos classificados corretamente sobre o total de exemplos:
  
@@ -420,7 +435,7 @@ F_1 = 2 \cdot \frac{\text{Precisão} \times \text{Revocação}}{\text{Precisão}
 \label{eq:f1}
 \end{equation}
  
-A média harmônica penaliza desproporções acentuadas entre os dois termos: para que o F1 seja alto, ambas as métricas devem ser simultaneamente elevadas. Isso torna o F1-score mais robusto do que a acurácia em cenários desbalanceados e é amplamente utilizado como métrica primária em \textit{benchmarks} de detecção de discurso de ódio \cite{ArticleHatefulMemesChallenge2020}.
+A média harmônica penaliza desproporções acentuadas entre os dois termos: para que o F1 seja alto, ambas as métricas devem ser simultaneamente elevadas. Isso torna o F1-score mais robusto do que a acurácia em cenários desbalanceados e é amplamente utilizada.
 
 Para compreender a curva ROC, é necessário definir as duas taxas que a compõem.
 A \textbf{Taxa de Verdadeiros Positivos} (TVP), também denominada revocação ou
@@ -447,11 +462,11 @@ A \textbf{Curva ROC} (\textit{Receiver Operating Characteristic}) é construída
     \label{fig:roc-auroc}
 \end{figure}
 
-A AUROC possui uma interpretação probabilística direta, correspondendo à probabilidade de que, dado um par composto por um exemplo positivo e um exemplo negativo escolhidos aleatoriamente, o modelo atribua escore mais alto ao exemplo positivo \cite{fawcett2006}. Essa propriedade torna a AUROC especialmente adequada para conjuntos de dados desbalanceados: como a métrica é calculada sobre toda a curva ROC — e não em um único limiar —, ela avalia o poder discriminativo do modelo independentemente da distribuição das classes. Em um conjunto com forte desbalanceamento, a escolha de um limiar padrão de 0,5 pode ser subótima, e a AUROC captura o desempenho relativo do modelo de forma invariante a essa escolha \cite{he2009}. Por essas razões, o \textit{Hateful Memes Challenge} adota a AUROC como métrica primária de avaliação \cite{ArticleHatefulMemesChallenge2020}.
+A AUROC possui uma interpretação probabilística direta, correspondendo à probabilidade de que, dado um par composto por um exemplo positivo e um exemplo negativo escolhidos aleatoriamente, o modelo atribua escore mais alto ao exemplo positivo \cite{fawcett2006}. Essa propriedade torna a AUROC especialmente adequada para conjuntos de dados desbalanceados, como a métrica é calculada sobre toda a curva ROC, ela avalia o poder discriminativo do modelo independentemente da distribuição das classes. Em um conjunto com forte desbalanceamento, a escolha de um limiar padrão de 0,5 pode ser subótima, e a AUROC captura o desempenho relativo do modelo de forma invariante a essa escolha \cite{he2009}. Por essas razões, o \textit{Hateful Memes Challenge} adota a AUROC como métrica primária de avaliação \cite{ArticleHatefulMemesChallenge2020}.
 
 \section{Lógica Fuzzy e classificação gradual}
 
-A lógica \textit{fuzzy} \cite{Zadeh1965} estende a lógica booleana clássica ao permitir verdades parciais, representando graus de pertinência $\mu(x) \in [0,1]$ que variam de ``completamente falso'' (0) a ``completamente verdadeiro'' (1). Essa abordagem é particularmente adequada para modelar fenômenos ambíguos, como ironia.
+A lógica \textit{fuzzy} \cite{Zadeh1965} estende a lógica booleana clássica ao permitir verdades parciais, representando graus de pertinência $\mu(x) \in [0,1]$ que variam de ``completamente falso'' (0) a ``completamente verdadeiro'' (1). Essa abordagem é particularmente adequada para modelar fenômenos ambíguos, com ironia por exemplo.
 
 \begin{figure}[h]
 \centering
@@ -529,11 +544,11 @@ A lógica \textit{fuzzy} \cite{Zadeh1965} estende a lógica booleana clássica a
 
 A primeira etapa na construção de um sistema \textit{fuzzy} é a \textbf{fuzzificação}, que consiste em definir as funções de pertinência que traduzem valores numéricos contínuos em graus de pertencimento a cada conjunto linguístico \cite{ross2010}. 
  
-Os modelos de aprendizado profundo capturam implicitamente essa gradação ao produzirem escores probabilísticos contínuos, que funcionam como funções de pertinência: um escore próximo de 1 indica alta pertinência à classe odiosa, enquanto valores intermediários refletem incerteza semântica. No sistema proposto neste trabalho, esses escores contínuos são interpretados por meio de conjuntos \textit{fuzzy} que mapeiam o grau de ódio em categorias linguísticas graduais, como ``muito baixo'', ``baixo'', ``médio'', ``alto'' e ``muito alto'', conforme ilustrado na Figura~\ref{fig:fuzzy-variavel}.
+Os modelos de aprendizado profundo capturam implicitamente essa gradação ao produzirem escores probabilísticos contínuos, que funcionam como funções de pertinência: um escore próximo de 1 indica alta pertinência à classe odiosa por exemplo, enquanto valores intermediários refletem incerteza semântica. No sistema proposto neste trabalho, esses escores contínuos são interpretados por meio de conjuntos \textit{fuzzy} que mapeiam o grau de ódio em categorias linguísticas graduais, como ``muito baixo'', ``baixo'', ``médio'', ``alto'' e ``muito alto'', conforme ilustrado na Figura~\ref{fig:fuzzy-variavel}.
 
 A segunda etapa é a \textbf{inferência \textit{fuzzy}}, na qual um conjunto de regras de inferência baseadas em contexto é aplicado sobre os graus de pertinência obtidos na fuzzificação \cite{ross2010}. Cada regra assume a forma \textit{SE} $\langle$antecedente$\rangle$ \textit{ENTÃO} $\langle$consequente$\rangle$, em que o antecedente pode combinar múltiplas condições por meio de operadores lógicos \textit{fuzzy}, como a interseção e a união. A ativação de cada regra é determinada pelo grau de satisfação de seus antecedentes, e o conjunto de todas as regras ativadas produz um conjunto \textit{fuzzy} de saída que representa a distribuição de pertinência sobre as categorias de ódio, servindo de entrada para a etapa de defuzzificação.
 
-A etapa de \textbf{defuzzificação} \cite{Klir1995} é responsável por converter o resultado das operações de inferência \textit{fuzzy}, expressos como um conjunto \textit{fuzzy}, em um valor numérico preciso (\textit{crisp}) que representa a saída final do sistema. O método mais comum é o \textbf{centro de gravidade} (ou centroide), que calcula a média ponderada de todos os valores da variável de saída, utilizando os respectivos graus de pertinência como pesos. No contexto deste trabalho, a defuzzificação permite transformar a distribuição de pertinência em um escore final interpretável, facilitando tanto a tomada de decisão do sistema de moderação quanto a explicabilidade das classificações para revisores humanos.
+A etapa de \textbf{defuzzificação} \cite{Klir1995} é responsável por converter o resultado das operações de inferência \textit{fuzzy}, expressos como um conjunto \textit{fuzzy}, em um valor numérico preciso que representa a saída final do sistema. O método mais comum é o \textbf{centro de gravidade} (ou centroide), que calcula a média ponderada de todos os valores da variável de saída, utilizando os respectivos graus de pertinência como pesos. No contexto deste trabalho, a defuzzificação permite transformar a distribuição de pertinência em um escore final interpretável, facilitando tanto a tomada de decisão do sistema de moderação quanto a explicabilidade das classificações para revisores humanos.
 
 A entropia de Shannon \cite{shannon1948}, originalmente proposta no âmbito da teoria da informação, quantifica a incerteza ou desordem associada a uma distribuição de probabilidade. No contexto da lógica \textit{fuzzy}, a entropia de Shannon pode ser adaptada para medir o grau de \textit{fuzziness}, ou seja, a ambiguidade semântica intrínseca a um conjunto \textit{fuzzy} \cite{deluca1972}. Graus de pertinência próximos de 0{,}5 indicam alta ambiguidade, pois o elemento pertence tanto quanto não pertence ao conjunto, enquanto valores próximos dos extremos 0 ou 1 denotam baixa ambiguidade e maior confiança na classificação. Essa medida permite, portanto, quantificar de forma explícita a incerteza associada a cada predição do sistema.
 
