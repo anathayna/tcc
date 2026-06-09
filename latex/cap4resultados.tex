@@ -5,7 +5,7 @@
 
 \subsection{Experimento 1 — Classificação \textit{Zero-Shot}}
 
-O CLIP ViT-L/14 em modo \textit{zero-shot} obteve acurácia de 53,85\% e AUC-ROC de 0,5392 sobre o conjunto \texttt{test\_unseen} (2.000 amostras). Para a classe de ódio, a precisão foi de 0,41, a revocação de 0,50 e o F1-Score de 0,45; o F1 macro entre as classes ficou em 0,53, apenas marginalmente acima do acaso.
+O CLIP ViT-L/14 em modo \textit{zero-shot} obteve acurácia de 53,85\% e AUC-ROC de 0,5392 sobre o conjunto \texttt{test\_unseen} (2.000 amostras). Para a classe de ódio, a precisão foi de 0,41, a revocação de 0,50 e o F1-Score de 0,45; o F1 macro entre as classes ficou em 0,53, apenas marginalmente acima do acaso. Esses resultados são esperados dado o caráter do problema, o CLIP foi pré-treinado para alinhar representações visuais e textuais em contextos semânticos convencionais, sem exposição a exemplos de discurso de ódio durante o treinamento. A classificação \textit{zero-shot} opera exclusivamente por meio da similaridade cosseno entre o \textit{embedding} da imagem combinada com o texto do meme e os \textit{embeddings} dos \textit{prompts} (\texttt{"a hateful meme"} e \texttt{"a not hateful meme"}), sem qualquer supervisão sobre o que constitui conteúdo odioso no domínio específico de memes. Em uma tarefa binária balanceada, uma acurácia próxima a 50\% é o limite inferior esperado para um classificador sem informação, e os 53,85\% obtidos indicam que o modelo captura algum sinal superficial, provavelmente léxico, como palavras explicitamente ofensivas, mas falha sistematicamente na detecção de ódio implícito ou contextualmente dependente.
 
 \begin{figure}[htbp]
     \centering
@@ -24,16 +24,16 @@ O CLIP ViT-L/14 em modo \textit{zero-shot} obteve acurácia de 53,85\% e AUC-ROC
     \end{minipage}
 \end{figure}
 
-A Figura~\ref{fig:exp1_cm} evidencia o comportamento típico de um classificador próximo ao acaso: os erros estão distribuídos de forma quase simétrica entre falsos positivos e falsos negativos, sem viés claro para nenhuma das classes. A curva ROC da Figura~\ref{fig:exp1_roc} confirma o baixo poder discriminativo do modelo nesta configuração.
+A Figura~\ref{fig:exp1_cm} evidencia o comportamento típico de um classificador próximo ao acaso, onde os erros estão distribuídos de forma quase simétrica entre falsos positivos e falsos negativos, sem viés claro para nenhuma das classes. Em tarefas de moderação de conteúdo, essa simetria tem implicações assimétricas, onde falsos negativos (memes odiosos não detectados) representam risco direto, enquanto falsos positivos (conteúdo benigno classificado como ódio) implicam censura indevida. A curva ROC da Figura~\ref{fig:exp1_roc} confirma o baixo poder discriminativo do modelo nesta configuração, onde a curva praticamente se sobrepõe à diagonal de referência, demonstrando que não há limiar de decisão que permita separar adequadamente as duas classes a partir das probabilidades produzidas pelo modelo.
 
 \begin{figure*}[htbp]
     \centering
     \includegraphics[width=\textwidth]{imagens/exp1_exemplos.png}
-    \caption{Exemplos de classificação do Experimento 1. Da esquerda para a direita: verdadeiro positivo (meme odioso identificado corretamente), verdadeiro negativo (não odioso identificado corretamente), falso positivo (não odioso classificado como ódio) e falso negativo (odioso não detectado). Imagens do \textit{Hateful Memes Dataset} \cite{ArticleHatefulMemesChallenge2020}.}
+    \caption{Exemplos de classificação do Experimento 1. Imagens do \textit{Hateful Memes Dataset} \cite{ArticleHatefulMemesChallenge2020}.}
     \label{fig:exp1_exemplos}
 \end{figure*}
 
-O estudo de ablação evidenciou um resultado contraintuitivo: a abordagem \textbf{Somente Texto} alcançou a maior acurácia (61,80\%), superando tanto \textbf{Somente Imagem} (53,05\%) quanto o modo \textbf{Multimodal} (53,85\%). Isso indica que, sem ajuste fino, o CLIP não consegue capturar a justaposição contraditória entre imagem e texto que caracteriza os memes de ódio.
+O estudo de ablação evidenciou um resultado contraintuitivo, onde a abordagem \textbf{Somente Texto} alcançou a maior acurácia (61,80\%), superando tanto \textbf{Somente Imagem} (53,05\%) quanto o modo \textbf{Multimodal} (53,85\%). Esse comportamento pode ser explicado por dois fatores. Primeiro, o encoder textual do CLIP é treinado sobre grandes dados de texto e desenvolve representações semânticas ricas que capturam associações entre termos pejorativos, grupos-alvo e estereótipos, associações que se manifestam de forma mais direta e imediata no texto do meme do que na imagem, especialmente quando o ódio é veiculado por linguagem explicitamente ofensiva. Segundo, a fusão multimodal sem ajuste fino pode introduzir ruído, quando o \textit{embedding} visual não contribui com informação discriminativa relevante, sua combinação com o \textit{embedding} textual dilui o sentido, prejudicando o desempenho em relação ao uso exclusivo do texto. Isso indica que, sem ajuste fino, o CLIP não consegue capturar a justaposição contraditória entre imagem e texto que caracteriza os memes de ódio.
 
 \begin{figure}[htbp]
     \centering
@@ -42,7 +42,7 @@ O estudo de ablação evidenciou um resultado contraintuitivo: a abordagem \text
     \label{fig:exp1_ablacao}
 \end{figure}
 
-A aplicação do Classificador Fuzzy Unificado sobre as probabilidades do CLIP resultou em acurácia de 59,30\%. O sistema tornou-se mais conservador: a precisão para a classe de ódio subiu para 0,40, mas a revocação caiu para 0,17 (F1-Score de 0,24). A distribuição das categorias revelou que 62,4\% das amostras foram alocadas em \textit{Ambiguidade/Moderado} (1.247 de 2.000), reflexo direto da alta entropia das predições \textit{zero-shot}.
+A aplicação do Classificador Fuzzy Unificado sobre as probabilidades do CLIP resultou em acurácia de 59,30\%. O sistema tornou-se mais conservador: a precisão para a classe de ódio subiu para 0,40, mas a revocação caiu acentuadamente para 0,17 (F1-Score de 0,24). Esse padrão é consequência direta da arquitetura fuzzy, que ao introduzir uma zona de ambiguidade explícita, o sistema reduz os falsos positivos às custas de aumentar os falsos negativos. Em outras palavras, o classificador somente emite predições de ódio quando a confiança do modelo base é elevada, o que melhora a precisão, mas deixa de detectar a maioria dos casos genuinamente odiosos. A distribuição das categorias revelou que 62,4\% das amostras foram alocadas em \textit{Ambiguidade/Moderado}, reflexo direto da alta entropia das predições \textit{zero-shot}, como o modelo opera sem supervisão específica, suas probabilidades de saída tendem a se concentrar em torno de 0,5, precisamente a região que o sistema fuzzy mapeia para a categoria intermediária. Esse resultado demonstra que a camada fuzzy, embora útil como mecanismo de controle de confiança em modelos bem calibrados, amplifica a indecisão de um modelo base já pouco informativo, a utilidade do Classificador Fuzzy Unificado depende da qualidade das probabilidades produzidas pelo \textit{encoder}.
 
 \begin{figure}[htbp]
     \centering
@@ -53,7 +53,7 @@ A aplicação do Classificador Fuzzy Unificado sobre as probabilidades do CLIP r
 
 \subsection{Experimento 2 — Pré-processamento com Agrupamento Semântico}
 
-O \texttt{MultimodalModel} com enriquecimento por \textit{clusters} obteve acurácia de 67,55\%, AUC-ROC de 0,7318 e \textit{Average Precision} de 0,6074 em \texttt{test\_unseen}. O modelo apresentou tendência conservadora: precisão de 0,62 e revocação de 0,36 para a classe de ódio (F1 de 0,45); F1 macro de 0,61.
+O \texttt{MultimodalModel} com enriquecimento por \textit{clusters} obteve acurácia de 67,55\%, AUC-ROC de 0,7318 e \textit{Average Precision} de 0,6074 em \texttt{test\_unseen} (2.000 amostras). Para a classe de ódio, a precisão foi de 0,62, a revocação de 0,36 e o F1-Score de 0,45; o F1 macro entre as classes ficou em 0,61. Em comparação ao Experimento 1, a acurácia cresceu aproximadamente 14 pontos percentuais e o AUC-ROC saltou de 0,5392 para 0,7318, valor que, ao ultrapassar o limiar convencional de 0,70, indica que o modelo passou de essencialmente aleatório para genuinamente discriminativo. Esse ganho decorre da estratégia de enriquecimento semântico, que ao agrupar os exemplos de treinamento em \textit{clusters} por similaridade de \textit{embedding} e derivar características de pertencimento a esses grupos, o modelo adquire uma noção implícita de vizinhança semântica, ou seja, memes que compartilham padrões visuais ou textuais com grupos predominantemente odiosos recebem um sinal adicional que guia a decisão final. Ainda assim, o perfil de erros revela uma tendência conservadora, com precisão de 0,62 e revocação de apenas 0,36, o modelo acerta quando prediz ódio, mas deixa de detectar a maioria dos casos genuinamente odiosos.
 
 \begin{figure}[htbp]
     \centering
@@ -72,16 +72,16 @@ O \texttt{MultimodalModel} com enriquecimento por \textit{clusters} obteve acur�
     \end{minipage}
 \end{figure}
 
-Em relação ao Experimento~1, a matriz de confusão da Figura~\ref{fig:exp2_cm} mostra uma redução nos falsos positivos, porém com aumento nos falsos negativos, o modelo tornou-se mais criterioso para classificar um meme como odioso. A curva ROC da Figura~\ref{fig:exp2_roc} confirma o salto de desempenho em relação ao \textit{zero-shot}.
+Em relação ao Experimento~1, a matriz de confusão da Figura~\ref{fig:exp2_cm} mostra uma redução expressiva nos falsos positivos, porém acompanhada de aumento nos falsos negativos, assim o modelo tornou-se mais criterioso para emitir predições de ódio, exigindo sinal mais forte antes de cruzar o limiar de decisão. Esse comportamento é consistente com a natureza do enriquecimento por \textit{clusters}, quando um meme não apresenta similaridade suficiente com os grupos semanticamente marcados como odiosos durante o treinamento, o modelo abstém-se de classificá-lo como tal. Do ponto de vista aplicado, a assimetria resultante, alta precisão e baixa revocação, é problemática para moderação automatizada de conteúdo, pois implica que a maioria dos memes odiosos circula sem detecção. Contudo, a distribuição mais assimétrica dos erros, em oposição à simetria observada no Experimento~1, já é evidência de que o modelo aprendeu alguma estrutura relevante do problema. A curva ROC da Figura~\ref{fig:exp2_roc} confirma o salto de desempenho, ao contrário da curva praticamente colada à diagonal do Experimento~1, a curva deste experimento apresenta área substancial acima da linha de referência.
 
 \begin{figure*}[htbp]
     \centering
     \includegraphics[width=\textwidth]{imagens/exp2_exemplos.png}
-    \caption{Exemplos de classificação do Experimento 2. Da esquerda para a direita: verdadeiro positivo, verdadeiro negativo, falso positivo e falso negativo. Imagens do \textit{Hateful Memes Dataset} \cite{ArticleHatefulMemesChallenge2020}.}
+    \caption{Exemplos de classificação do Experimento 2. Imagens do \textit{Hateful Memes Dataset} \cite{ArticleHatefulMemesChallenge2020}.}
     \label{fig:exp2_exemplos}
 \end{figure*}
 
-O estudo de ablação com cinco configurações demonstrou a contribuição incremental de cada componente. A Tabela~\ref{tab:ablacao_exp2} e a Figura~\ref{fig:exp2_ablacao} apresentam os resultados comparativos.
+O estudo de ablação com cinco configurações demonstrou a contribuição incremental de cada componente. A Tabela~\ref{tab:ablacao_exp2} e a Figura~\ref{fig:exp2_ablacao} apresentam os resultados comparativos. As configurações unimodais (\textbf{Somente Imagem}, 63,60\%; \textbf{Somente Texto}, 63,25\%) apresentam acurácia razoável mas F1 para a classe de ódio extremamente baixos (0,10 e 0,20, respectivamente), indicando que ambos os modelos atingem sua acurácia majoritariamente ao prever a classe negativa, por conta do conjunto de dados próximo do balanceado, oferece cerca de 50\% de acertos gratuitos, sem real capacidade discriminativa. O salto mais expressivo ocorre na transição para o \textbf{CLIP Multimodal}, acurácia de 67,60\% e F1 para ódio de 0,58, confirmando que a fusão dos embeddings visual e textual é o componente central do ganho de desempenho, pois permite capturar a interdependência semântica entre as duas modalidades que define os memes de ódio. A adição do \textbf{Cluster Texto} eleva ligeiramente a acurácia (67,90\%) mas reduz o F1 de ódio para 0,49. Uma interpretação possível é que as características de pertencimento a \textit{clusters} textuais deslocam a fronteira de decisão de forma a favorecer a classe negativa, melhorando a separabilidade global, mas introduzindo conservadorismo adicional na detecção de ódio. O \textbf{Modelo Completo}, que incorpora também as características de \textit{cluster} visual, atinge a maior acurácia (68,65\%) e o maior AUC-ROC (0,7336), embora o F1 de ódio permaneça em 0,49, sugerindo que o enriquecimento por \textit{clusters} contribui sobretudo para a confiança global do modelo, sem resolver o viés conservador herdado da configuração multimodal base.
 
 \begin{table}[htbp]
 \centering
@@ -102,12 +102,13 @@ Modelo Completo   & \textbf{68,65\%} & \textbf{0,7336} & 0,63 & 0,49 \\
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.85\textwidth]{imagens/exp2_ablacao.png}
+    \includegraphics[width=0.9\textwidth]{imagens/exp2_ablacao.png}
     \caption{Estudo de ablação — Experimento 2. Comparação das cinco configurações por AUROC e F1-Score.}
     \label{fig:exp2_ablacao}
 \end{figure}
 
-Com a lógica \textit{fuzzy}, a acurácia binarizada manteve-se em 66,60\%, mas o comportamento mudou significativamente: a precisão para ódio subiu para 0,72, enquanto a revocação caiu para 0,18 (F1 de 0,29). O sistema deslocou a maioria das amostras para \textit{Nenhum Ódio} (758) e \textit{Ambiguidade/Moderado} (562), classificando apenas 188 exemplos como ódio efetivo (\textit{Ódio}: 146; \textit{Alto Grau}: 42).
+
+Com a aplicação do Classificador Fuzzy Unificado, a acurácia binarizada manteve-se em 66,60\%, mas o perfil de predição alterou-se substancialmente, a precisão para a classe de ódio subiu de 0,62 para 0,72, enquanto a revocação caiu de 0,36 para 0,18 (F1 de 0,29). O mecanismo é o mesmo descrito no Experimento~1, amostras com probabilidades próximas ao limiar são retidas na zona de ambiguidade em vez de binarizadas. Neste experimento as probabilidades distribuem-se com maior dispersão em torno de 0,5, o que se reflete na fração de amostras em \textit{Ambiguidade/Moderado} (562, ou 28,1\%), consideravelmente inferior aos 62,4\% observados no Experimento~1. Esse dado indica que o enriquecimento por \textit{clusters} produziu um modelo com saídas mais confiantes. O problema é que essas predições confiantes são minoria, apenas 188 amostras foram classificadas nas categorias de ódio (\textit{Ódio}: 146; \textit{Alto Grau}: 42), enquanto 758 foram alocadas em \textit{Nenhum Ódio}. Em resumo, o sistema fuzzy neste experimento funciona como um filtro de alta precisão e baixa cobertura, adequado para casos nos quais o custo de um falso positivo é elevado, mas insuficiente para aplicações que exijam alta sensibilidade na detecção de conteúdo odioso.
 
 \begin{figure}[htbp]
     \centering
