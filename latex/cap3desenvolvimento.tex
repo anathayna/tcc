@@ -19,7 +19,7 @@ A pesquisa foi estruturada em três experimentos progressivos. No \textbf{Experi
     \label{fig:zero-shot-arch}
 \end{figure*}
 
-No \textbf{Experimento 2} (pré-processamento), ilustrado na Figura~\ref{fig:pre-process-arch}, a arquitetura é expandida com uma etapa de agrupamento semântico não supervisionado executada antes do treinamento. Embeddings textuais e visuais dos memes de treino são agrupados separadamente pelo DBSCAN, gerando índices de \textit{cluster} para cada modalidade. Esses índices são incorporados como entradas adicionais ao \textbf{MultimodalModel}, um classificador supervisionado construído sobre o CLIP congelado que aprende representações compactas de cada grupo semântico. A saída opera nos mesmos dois caminhos complementares do Experimento~1: classificação binária avaliada por Acurácia, AUC-ROC e F1, e o \textbf{Classificador Fuzzy Unificado} com cinco categorias de ódio. O experimento inclui um estudo de ablação com cinco configurações que isolam a contribuição incremental de cada componente, e uma interface de demonstração via Gradio integrada ao Google Vision OCR.
+No \textbf{Experimento 2} (pré-processamento), ilustrado na Figura~\ref{fig:pre-process-arch}, a arquitetura é expandida com uma etapa de agrupamento semântico não supervisionado executada antes do treinamento. \textit{Embeddings} textuais e visuais dos memes de treino são agrupados separadamente pelo DBSCAN, gerando índices de \textit{cluster} para cada modalidade. Esses índices são incorporados como entradas adicionais ao \textbf{MultimodalModel}, um classificador supervisionado construído sobre o CLIP congelado que aprende representações compactas de cada grupo semântico. A saída opera nos mesmos dois caminhos complementares do Experimento~1: classificação binária avaliada por Acurácia, AUC-ROC e F1, e o \textbf{Classificador Fuzzy Unificado} com cinco categorias de ódio. O experimento também inclui um estudo de ablação com cinco configurações que isolam a contribuição incremental de cada componente, e uma interface de demonstração via \textit{Gradio} integrada ao \textit{Google Vision} OCR.
 
 \begin{figure*}[!htbp]
     \centering
@@ -28,7 +28,7 @@ No \textbf{Experimento 2} (pré-processamento), ilustrado na Figura~\ref{fig:pre
     \label{fig:pre-process-arch}
 \end{figure*}
 
-No \textbf{Experimento 3} (\textit{final-shot}), ilustrado na Figura~\ref{fig:final-shot-arch}, é implementado o \textit{HateCLIPper} com adaptações como \textit{pipeline} principal. As representações visuais e textuais extraídas pelos encoders do CLIP são projetadas para um espaço comum e fundidas pela \textbf{FIM} (\textit{Feature Interaction Matrix}), que captura correlações entre cada dimensão das duas modalidades por meio de um produto externo. O classificador opera sobre essa representação conjunta e conta com cabeças auxiliares por modalidade, cujos escores individuais alimentam o \textbf{Sistema Fuzzy Mamdani} para graduação contínua do ódio em cinco níveis. A saída opera nos mesmos dois caminhos dos experimentos anteriores: classificação binária avaliada por AUROC, Acurácia e F1-Score, e a graduação fuzzy. O experimento inclui um estudo de ablação com quatro modos de fusão e uma interface de demonstração via Gradio integrada ao Google Vision OCR.
+No \textbf{Experimento 3} (\textit{final-shot}), ilustrado na Figura~\ref{fig:final-shot-arch}, é implementado o \textit{HateCLIPper} com adaptações como \textit{pipeline} principal. As representações visuais e textuais extraídas pelos encoders do CLIP são projetadas para um espaço comum e fundidas pela \textbf{FIM} (\textit{Feature Interaction Matrix}), que captura correlações entre cada dimensão das duas modalidades por meio de um produto externo. O classificador opera sobre essa representação conjunta e conta com cabeças auxiliares por modalidade, cuja as pontuações individuais alimentam o \textbf{Sistema Fuzzy Mamdani} para graduação contínua do ódio em cinco níveis. A saída opera nos mesmos dois caminhos dos experimentos anteriores: classificação binária avaliada por AUROC, Acurácia e F1-Score, e a graduação fuzzy. O experimento inclui também um estudo de ablação com quatro modos de fusão e uma interface de demonstração via \textit{Gradio} \cite{abid2019} integrada ao \textit{Google Vision} OCR.
 
 \begin{figure*}[!htbp]
     \centering
@@ -42,7 +42,9 @@ No \textbf{Experimento 3} (\textit{final-shot}), ilustrado na Figura~\ref{fig:fi
 
 O banco de dados utilizado nesta pesquisa é o \textit{Hateful Memes}, disponibilizado pela Meta AI no âmbito do \textit{Hateful Memes Challenge}. O conjunto é composto por 12.140 imagens de memes em inglês, cobrindo temas como gênero, raça, religião, orientação sexual e classe social.
 
-O banco de dados foi originalmente disponibilizado em \url{hatefulmemeschallenge.com}, porém, no momento desta pesquisa, o domínio encontra-se indisponível, sendo obtido pela plataforma \textit{Kaggle}. Após a extração do arquivo compactado, verificou-se a seguinte estrutura:
+O banco de dados foi originalmente disponibilizado em \url{hatefulmemeschallenge.com}, porém, no momento desta pesquisa, o domínio encontra-se indisponível, sendo possível
+obtê-lo por meio da plataforma \textit{Kaggle}. Após a extração do arquivo compactado, o conjunto de dados apresentou
+a seguinte estrutura de diretórios:
 
 \begin{itemize}
     \item Pasta \texttt{img/} --- imagens no formato \texttt{.png};
@@ -51,7 +53,7 @@ O banco de dados foi originalmente disponibilizado em \url{hatefulmemeschallenge
     \item \texttt{test\_seen.jsonl} e \texttt{test\_unseen.jsonl} --- conjuntos de teste.
 \end{itemize}
 
-O formato JSONL (\textit{JSON Lines}) significa que cada linha representa um objeto JSON independente, contendo campos como \texttt{id}, \texttt{text}, \texttt{img} (caminho da imagem) e, quando aplicável, \texttt{label}. Os termos \textit{seen} (``visto'') e \textit{unseen} (``não visto'') indicam se os memes estiveram expostos durante a fase de desenvolvimento: os conjuntos \textit{seen} foram acessíveis publicamente durante o desafio, enquanto os \textit{unseen} são inéditos e servem para avaliar a generalização do modelo em condições mais desafiadoras.
+O formato JSONL (\textit{JSON Lines}) significa que cada linha representa um objeto JSON independente, contendo campos como \texttt{id}, \texttt{text}, \texttt{img} (caminho da imagem) e, quando aplicável, \texttt{label}. Os termos \textit{seen} (``visto'') e \textit{unseen} (``não visto'') referem-se à disponibilidade dos dados durante o desafio: os conjuntos \textit{seen} foram acessíveis publicamente durante o desafio, enquanto os \textit{unseen} são inéditos e servem para avaliar a generalização do modelo em condições mais desafiadoras.
 
 A Tabela~\ref{tab:dataset-splits} apresenta a distribuição de amostras e rótulos por partição.
 
@@ -74,11 +76,11 @@ A Tabela~\ref{tab:dataset-splits} apresenta a distribuição de amostras e rótu
 \end{tabular}
 \end{table}
 
-Nota-se que o conjunto de treinamento é desbalanceado: apenas 35,5\% das amostras são rotuladas como odiosas, contra 64,5\% não odiosas. Os conjuntos de validação e teste \textit{seen}, por sua vez, são perfeitamente balanceados (50\%/50\%), o que favorece a comparação direta com o desempenho humano reportado no desafio original. 
+Nota-se que o conjunto de treinamento é desbalanceado: apenas 35,5\% das amostras são rotuladas como odiosas, contra 64,5\% não odiosas. Os conjuntos de validação e teste \textit{seen}, por sua vez, são perfeitamente balanceados, o que favorece a comparação direta com o desempenho humano reportado no desafio original. 
 
 % Para compensar o desbalanceamento no treinamento, foi calculado dinamicamente um \texttt{pos\_weight} igual à razão entre exemplos negativos e positivos, incorporado à função de perda \texttt{BCEWithLogitsLoss}. Os conjuntos \textit{unseen} não possuem rótulos disponíveis na versão pública e foram utilizados exclusivamente para avaliação e geração de predições finais.
 
-O processo de preparação envolveu, inicialmente, os arquivos JSONL, que foram convertidos para \textit{DataFrames} com a biblioteca pandas, permitindo o mapeamento direto entre os caminhos das imagens e suas respectivas legendas textuais. Em seguida, realizou-se a normalização visual, onde as imagens foram redimensionadas para 224$\times$224 pixels e normalizadas com base na distribuição de cores da \textit{ImageNet}, conforme exigido pela arquitetura ViT do CLIP. Por fim, os textos foram tokenizados com contexto máximo de 77 \textit{tokens}, garantindo compatibilidade semântica com o espaço vetorial do modelo.
+O processo de preparação envolveu, inicialmente, os arquivos JSONL, que foram convertidos para \textit{DataFrames} por meio da biblioteca pandas, estabelecendo o mapeamento entre os caminhos das imagens e seus respectivos textos associados. Em seguida, realizou-se a normalização visual, onde as imagens foram redimensionadas para 224$\times$224 pixels e normalizadas com base na distribuição de cores da \textit{ImageNet} \cite{deng2009imagenet}, requisito imposto pela arquitetura ViT adotada pelo CLIP. Por fim, os textos foram tokenizados com contexto máximo de 77 \textit{tokens}, garantindo compatibilidade semântica com o espaço vetorial do modelo.
 
 Os dados foram armazenados e gerenciados no Google Colab com integração ao Google Drive, garantindo persistência entre sessões de treinamento.
 
@@ -89,13 +91,34 @@ A implementação foi realizada em Python 3.12, com PyTorch para aceleração vi
 
 \subsection{Experimento 1: Classificação \textit{zero-shot}}
 
-O primeiro experimento avalia o CLIP ViT-L/14 diretamente, sem ajuste fino, como classificador binário de memes odiosos. A abordagem explora a capacidade nativa de alinhamento texto-imagem do modelo: dada uma imagem, o CLIP escolhe o rótulo textual cuja representação é semanticamente mais próxima da representação visual.
+O primeiro experimento avalia o CLIP ViT-L/14 diretamente, sem ajuste fino, servindo de \textit{baseline} como classificador binário de memes odiosos. A abordagem explora a capacidade nativa de alinhamento texto-imagem do modelo, dada uma imagem, o CLIP escolhe o rótulo textual cuja representação é semanticamente mais próxima da representação visual.
 
-O modelo é carregado com \texttt{clip.load("ViT-L/14", device=device)}, que retorna tanto o modelo quanto a função de pré-processamento de imagens. Dois \textit{prompts} candidatos são definidos em inglês: \textit{``this is a hateful meme''} e \textit{``this is not a hateful meme''}. Quando o meme contém texto, esses \textit{prompts} genéricos são substituídos por versões contextualizadas que incorporam o conteúdo textual do meme: \textit{``a hateful meme saying \{texto\}''} e \textit{``a non-hateful meme saying \{texto\}''}. Os \textit{prompts} são tokenizados com \texttt{clip.tokenize()}, codificados pelo \textit{encoder} textual e normalizados por norma L2.
+O modelo é carregado e dois \textit{prompts} candidatos são definidos em inglês, idioma no qual o CLIP apresenta melhor desempenho: \textit{``this is a hateful meme''} e \textit{``this is not a hateful meme''}. Quando o meme contém texto, esses \textit{prompts} genéricos são substituídos por versões contextualizadas que incorporam o conteúdo textual do meme: \textit{``a hateful meme saying \{texto\}''} e \textit{``a non-hateful meme saying \{texto\}''}, para ajudar o modelo a entender a relação entre a imagem e o texto específico daquele meme. Os \textit{prompts} são \textit{tokenizados}, codificados pelo \textit{encoder} textual e normalizados.
 
-Para cada meme do conjunto \texttt{test\_unseen} (2.000 amostras), a imagem é pré-processada pela função do CLIP (redimensionamento para 224$\times$224 pixels e normalização ImageNet), codificada pelo \textit{encoder} visual e normalizada. A similaridade entre o \textit{embedding} visual e os dois \textit{embeddings} textuais é calculada por produto interno, equivalente à similaridade de cosseno dado que ambos os vetores são normalizados, escalonada pelo parâmetro de temperatura do modelo e convertida em probabilidades pela função \textit{Softmax}. O meme é classificado como odioso quando a probabilidade associada ao \textit{prompt} \textit{hateful} supera 0,5. Os resultados são salvos em \texttt{resultados\_zero\_shot.csv} e avaliados por Acurácia, F1-Score e AUROC.
+Um primeiro teste foi feito para fins de visualização, no qual uma amostra é extraída de forma aleatória do conjunto \texttt{test\_unseen} para ver como o modelo se comporta. Para auxiliar na interpretação dos resultados, o texto em inglês contido na imagem é traduzido para o português utilizando a biblioteca do \textit{Google Translate}. Na sequência, a imagem é então renderizada com o auxílio da biblioteca \textit{matplotlib}, exibindo a tradução como legenda. Por fim, a função de predição é invocada passando a imagem e o texto original como parâmetros de entrada. Com base nas probabilidades retornadas, a decisão final do modelo é extraída utilizando a função \textit{argmax}, que identifica o índice da classe com o maior nível de confiança. O sistema encerra o fluxo exibindo detalhadamente no console o identificador da amostra, o rótulo verdadeiro (fornecido pelo conjunto de dados), as probabilidades calculadas para cada classe e a predição final estipulada pelo modelo.
 
-Para quantificar a contribuição de cada modalidade isoladamente, são conduzidas duas variantes adicionais: (i)~\textbf{somente imagem}, em que os \textit{prompts} textuais são substituídos por versões genéricas sem mencionar o conteúdo do meme, eliminando o sinal textual da comparação; e (ii)~\textbf{somente texto}, em que a imagem é substituída por uma imagem neutra de dimensões equivalentes, eliminando o sinal visual. Os resultados das três configurações, imagem, texto e multimodal, são comparados em Acurácia, F1-Score e AUROC.
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=0.45\textwidth]{imagens/img_58760.png}
+    \vspace{0.3cm}
+    \small
+    \begin{tabular}{p{0.33\textwidth}p{0.6\textwidth}}
+        \hline
+        \textbf{Propriedade} & \textbf{Valor / Resultado} \\ \hline
+        Tradução do Texto & \textit{``Pare os imigrantes ilegais, eles estão tomando as terras que roubamos''} \\
+        Rótulo Verdadeiro & 1 (\textit{Hateful meme}) \\
+        Probabilidades Calculadas & \begin{tabular}[c]{@{}l@{}}Este é um meme de ódio: 0,2974\\ Este não é um meme de ódio: 0,7026\end{tabular} \\
+        Predição do Modelo & \textit{This is not a hateful meme} (Este não é um meme de ódio) \\ \hline
+    \end{tabular}
+    \vspace{0.3cm}
+    \caption{Primeiro teste de predição \textit{zero-shot} com uma amostra aleatória do conjunto \texttt{test\_unseen} acompanhado dos metadados de classificação.}
+    \label{fig:zero-shot-sample}
+\end{figure*}
+
+Para realizar a avaliação em larga escala do modelo em cenário \textit{zero-shot}, implementou-se uma rotina de processamento em lote sobre o conjunto \texttt{test\_unseen}. O script lê o arquivo JSON Lines e itera sobre cada meme, extraindo o caminho da imagem e seu texto. Cada imagem é pré-processada, codificada pelo \textit{encoder} visual do CLIP e normalizada. A similaridade entre o \textit{embedding} visual e os \textit{embeddings} textuais dos \textit{prompts} \textit{hateful} e \textit{non-hateful} é calculada por produto interno, escalonada pelo parâmetro de temperatura e convertida em probabilidades via \textit{Softmax}; a classe predita é então definida pela função \textit{argmax}. Ao final, as predições são consolidadas em um \textit{DataFrame} e exportadas para o arquivo
+\texttt{resultados\_zero\_shot.csv}, viabilizando o cálculo posterior de métricas sem necessidade de reprocessamento das imagens.
+
+Para quantificar a contribuição de cada modalidade isoladamente para o estudo de ablação, são conduzidas duas variantes adicionais: (i)~\textbf{somente imagem}, em que os \textit{prompts} textuais são substituídos por versões genéricas sem mencionar o conteúdo do meme, eliminando o sinal textual da comparação; e (ii)~\textbf{somente texto}, em que a imagem é substituída por uma imagem neutra de dimensões equivalentes, eliminando o sinal visual. Os resultados das três configurações, imagem, texto e multimodal, são comparados em Acurácia, F1-Score e AUROC.
 
 Aplicado sobre as probabilidades contínuas geradas pelo CLIP, o classificador interpreta a incerteza do modelo em vez de impor um limiar binário rígido. O pipeline compõe-se de três etapas: (i)~\textbf{fuzzificação}, que mapeia a probabilidade de ódio em cinco conjuntos linguísticos por funções de pertinência triangulares: \textit{Nenhum Ódio}, \textit{Pouco Ódio}, \textit{Ambiguidade/Moderado}, \textit{Ódio} e \textit{Alto Grau de Ódio}; (ii)~\textbf{inferência contextual com entropia de Shannon}, que ajusta os graus de pertinência com base na incerteza da predição, quando a entropia supera um limiar configurável, a pertinência a \textit{Ambiguidade/Moderado} é reforçada e as demais são atenuadas, evitando classificações precipitadas em memes com alta tensão semântica entre texto e imagem; e (iii)~\textbf{defuzzificação por centroide}, que converte a distribuição de pertinência em um \textit{score} contínuo único de intensidade de ódio pelo método do centro de gravidade. O rótulo binário final é atribuído quando o \textit{score} defuzzificado corresponde às categorias \textit{Ódio} ou \textit{Alto Grau de Ódio}.
 
