@@ -10,6 +10,8 @@ A arquitetura proposta para a identificação de discurso de ódio em memes nest
 
 Todo o desenvolvimento foi conduzido no Google Colab, plataforma baseada em \textit{Jupyter Notebook} que oferece um ambiente de execução em nuvem com acesso a GPUs e TPUs~\cite{googlecolab}. O ambiente foi configurado com GPU NVIDIA Tesla T4, voltada à aceleração de tarefas de aprendizado profundo, com suporte nativo ao CUDA (\textit{Compute Unified Device Architecture}), plataforma de computação paralela da NVIDIA que viabiliza o processamento massivamente paralelo das GPUs.
 
+O aprendizado por transferência constitui o princípio arquitetural central desta pesquisa. Em vez de treinar um modelo do zero, os três experimentos partem dos pesos pré-treinados do modelo CLIP, transferindo o conhecimento semântico multimodal adquirido nessa escala para a tarefa específica de detecção de discurso de ódio em memes. A forma de transferência evolui progressivamente entre os experimentos.
+
 A pesquisa foi estruturada em três experimentos progressivos. No \textbf{Experimento 1} (\textit{zero-shot}), ilustrado na Figura~\ref{fig:zero-shot-arch}, o modelo é aplicado diretamente sobre o \textit{Hateful Memes Dataset}, sem qualquer ajuste fino. A imagem do meme e os \textit{prompts} textuais candidatos são processados em paralelo por dois \textit{encoders} independentes, um \textit{Vision Transformer} (ViT) para o conteúdo visual e um Transformer CLIP para o conteúdo textual, produzindo \textit{embeddings} em um espaço semântico compartilhado. A similaridade cosseno entre esses \textit{embeddings} alimenta uma função \textit{Softmax}, gerando probabilidades normalizadas por classe. Sobre essas probabilidades operam dois caminhos complementares: (i)~a \textbf{classificação binária}, avaliada por Acurácia, F1 e AUC-ROC; e (ii)~o \textbf{Classificador Fuzzy Unificado}, que converte valores contínuos de probabilidade em cinco categorias linguísticas de pertinência, introduzindo interpretabilidade gradual e atenuando o impacto de falsos positivos em regiões de alta entropia. O experimento inclui ainda um estudo de ablação que compara isoladamente as modalidades de texto, imagem e a combinação multimodal.
 
 \begin{figure*}[!htbp]
@@ -87,7 +89,7 @@ Os dados foram armazenados e gerenciados no Google Colab com integração ao Goo
 \section{Detalhes de implementação}
 % Explique escolhas tecnológicas, estruturas de dados e integrações. Inclua trechos de código relevantes ou pseudoexemplos se esclarecerem decisões de pesquisa.
 
-A implementação foi realizada em Python 3.12, com PyTorch para aceleração via GPU. Os principais \textit{frameworks} e bibliotecas utilizados foram o CLIP da OpenAI para o alinhamento entre as modalidades de imagem e texto; o Scikit-learn para a implementação do DBSCAN e o cálculo de métricas de avaliação; o \textit{scikit-fuzzy} para a construção dos sistemas de inferência fuzzy; o \textit{SentenceTransformer} (modelo \texttt{all-mpnet-base-v2}) para a geração de \textit{embeddings} semânticos de texto; e o Gradio para a criação de uma interface de teste em tempo real, permitindo o \textit{upload} e a análise instantânea de memes.
+A implementação foi realizada em Python 3.12, com PyTorch para aceleração via GPU. Os principais \textit{frameworks} e bibliotecas utilizados foram o CLIP da OpenAI para o alinhamento entre as modalidades de imagem e texto; o Scikit-learn para a implementação do DBSCAN e o cálculo de métricas de avaliação; o \textit{scikit-fuzzy} para a construção dos sistemas de inferência fuzzy; o \textit{SentenceTransformer} (modelo \texttt{all-mpnet-base-v2}) para a geração de \textit{embeddings} semânticos de texto; e o Gradio para a criação de uma interface de teste em tempo real, permitindo o \textit{upload} e a análise instantânea de memes. O código-fonte completo dos três experimentos está disponível no repositório GitHub \url{https://github.com/anathayna/tcc}.
 
 \subsection{Experimento 1: Classificação \textit{zero-shot}}
 
@@ -118,7 +120,7 @@ Um primeiro teste foi feito para fins de visualização, no qual uma amostra é 
 Para realizar a avaliação em larga escala do modelo em cenário \textit{zero-shot}, implementou-se uma rotina de processamento em lote sobre o conjunto \texttt{test\_unseen}. O script lê o arquivo JSON Lines e itera sobre cada meme, extraindo o caminho da imagem e seu texto. Cada imagem é pré-processada, codificada pelo \textit{encoder} visual do CLIP e normalizada. A similaridade entre o \textit{embedding} visual e os \textit{embeddings} textuais dos \textit{prompts} \textit{hateful} e \textit{non-hateful} é calculada por produto interno, escalonada pelo parâmetro de temperatura e convertida em probabilidades via \textit{Softmax}; a classe predita é então definida pela função \textit{argmax}. Ao final, as predições são consolidadas em um \textit{DataFrame} e exportadas para o arquivo
 \texttt{resultados\_zero\_shot.csv}, viabilizando o cálculo posterior de métricas sem necessidade de reprocessamento das imagens.
 
-Para quantificar a contribuição de cada modalidade isoladamente para o estudo de ablação, são conduzidas duas variantes adicionais: (i)~\textbf{somente imagem}, em que os \textit{prompts} textuais são substituídos por versões genéricas sem mencionar o conteúdo do meme, eliminando o sinal textual da comparação; e (ii)~\textbf{somente texto}, em que a imagem é substituída por uma imagem neutra de dimensões equivalentes, eliminando o sinal visual. Os resultados das três configurações, imagem, texto e multimodal, são comparados em Acurácia, F1-Score e AUROC.
+Para quantificar a contribuição de cada modalidade isoladamente para o estudo de ablação, são conduzidas duas variantes adicionais: (i)~\textbf{somente imagem}, em que os \textit{prompts} textuais são substituídos por versões genéricas sem mencionar o conteúdo do meme, eliminando o sinal textual da comparação; e (ii)~\textbf{somente texto}, em que o texto do meme é codificado diretamente pelo \textit{encoder} textual do CLIP e comparado aos \textit{prompts} de classificação, sem envolver a imagem na comparação. Os resultados das três configurações, imagem, texto e multimodal, são comparados em Acurácia, F1-Score e AUROC.
 
 Aplicado sobre as probabilidades contínuas geradas pelo CLIP, o classificador interpreta a incerteza do modelo em vez de impor um limiar binário rígido. O pipeline compõe-se de três etapas: (i)~\textbf{fuzzificação}, que mapeia a probabilidade de ódio em cinco conjuntos linguísticos por funções de pertinência triangulares: \textit{Nenhum Ódio}, \textit{Pouco Ódio}, \textit{Ambiguidade/Moderado}, \textit{Ódio} e \textit{Alto Grau de Ódio}; (ii)~\textbf{inferência contextual com entropia de Shannon}, que ajusta os graus de pertinência com base na incerteza da predição, quando a entropia supera um limiar configurável, a pertinência a \textit{Ambiguidade/Moderado} é reforçada e as demais são atenuadas, evitando classificações precipitadas em memes com alta tensão semântica entre texto e imagem; e (iii)~\textbf{defuzzificação por centroide}, que converte a distribuição de pertinência em um \textit{score} contínuo único de intensidade de ódio pelo método do centro de gravidade. O rótulo binário final é atribuído quando o \textit{score} defuzzificado corresponde às categorias \textit{Ódio} ou \textit{Alto Grau de Ódio}.
 
@@ -126,36 +128,125 @@ Aplicado sobre as probabilidades contínuas geradas pelo CLIP, o classificador i
 
 O segundo experimento parte da limitação observada no Experimento~1: o CLIP sem ajuste fino ancora-se em pistas superficiais como em palavras isoladas ou padrões visuais genéricos, e falha nos confundidores benignos. Para enriquecer a representação dos dados sem treinar o CLIP, são introduzidos índices de agrupamento semântico como entradas adicionais ao modelo.
 
-\textbf{Pré-processamento textual.} Os textos do conjunto de treinamento são codificados pelo modelo \texttt{all-mpnet-base-v2} da biblioteca \textit{SentenceTransformer}, um Transformer bidirecional pré-treinado especificamente para similaridade semântica de frases, produzindo vetores de 768 dimensões. Os \textit{embeddings} são normalizados por norma L2 e submetidos ao DBSCAN com métrica de cosseno e $\epsilon = 0{,}25$ (limiar de similaridade de 75\%) e \texttt{min\_samples=2}. Amostras que não integram nenhum \textit{cluster} recebem índice $-1$ (ruído). Para cada \textit{cluster} formado, calcula-se o \textit{medoide}, garantindo que o representante seja sempre uma amostra real do conjunto. O índice de \textit{cluster} de cada texto é salvo como coluna \texttt{cluster\_text\_idx}.
+\textbf{Pré-processamento textual.} O \textit{pipeline} é dividido em três etapas. Primeiro, os textos do conjunto de treinamento são codificados pelo modelo \texttt{all-mpnet-base-v2} da biblioteca \textit{SentenceTransformer}, gerando vetores de 768 dimensões que capturam especificamente a similaridade semântica de frases. Em seguida, esses \textit{embeddings} são normalizados e submetidos ao DBSCAN com métrica de cosseno e $\epsilon = 0{,}25$ (limiar de similaridade de 75\%) e \texttt{min\_samples=2}, onde dois textos semanticamente similares já são suficientes para formar um \textit{cluster} válido. As amostras dos conjuntos de validação e teste são alocadas ao \textit{cluster} mais próximo via k-NN. Para cada \textit{cluster}, calcula-se o \textit{medoide} como representante real do grupo, enquanto os que não integram nenhum \textit{cluster} recebem índice $-1$ (ruído). O índice resultante de cada texto é salvo como coluna \texttt{cluster\_text\_idx}. Por fim, os textos são tokenizados para alimentar o codificador textual da arquitetura ViT-L/14 do CLIP.
 
-\textbf{Pré-processamento visual.} Os \textit{embeddings} de imagem são extraídos pelo encoder visual do CLIP ViT-L/14 congelado (768 dimensões), normalizados por norma L2 e agrupados pelo DBSCAN com $\epsilon = 0{,}08$ (similaridade de 92\%) e \texttt{min\_samples=2}. O limiar mais restritivo reflete a maior variabilidade visual dos memes em relação aos seus textos. O índice resultante é salvo como \texttt{cluster\_img\_idx}. Ambos os índices são consolidados com os demais campos no arquivo \texttt{preprocessing.csv}. Para os conjuntos de validação e teste, os índices são atribuídos por \textit{k}-NN com $k{=}1$ e métrica de cosseno, identificando o vizinho mais próximo no conjunto de treinamento.
+\textbf{Pré-processamento visual.} Os \textit{embeddings} de imagem são extraídos pelo \textit{encoder} visual do CLIP ViT-L/14 congelado (768 dimensões), normalizados e agrupados pelo DBSCAN com $\epsilon = 0{,}08$ (similaridade de 92\%) e \texttt{min\_samples=2}. O limiar mais restritivo reflete a maior variabilidade visual dos memes em relação aos seus textos. O índice resultante é salvo como \texttt{cluster\_img\_idx}. Ambos os índices são consolidados com os demais campos no arquivo \texttt{preprocessing.csv}. Para os conjuntos de validação e teste, os índices são atribuídos por \textit{k}-NN com $k{=}1$ e métrica de cosseno, identificando o vizinho mais próximo no conjunto de treinamento.
 
-O modelo é construído sobre o CLIP ViT-L/14 completamente congelado. As representações visuais e textuais extraídas pelo CLIP (768 dimensões cada) são concatenadas com dois \textit{embeddings} aprendíveis de \textit{cluster}: um para \texttt{cluster\_text\_idx} e outro para \texttt{cluster\_img\_idx}, ambos com 64 dimensões, resultando em um vetor de $768 \times 2 + 64 \times 2 = 1664$ dimensões. Esse vetor passa por uma camada de \textit{BatchNorm1d}, \textit{Dropout}(0,2) e uma camada linear que produz o \textit{logit} binário. Na inferência, aplica-se a função sigmoide com limiar 0,5 para a classificação final.
+%O modelo é construído sobre o CLIP ViT-L/14 completamente congelado. As representações visuais e textuais extraídas pelo CLIP são concatenadas com dois \textit{embeddings} aprendíveis de \textit{cluster}: um para \texttt{cluster\_text\_idx} e outro para \texttt{cluster\_img\_idx}, ambos com 64 dimensões, resultando em um vetor de $768 \times 2 + 64 \times 2 = 1664$ dimensões. Esse vetor passa por uma camada de \textit{BatchNorm1d}, \textit{Dropout}(0,2) e uma camada linear que produz o \textit{logit} binário. Na inferência, aplica-se a função sigmoide com limiar 0,5 para a classificação final.
 
-O modelo é treinado com \texttt{BCEWithLogitsLoss} por até 15 épocas sobre o conjunto \texttt{train}, com avaliação ao final de cada época no conjunto \texttt{dev\_seen}. O treinamento é interrompido antecipadamente (\textit{early stopping}) caso o AUROC de validação não melhore por 5 épocas consecutivas. O melhor modelo é salvo automaticamente por \textit{checkpointing}.
+%O modelo é treinado com \texttt{BCEWithLogitsLoss} por até 15 épocas sobre o conjunto \texttt{train}, com avaliação ao final de cada época no conjunto \texttt{dev\_seen}. O treinamento é interrompido antecipadamente (\textit{early stopping}) caso o AUROC de validação não melhore por 5 épocas consecutivas. O melhor modelo é salvo automaticamente por \textit{checkpointing}.
 
-Cinco configurações avaliam a contribuição incremental de cada componente, zerando seletivamente as entradas não utilizadas: (1)~\textbf{somente imagem}: \textit{features} visuais do CLIP, texto e \textit{clusters} zerados; (2)~\textbf{somente texto}: \textit{features} textuais do CLIP, imagem e \textit{clusters} zerados; (3)~\textbf{CLIP multimodal}: \textit{features} visuais e textuais do CLIP, \textit{clusters} zerados; (4)~\textbf{+ \textit{cluster} de texto}: CLIP multimodal acrescido do \textit{embedding} de \texttt{cluster\_text\_idx}; e (5)~\textbf{modelo completo}: todas as entradas ativas.
+O \textit{backbone} utilizado é o CLIP ViT-L/14 pré-treinado, cujos pesos foram completamente
+congelados a fim de preservar o conhecimento semântico e visual previamente
+adquirido e reduzir o custo computacional. Durante o \textit{forward pass}, textos
+tokenizados e imagens pré-processadas são codificados pelos respectivos
+\textit{encoders} do CLIP, produzindo representações latentes densas de 768
+dimensões por modalidade. Para estabilizar o treinamento, esses vetores são
+submetidos a normalização antes da fusão.
+
+Além das representações extraídas
+pelo CLIP, o modelo incorpora informação estrutural proveniente do agrupamento
+espacial via DBSCAN. Os índices categóricos \texttt{cluster\_text\_idx} e
+\texttt{cluster\_img\_idx} são mapeados por camadas de \textit{embedding},
+gerando vetores densos de 64 dimensões para cada modalidade. Essa abordagem
+permite que a rede aprenda a relevância do contexto do meme.
+
+A fusão é realizada por concatenação
+(\textit{late fusion}) das quatro representações: \textit{embedding} textual
+(768d), \textit{embedding} visual (768d), \textit{embedding} de cluster de texto
+(64d) e \textit{embedding} de cluster de imagem (64d), resultando em um vetor
+unificado de $768 \times 2 + 64 \times 2 = 1{.}664$ dimensões. Esse vetor
+passa sequencialmente por uma camada de \textit{BatchNorm1d}, uma camada de
+\textit{Dropout} com taxa de 0,2, para mitigar o sobreajuste, e uma camada
+linear totalmente conectada que produz um único \textit{logit} de saída. Na
+inferência, aplica-se a função sigmoide com limiar 0,5 para a classificação final.
+
+Apenas as camadas de \textit{embedding},
+normalização em lote e classificação linear são otimizadas. A função de perda
+adotada é a \texttt{BCEWithLogitsLoss}, adequada a problemas de classificação
+binária. O otimizador escolhido foi AdamW com taxa de aprendizado de
+$1 \times 10^{-4}$, operando em lotes de 32 amostras. O treinamento ocorre por
+até 15 épocas sobre o conjunto \texttt{train}, com avaliação ao final de cada
+época no conjunto \texttt{dev\_seen}. Implementou-se \textit{early stopping} com
+paciência de 5 épocas sem melhoria no AUROC de validação. Ao término, os pesos
+da época de melhor desempenho são automaticamente restaurados via
+\textit{checkpointing}.
+
+Após o treinamento e validação, a etapa de classificação avalia o modelo em um conjunto
+inédito (\textit{test\_unseen}), cujo pipeline de inferência espelha o
+pré-processamento original. Os textos são codificados pelo \textit{SentenceTransformer} e as imagens pelo codificador visual do CLIP (ViT-L/14),
+gerando \textit{features} espaciais de 768 dimensões.
+
+Como o DBSCAN foi aplicado exclusivamente no conjunto de treinamento para evitar
+\textit{data leakage}, os exemplos de teste não possuem identificadores de cluster
+nativos. Para suprir essa lacuna, o algoritmo k-NN ($k=1$, similaridade de cosseno)
+compara os vetores extraídos aos do conjunto de treinamento, atribuindo a cada novo meme
+os índices de cluster (\texttt{cluster\_text\_idx} e \texttt{cluster\_img\_idx}) do
+exemplo mais similar.
+
+Com todas as características definidas, os dados são organizados em \textit{batches} e
+repassados à rede multimodal treinada. Os \textit{logits} são convertidos em probabilidades pelo
+\textit{sigmoide} e classificados com limiar de 0,5: amostras acima de 50\% recebem rótulo
+``discurso de ódio'' (1), as demais ``não ódio'' (0). Os resultados e probabilidades
+brutas são armazenados para avaliação de métricas e aplicação da lógica Fuzzy.
+
+Cinco configurações avaliam a contribuição incremental de cada componente para o estudo de ablação, zerando seletivamente as entradas não utilizadas: (1)~\textbf{somente imagem}: \textit{features} visuais do CLIP, texto e \textit{clusters} zerados; (2)~\textbf{somente texto}: \textit{features} textuais do CLIP, imagem e \textit{clusters} zerados; (3)~\textbf{CLIP multimodal}: \textit{features} visuais e textuais do CLIP, \textit{clusters} zerados; (4)~\textbf{+ \textit{cluster} de texto}: CLIP multimodal acrescido do \textit{embedding} de \texttt{cluster\_text\_idx}; e (5)~\textbf{modelo completo}: todas as entradas ativas.
 
 O mesmo classificador do Experimento~1 é aplicado sobre as probabilidades de saída do \texttt{MultimodalModel}, produzindo a graduação contínua de ódio em cinco categorias linguísticas.
 
 Uma interface Gradio permite a análise de memes externos ao \textit{dataset}. O texto é extraído da imagem enviada pelo usuário via API Google Cloud Vision (OCR) e traduzido para o inglês pelo \textit{DeepTranslator} antes de ser passado ao modelo. A saída exibe simultaneamente a classificação binária e o \textit{score} fuzzy contínuo.
 
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=0.99\textwidth]{imagens/gradio_exp2_upload.png}
+    \caption{Visualização da interface do \textbf{Experimento 2}. A imagem apresenta a captura de tela da interface do Gradio na aba de upload.}
+    \label{fig:exp2-gradio-sample-upload}
+\end{figure*}
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=0.99\textwidth]{imagens/gradio_exp2_random.png}
+    \caption{Visualização da interface do \textbf{Experimento 2}. A imagem apresenta a captura de tela da interface do Gradio na aba de amostra aleatória.}
+    \label{fig:exp2-gradio-sample-random}
+\end{figure*}
+
 \subsection{Experimento 3: Pipeline Completo}
 
-O terceiro experimento implementa o \textit{HateCLIPper} \cite{kumar2022}, com adaptações, como \textit{pipeline} principal. Em relação ao Experimento~2, os encoders deixam de ser puramente congelados e passam a ser parcialmente ajustados, a fusão multimodal é feita por interação explícita entre as representações visuais e textuais, e o sistema fuzzy recebe como entradas os escores individuais de cada modalidade.
+O terceiro experimento implementa o \textit{HateCLIPper} \cite{kumar2022}, com adaptações, como \textit{pipeline} principal. Em relação ao Experimento~2, os \textit{encoders} deixam de ser puramente congelados e passam a ser parcialmente ajustados, a fusão multimodal é feita por interação explícita entre as representações visuais e textuais, e o sistema fuzzy recebe como entradas as pontuações individuais de cada modalidade.
 
-O CLIP ViT-L/14 é carregado e ambos os encoders são inicialmente congelados. As representações visuais e textuais extraídas pelos encoders (768 dimensões cada) são individualmente projetadas para 256 dimensões por camadas lineares seguidas de Dropout e normalizadas por norma L2, de modo que as comparações entre modalidades dependam exclusivamente da orientação geométrica dos vetores e não de sua escala.
+O CLIP ViT-L/14 é carregado e ambos os \textit{encoders} são inicialmente congelados. As representações visuais e textuais extraídas pelos \textit{encoders} (768 dimensões cada) são individualmente projetadas para 256 dimensões por camadas lineares seguidas de \textit{Dropout} e normalizadas, de modo que as comparações entre modalidades dependam exclusivamente da orientação geométrica dos vetores e não de sua escala.
 
-A fusão é realizada pela \textbf{FIM} (\textit{Feature Interaction Matrix}), que computa o produto externo entre o vetor visual e o vetor textual, capturando correlações par a par entre cada dimensão das duas modalidades. O resultado é uma matriz $256 \times 256 = 65.536$ dimensões, linearizada e reduzida a 256 dimensões por um bloco de projeção composto por Dropout, camada linear, ReLU e Dropout. Um logit binário é então gerado por uma camada linear final.
+A fusão é realizada pela \textbf{FIM} (\textit{Feature Interaction Matrix}), que computa o produto externo entre o vetor visual e o vetor textual, capturando correlações par a par entre cada dimensão das duas modalidades. O resultado é uma matriz $256 \times 256 = 65.536$ dimensões, linearizada e reduzida a 256 dimensões por um bloco de projeção composto por \textit{Dropout}, camada linear, ReLU e \textit{Dropout}. Um \textit{logit} binário é então gerado por uma camada linear final.
 
 O modelo conta com duas cabeças auxiliares independentes, uma visual e uma textual, cada uma com a mesma estrutura de projeção operando sobre os vetores de 256 dimensões de cada modalidade. As perdas auxiliares são somadas à perda multimodal principal com pesos configuráveis (\texttt{w\_image\_loss} e \texttt{w\_text\_loss}). A função de perda é \texttt{BCEWithLogitsLoss} com \texttt{pos\_weight} calculado dinamicamente como a razão entre exemplos negativos e positivos no conjunto de treinamento, compensando o desbalanceamento de classes.
 
-O modelo é otimizado com \textbf{AdamW}, um otimizador adaptativo que incorpora regularização por \textit{weight decay} desacoplado dos gradientes, por até 20 épocas, com \textit{scheduler} \textit{CosineAnnealingLR} que reduz a taxa de aprendizado suavemente ao longo do treinamento. O treinamento utiliza precisão mista (\texttt{torch.amp}) para reduzir consumo de memória, e o gradiente é truncado a 0,1 por passo para estabilidade numérica. Ao longo do treinamento, as últimas camadas dos encoders são descongeladas progressivamente para permitir ajuste fino parcial. O \textit{early stopping} interrompe o treinamento após 5 épocas consecutivas sem melhoria no AUROC de validação (\texttt{dev\_seen}), com salvamento automático do melhor modelo.
+O modelo é otimizado com \textbf{AdamW}, um otimizador adaptativo que incorpora regularização por \textit{weight decay} desacoplado dos gradientes, por até 20 épocas, com \textit{scheduler} \textit{CosineAnnealingLR} que reduz a taxa de aprendizado suavemente ao longo do treinamento. O treinamento utiliza precisão mista para reduzir consumo de memória, e o gradiente é truncado a 0,1 por passo para estabilidade numérica. Ao longo do treinamento, as últimas camadas dos \textit{encoders} são descongeladas progressivamente para permitir ajuste fino parcial. O \textit{early stopping} interrompe o treinamento após 5 épocas consecutivas sem melhoria no AUROC de validação (\texttt{dev\_seen}), com salvamento automático do melhor modelo.
 
-Após o treinamento, o limiar de classificação é otimizado sobre o conjunto \texttt{dev\_seen} pelo índice de Youden~J, que seleciona o limiar que maximiza simultaneamente a sensibilidade e a especificidade do modelo, em vez do limiar padrão de~0,5. Esse limiar otimizado é então aplicado na avaliação final sobre \texttt{test\_seen} e \texttt{test\_unseen}.
+Após o treinamento, o limiar de classificação é otimizado sobre o conjunto \texttt{dev\_seen} pelo índice de Youden~J, equivalente à distância vertical máxima entre
+a curva ROC e a diagonal aleatória. Esse critério seleciona o limiar que maximiza simultaneamente a sensibilidade e a especificidade do modelo, em vez do limiar padrão de~0,5. Esse limiar otimizado é então aplicado na avaliação final sobre \texttt{test\_seen} e \texttt{test\_unseen}.
 
 Quatro modos de fusão do HateCLIPper são avaliados nas mesmas condições de treinamento: \textit{align} (produto elemento a elemento entre os vetores normalizados), \textit{concat} (concatenação), \textit{cross} (FIM por produto externo) e \textit{align\_concat} (combinação de \textit{align} e \textit{concat}). O modo \textit{cross} foi selecionado por apresentar o melhor AUROC de validação e F1 no conjunto de teste.
 
-Diferentemente do Experimento~1, o sistema fuzzy deste experimento opera com dois antecedentes independentes: o escore da cabeça auxiliar visual (\texttt{score\_img}) e o escore da cabeça auxiliar textual (\texttt{score\_txt}), cada um com três funções de pertinência triangulares (\textit{baixo}, \textit{médio}, \textit{alto}). O consequente \texttt{hate\_level} $\in [0, 100]$ possui cinco categorias linguísticas. Nove regras de inferência combinam os graus de ativação de cada modalidade, capturando assimetrias como memes em que o texto sozinho é odioso mas a imagem é neutra, ou vice-versa. A defuzzificação por centroide retorna um \textit{score} contínuo cujo limiar ótimo, determinado sobre \texttt{dev\_seen}, separa as predições binárias finais.
+O sistema fuzzy deste experimento opera com dois antecedentes independentes. A pontuação da cabeça auxiliar visual (\texttt{score\_img}) e a pontuação da cabeça auxiliar textual (\texttt{score\_txt}), cada um com três funções de pertinência triangulares (\textit{baixo}, \textit{médio}, \textit{alto}). O consequente \texttt{hate\_level} $\in [0, 100]$ possui cinco categorias linguísticas. Nove regras de inferência combinam os graus de ativação de cada modalidade, capturando assimetrias como memes em que o texto sozinho é odioso mas a imagem é neutra, ou vice-versa. A defuzzificação por centroide retorna um \textit{score} contínuo cujo limiar ótimo, determinado sobre \texttt{dev\_seen}, separa as predições binárias finais.
 
 A interface segue a mesma estrutura do Experimento~2, Gradio com OCR via Google Cloud Vision e tradução via \textit{DeepTranslator}, com a diferença de que a saída inclui também os escores individuais das cabeças auxiliares visual e textual, além do \textit{score} fuzzy multimodal.
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=0.99\textwidth]{imagens/gradio_exp3_upload.png}
+    \caption{Visualização da interface do \textbf{Experimento 3}. A imagem apresenta a captura de tela da interface do Gradio na aba de upload.}
+    \label{fig:exp3-gradio-sample-upload}
+\end{figure*}
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=0.99\textwidth]{imagens/gradio_exp3_random.png}
+    \caption{Visualização da interface do \textbf{Experimento 3}. A imagem apresenta a captura de tela da interface do Gradio na aba de amostra aleatória.}
+    \label{fig:exp3-gradio-sample-random}
+\end{figure*}
+
+O modelo também foi disponibilizado no \textit{Hugging Face Spaces} em um repositório 
+contendo os atributos e requisitos necessários para sua execução. 
+Devido ao tamanho do modelo (1,77 GB), ele foi armazenados em 
+um \textit{bucket} a parte do repositório. O espaço está acessível em 
+\url{https://huggingface.co/spaces/anathaynaf/tcc}.
