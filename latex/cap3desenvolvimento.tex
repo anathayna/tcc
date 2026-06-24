@@ -85,10 +85,10 @@ A Tabela~\ref{tab:dataset-splits} apresenta a distribuição de amostras e rótu
 \texttt{train.jsonl}        & 8.500 & 3.019 (35,5\%) & 5.481 (64,5\%) & Sim \\
 \texttt{dev\_seen.jsonl}    &   500 &   250 (50,0\%) &   250 (50,0\%) & Sim \\
 \texttt{dev\_unseen.jsonl}  &   540 &   340 (63,0\%) &   200 (37,0\%) & Sim \\
-\texttt{test\_seen.jsonl}   &   500 &   250 (50,0\%) &   250 (50,0\%) & Sim \\
+\texttt{test\_seen.jsonl}   & 1.000 &   250 (50,0\%) &   250 (50,0\%) & Sim \\
 \texttt{test\_unseen.jsonl} & 2.000 &   1.250 (62,5\%) & 750 (37,5\%) & Sim \\
 \hline
-\textbf{Total}              & \textbf{12.040} & & & \\
+\textbf{Total}              & \textbf{12.140} & & & \\
 \hline
 \end{tabular}
 \end{table}
@@ -114,9 +114,11 @@ O modelo é carregado e dois \textit{prompts} candidatos são definidos em ingl�
 
 Um primeiro teste foi feito para fins de visualização, no qual uma amostra é extraída de forma aleatória do conjunto \texttt{test\_unseen} para ver como o modelo se comporta. Para auxiliar na interpretação dos resultados, o texto em inglês contido na imagem é traduzido para o português utilizando a biblioteca do \textit{Google Translate}. Na sequência, a imagem é então renderizada com o auxílio da biblioteca \textit{matplotlib}, exibindo a tradução como legenda. Por fim, a função de predição é invocada passando a imagem e o texto original como parâmetros de entrada. Com base nas probabilidades retornadas, a decisão final do modelo é extraída utilizando a função \textit{argmax}, que identifica o índice da classe com o maior nível de confiança. O sistema encerra o fluxo exibindo detalhadamente no console o identificador da amostra, o rótulo verdadeiro (fornecido pelo conjunto de dados), as probabilidades calculadas para cada classe e a predição final estipulada pelo modelo.
 
+% Primeiro teste de predição \textit{zero-shot} com uma amostra aleatória do conjunto \texttt{test\_unseen} acompanhado dos metadados de classificação.
+
 \begin{figure*}[!htbp]
     \centering
-    \caption{Primeiro teste de predição \textit{zero-shot} com uma amostra aleatória do conjunto \texttt{test\_unseen} acompanhado dos metadados de classificação.}
+    \caption{Primeiro teste de predição \textit{zero-shot}.}
     \label{fig:zero-shot-sample}
     \includegraphics[width=0.45\textwidth]{imagens/img_58760.png}
     \vspace{0.3cm}
@@ -132,12 +134,11 @@ Um primeiro teste foi feito para fins de visualização, no qual uma amostra é 
     \vspace{0.3cm}
     \begin{minipage}{0.65\textwidth}
         \centering
-        {\small\textbf{Fonte:} Elaborado pela autora (2026).}
+        {\small\textbf{Fonte:} Adaptado de \citeonline{ArticleHatefulMemesChallenge2020}.}
     \end{minipage}
 \end{figure*}
 
-Para realizar a avaliação em larga escala do modelo em cenário \textit{zero-shot}, implementou-se uma rotina de processamento em lote sobre o conjunto \texttt{test\_unseen}. O script lê o arquivo JSON Lines e itera sobre cada meme, extraindo o caminho da imagem e seu texto. Cada imagem é pré-processada, codificada pelo \textit{encoder} visual do CLIP e normalizada. A similaridade entre o \textit{embedding} visual e os \textit{embeddings} textuais dos \textit{prompts} \textit{hateful} e \textit{non-hateful} é calculada por produto interno, escalonada pelo parâmetro de temperatura e convertida em probabilidades via \textit{Softmax}; a classe predita é então definida pela função \textit{argmax}. Ao final, as predições são consolidadas em um \textit{DataFrame} e exportadas para o arquivo
-\texttt{resultados\_zero\_shot.csv}, viabilizando o cálculo posterior de métricas sem necessidade de reprocessamento das imagens.
+Para realizar a avaliação em larga escala do modelo em cenário \textit{zero-shot}, implementou-se uma rotina de processamento em lote sobre o conjunto \texttt{test\_unseen}. O script lê o arquivo JSON Lines e itera sobre cada meme, extraindo o caminho da imagem e seu texto. Cada imagem é pré-processada, codificada pelo \textit{encoder} visual do CLIP e normalizada. A similaridade entre o \textit{embedding} visual e os \textit{embeddings} textuais dos \textit{prompts} \textit{hateful} e \textit{non-hateful} é calculada por produto interno, escalonada pelo parâmetro de temperatura e convertida em probabilidades via \textit{Softmax}; a classe predita é então definida pela função \textit{argmax}. Ao final, as predições são consolidadas em um \textit{DataFrame} e exportadas para o arquivo \texttt{resultados\_zero\_shot.csv}, viabilizando o cálculo posterior de métricas sem necessidade de reprocessamento das imagens.
 
 Para quantificar a contribuição de cada modalidade isoladamente para o estudo de ablação, são conduzidas duas variantes adicionais: (i)~\textbf{somente imagem}, em que os \textit{prompts} textuais são substituídos por versões genéricas sem mencionar o conteúdo do meme, eliminando o sinal textual da comparação; e (ii)~\textbf{somente texto}, em que o texto do meme é codificado diretamente pelo \textit{encoder} textual do CLIP e comparado aos \textit{prompts} de classificação, sem envolver a imagem na comparação. Os resultados das três configurações, imagem, texto e multimodal, são comparados em Acurácia, F1-Score e AUROC.
 
@@ -215,9 +216,11 @@ O mesmo classificador do Experimento~1 é aplicado sobre as probabilidades de sa
 
 Uma interface Gradio permite a análise de memes externos ao \textit{dataset}. O texto é extraído da imagem enviada pelo usuário via API Google Cloud Vision (OCR) e traduzido para o inglês pelo \textit{DeepTranslator} antes de ser passado ao modelo. A saída exibe simultaneamente a classificação binária e o \textit{score} fuzzy contínuo.
 
+% A imagem apresenta a captura de tela da interface do Gradio na aba de upload.
+
 \begin{figure*}[!htbp]
     \centering
-    \caption{Visualização da interface do \textbf{Experimento 2}. A imagem apresenta a captura de tela da interface do Gradio na aba de upload.}
+    \caption{Visualização da interface do \textbf{Experimento 2}.}
     \label{fig:exp2-gradio-sample-upload}
     \includegraphics[width=0.99\textwidth]{imagens/gradio_exp2_upload.png}
     \\\vspace{0.2cm}
@@ -227,9 +230,11 @@ Uma interface Gradio permite a análise de memes externos ao \textit{dataset}. O
     \end{minipage}
 \end{figure*}
 
+% A imagem apresenta a captura de tela da interface do Gradio na aba de amostra aleatória.
+
 \begin{figure*}[!htbp]
     \centering
-    \caption{Visualização da interface do \textbf{Experimento 2}. A imagem apresenta a captura de tela da interface do Gradio na aba de amostra aleatória.}
+    \caption{Visualização da interface do \textbf{Experimento 2}.}
     \label{fig:exp2-gradio-sample-random}
     \includegraphics[width=0.99\textwidth]{imagens/gradio_exp2_random.png}
     \\\vspace{0.2cm}
@@ -260,9 +265,11 @@ O sistema fuzzy deste experimento opera com dois antecedentes independentes. A p
 
 A interface segue a mesma estrutura do Experimento~2, Gradio com OCR via Google Cloud Vision e tradução via \textit{DeepTranslator}, com a diferença de que a saída inclui também os escores individuais das cabeças auxiliares visual e textual, além do \textit{score} fuzzy multimodal.
 
+% A imagem apresenta a captura de tela da interface do Gradio na aba de upload.
+
 \begin{figure*}[!htbp]
     \centering
-    \caption{Visualização da interface do \textbf{Experimento 3}. A imagem apresenta a captura de tela da interface do Gradio na aba de upload.}
+    \caption{Visualização da interface do \textbf{Experimento 3}.}
     \label{fig:exp3-gradio-sample-upload}
     \includegraphics[width=0.99\textwidth]{imagens/gradio_exp3_upload.png}
     \\\vspace{0.2cm}
@@ -272,9 +279,11 @@ A interface segue a mesma estrutura do Experimento~2, Gradio com OCR via Google 
     \end{minipage}
 \end{figure*}
 
+% A imagem apresenta a captura de tela da interface do Gradio na aba de amostra aleatória.
+
 \begin{figure*}[!htbp]
     \centering
-    \caption{Visualização da interface do \textbf{Experimento 3}. A imagem apresenta a captura de tela da interface do Gradio na aba de amostra aleatória.}
+    \caption{Visualização da interface do \textbf{Experimento 3}.}
     \label{fig:exp3-gradio-sample-random}
     \includegraphics[width=0.99\textwidth]{imagens/gradio_exp3_random.png}
     \\\vspace{0.2cm}

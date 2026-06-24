@@ -52,9 +52,11 @@ As redes neurais artificiais são modelos computacionais inspirados, de forma ab
 
 \begin{figure*}[!htbp]
     \centering
-    \includegraphics[scale=0.3]{imagens/perceptron.png}
-    \caption{Estrutura de um neurônio artificial \cite{perceptron}.}
+    \caption{Estrutura de um neurônio artificial.}
     \label{fig:perceptron}
+    \includegraphics[scale=0.3]{imagens/perceptron.png}
+    \par\vspace{2pt}
+    {\footnotesize Fonte: \citeonline{perceptron}.}
 \end{figure*}
 
 O \textbf{viés} (\textit{bias}) desempenha um papel duplo, tecnicamente ele é um parâmetro somado à combinação linear das entradas antes da aplicação da função de ativação, funcionando como um limiar ajustável que permite ao neurônio disparar mesmo quando todas as entradas são nulas. Sem ele, a superfície de decisão do modelo seria obrigada a passar pela origem do espaço de características, reduzindo a capacidade de ajuste do modelo. Com ele, o modelo ganha um grau de liberdade a mais, tornando o aprendizado mais flexível e eficaz \cite{goodfellow2016}. Agora socialmente, carrega um sentido distinto e crítico chamado de \textbf{viés algorítmico}, que acontece quando os dados utilizados no treinamento refletem desigualdades sociais e estigmatizam grupos minorizados. Nesses casos, o modelo aprende, reproduz e amplifica as discriminações presentes na sociedade, causando impactos reais em contratações, concessão de crédito e reconhecimento facial \cite{barocas2023}. Assim, compreender o viés em redes neurais exige uma dupla leitura, a matemática que o torna indispensável para o modelo, e a ética que o coloca como um dos principais desafios para o desenvolvimento de sistemas de inteligência artificial justos e responsáveis.
@@ -86,14 +88,15 @@ entrada para a saída, sem realimentação \cite{goodfellow2016}.
 
 O aprendizado ocorre pelo ajuste iterativo dos pesos e vieses por meio do algoritmo de \textbf{retropropagação} (\textit{backpropagation}). Em cada iteração, a rede realiza uma \textit{passagem direta} (\textit{forward pass}) onde os dados de entrada percorrem todas as camadas até produzir uma saída prevista. A discrepância entre a saída prevista e o valor esperado é então quantificada por uma \textbf{função de perda}. Para minimizar esse erro, a retropropagação computa o gradiente (derivada para funções com múltiplas variáveis) de cada parâmetro utilizando a \textit{regra da cadeia}, propagando o sinal de erro da saída de volta para as camadas iniciais. Por fim, o algoritmo de \textbf{gradiente descendente} utiliza esses gradientes para atualizar os pesos na direção de menor perda, ou seja, minimiza o erro \cite{rumelhart1986}.
 
+% Arquitetura de uma rede neural. As setas pretas indicam o fluxo \textit{feedforward}, da camada de entrada até a camada de saída. As setas vermelhas ilustram o processo de retropropagação (\textit{backpropagation}), pelo qual o gradiente do erro é propagado da saída em direção às camadas anteriores para atualização dos pesos \cite{geeksforgeeks2023ann}.
+
 \begin{figure}[!htbp]
     \centering
-    \includegraphics[scale=0.25]{imagens/artificial-neural-network.png}
-    \caption{Arquitetura de uma rede neural. As setas pretas indicam o fluxo \textit{feedforward},
-    da camada de entrada até a camada de saída. As setas vermelhas ilustram o processo
-    de retropropagação (\textit{backpropagation}), pelo qual o gradiente do erro é
-    propagado da saída em direção às camadas anteriores para atualização dos pesos \cite{geeksforgeeks2023ann}.}
+    \caption{Arquitetura de uma rede neural.}
     \label{fig:artificial-neural-network}
+    \includegraphics[scale=0.25]{imagens/artificial-neural-network.png}
+    \par\vspace{2pt}
+    {\footnotesize Fonte: \citeonline{geeksforgeeks2023ann}.}
 \end{figure}
 
 Embora as redes neurais sejam robustas, seu desempenho em tarefas de alta complexidade, como reconhecimento de imagens e processamento de linguagem natural, é limitado quando aplicadas diretamente a dados de alta dimensão. O aumento no número de camadas e neurônios, necessário para capturar tais padrões, torna o treinamento instável e computacionalmente inviável com as técnicas da época \cite{goodfellow2016}. Esses desafios motivaram o desenvolvimento de arquiteturas mais profundas e especializadas, consolidadas sob o termo aprendizado profundo.
@@ -118,22 +121,14 @@ que passaram a estabelecer o estado da arte em praticamente todas as tarefas de 
 As redes neurais recorrentes (\textit{recurrent neural networks}) são arquiteturas de aprendizado profundo projetadas para processar dados sequenciais, como texto, áudio e séries temporais \cite{elman1990}. Diferentemente das redes \textit{feedforward}, nas quais a informação flui em uma única direção da entrada à saída, as RNNs introduzem conexões recorrentes que permitem ao modelo manter um \textbf{estado oculto} que é atualizado a cada passo da sequência. Esse estado oculto funciona como uma forma de memória de curto prazo, ao processar cada novo elemento da sequência, a rede não considera apenas a entrada atual, mas também o estado produzido no passo anterior. Dessa forma, a informação se propaga ao longo do tempo, permitindo que o modelo leve em conta o contexto acumulado dos elementos anteriores ao fazer sua predição.
  
 Apesar dessa capacidade de modelagem sequencial, as RNNs clássicas apresentam
-uma limitação estrutural em capturar \textbf{dependências de longo alcance}, isto é, relações semânticas ou temporais entre
-elementos distantes na sequência. A razão é que, durante a retropropagação ao longo do
-tempo (\textit{backpropagation through time}), os gradientes são multiplicados
-repetidamente pela mesma matriz de pesos. Em sequências longas, esse processo leva ao \textbf{desvanecimento do gradiente}
+uma limitação estrutural em capturar \textbf{dependências de longo alcance}, isto é, relações semânticas ou temporais entre elementos distantes na sequência. A razão é que, durante a retropropagação ao longo do tempo (\textit{backpropagation through time}), os gradientes são multiplicados repetidamente pela mesma matriz de pesos. Em sequências longas, esse processo leva ao \textbf{desvanecimento do gradiente}
 (\textit{vanishing gradient}), no qual os gradientes decaem exponencialmente,
 impedindo que o modelo aprenda relações entre elementos distantes
 \cite{hochreiter1991}. O fenômeno inverso, a \textbf{explosão do gradiente}
 (\textit{exploding gradient}), também pode ocorrer, tornando o treinamento
 numericamente instável.
  
-A arquitetura \textit{Long Short-Term Memory} (LSTM) \cite{hochreiter1997} foi proposta
-para mitigar esse problema, introduzindo mecanismos de porta (\textit{gates}) que controlam seletivamente quais informações são
-retidas, descartadas ou transmitidas no estado da célula. Embora as LSTMs tenham
-representado um avanço significativo, ambas as arquiteturas permanecem inerentemente
-sequenciais, cada passo depende do anterior, o que limita a paralelização durante o
-treinamento e dificulta a captura de contextos muito longos. Essa limitação motivou o
+A arquitetura \textit{Long Short-Term Memory} (LSTM) \cite{hochreiter1997} foi proposta para mitigar esse problema, introduzindo mecanismos de porta (\textit{gates}) que controlam seletivamente quais informações são retidas, descartadas ou transmitidas no estado da célula. Embora as LSTMs tenham representado um avanço significativo, ambas as arquiteturas permanecem inerentemente sequenciais, cada passo depende do anterior, o que limita a paralelização durante o treinamento e dificulta a captura de contextos muito longos. Essa limitação motivou o
 desenvolvimento de uma abordagem radicalmente diferente: o \textit{Transformer}.
 
 \subsection{\textit{Transformer}}
@@ -146,9 +141,7 @@ toda a frase e a comprimia em um único vetor de tamanho fixo, e por sua vez o
 Compactar uma frase longa em um único vetor gerava uma perda muito grande de
 informações, e o desempenho do modelo despencava conforme o tamanho da frase
 aumentava. Em vez disso, o modelo mantém uma sequência de vetores, que são as saídas
-de cada posição do codificador, e ao gerar cada palavra da tradução, o modelo aprende
-a atribuir pesos diferentes a cada posição da sequência de entrada, focando nas
-partes mais relevantes em cada etapa. A eficácia desse mecanismo fez com que os
+de cada posição do codificador, e ao gerar cada palavra da tradução, o modelo aprende a atribuir pesos diferentes a cada posição da sequência de entrada, focando nas partes mais relevantes em cada etapa. A eficácia desse mecanismo fez com que os
 pesquisadores propusessem uma arquitetura baseada exclusivamente em atenção.
  
 A arquitetura \textit{Transformer} é composta por blocos de atenção multi-cabeça (\textit{multi-head attention}), nos quais múltiplas projeções paralelas da atenção permitem ao modelo capturar simultaneamente diferentes tipos de relações entre os \textit{tokens} da sequência \cite{GoogleTeamTransformers}. Dentro de cada cabeça de atenção, opera o mecanismo de autoatenção (\textit{self-attention}) que permite a cada posição da sequência consultar todas as demais ao construir sua representação, independentemente da distância entre elas. Como a arquitetura não possui estrutura sequencial intrínseca, informações sobre a posição relativa dos \textit{tokens} são incorporadas por meio de codificações posicionais (\textit{positional encodings}). Cada bloco também inclui redes de alimentação direta por posição (\textit{feedforward}), responsável por ampliar a capacidade representacional do modelo, e operações de normalização de camada (\textit{layer normalization}) são aplicadas ao longo do bloco para estabilizar o treinamento. Essa combinação resultou ganhos expressivos de qualidade e desempenho em tradução automática e rapidamente se tornou a base de modelos estado da arte em linguagem natural.
@@ -170,9 +163,11 @@ gerado.
 
 \begin{figure*}[!htbp]
     \centering
-    \includegraphics[scale=0.25]{imagens/attention_model.png}
-    \caption{Arquitetura do \textit{Transformer} \cite{GoogleTeamTransformers}.}
+    \caption{Arquitetura do \textit{Transformer}.}
     \label{fig:attention-model}
+    \includegraphics[scale=0.25]{imagens/attention_model.png}
+    \par\vspace{2pt}
+    {\footnotesize Fonte: \citeonline{GoogleTeamTransformers}.}
 \end{figure*}
 
 Embora o \textit{Transformer} tenha sido um avanço significativo, os modelos de linguagem da época ainda eram pré-treinados de forma unidirecional, da esquerda para a direita ou da direita para a esquerda, o que limitava a capacidade de capturar o contexto completo de cada \textit{token}. Isso motivou pesquisadores a explorar variantes da arquitetura voltadas exclusivamente à compreensão do texto, como modelos baseados exclusivamente no \textit{encoder}. É nesse cenário que surge o BERT.
@@ -185,17 +180,16 @@ O pré-treinamento do BERT é realizado por meio de dois objetivos. O primeiro �
 
 \begin{figure*}[!htbp]
     \centering
-    \includegraphics[scale=0.45]{imagens/BERT.png}
-    \caption{Arquitetura do BERT \cite{devlin2019bert}.}
+    \caption{Arquitetura do BERT.}
     \label{fig:bert-model}
+    \includegraphics[scale=0.45]{imagens/BERT.png}
+    \par\vspace{2pt}
+    {\footnotesize Fonte: \citeonline{devlin2019bert}.}
 \end{figure*}
 
 A Figura~\ref{fig:bert-model} ilustra as duas etapas do ciclo de vida do 
 BERT. No pré-treinamento, a entrada é composta por pares de sentenças 
-precedidas pelo \textit{token} \texttt{[CLS]} e separadas pelo \textit{token} \texttt{[SEP]}, 
-que passam por uma camada de \textit{embeddings} antes de serem processadas 
-pelo \textit{encoder}. No ajuste fino, o mesmo modelo é adaptado a tarefas 
-distintas, como inferência de linguagem natural (MNLI), reconhecimento de 
+precedidas pelo \textit{token} \texttt{[CLS]} e separadas pelo \textit{token} \texttt{[SEP]}, que passam por uma camada de \textit{embeddings} antes de serem processadas pelo \textit{encoder}. No ajuste fino, o mesmo modelo é adaptado a tarefas distintas, como inferência de linguagem natural (MNLI), reconhecimento de 
 entidades nomeadas (NER) e resposta a perguntas (SQuAD), cada uma com sua 
 própria camada de saída, que consiste em dois \textit{tokens} que delimitam o início e o fim da resposta no parágrafo fornecido.
 
@@ -209,11 +203,15 @@ A visão computacional é o campo da inteligência artificial dedicado a extrair
  
 As redes neurais convolucionais (\textit{convolutional neural networks}) são uma classe de arquiteturas de aprendizado profundo projetadas para processar dados com estrutura espacial, como imagens \cite{lecun1998}. Em vez de conectar cada neurônio a todos os neurônios da camada anterior, as CNNs exploram a localidade espacial, por meio de pequenos filtros convolucionais que deslizam sobre a entrada, detectando padrões locais de forma eficiente e com compartilhamento de parâmetros.
 
+% A partir de uma imagem de entrada (\textit{zebra}), um \textit{kernel} deslizante extrai padrões locais ao longo de três blocos de Convolução + ReLU intercalados por camadas de \textit{pooling}, formando mapas de características hierárquicos. A saída desse estágio é linearizada por uma camada \textit{flatten} e processada por camadas totalmente conectadas, culminando em uma distribuição de probabilidade, 70\% de probabilidade para a classe ``\textit{Zebra}'', 20\% para ``\textit{Horse}'' e 10\% para ``\textit{Dog}''.
+
 \begin{figure*}[!htbp]
     \centering
-    \includegraphics[scale=0.35]{imagens/CNNs.png}
-    \caption{Arquitetura de uma CNN aplicada à classificação de imagens \cite{swapna2020cnn}. A partir de uma imagem de entrada (\textit{zebra}), um \textit{kernel} deslizante extrai padrões locais ao longo de três blocos de Convolução + ReLU intercalados por camadas de \textit{pooling}, formando mapas de características hierárquicos. A saída desse estágio é linearizada por uma camada \textit{flatten} e processada por camadas totalmente conectadas, culminando em uma distribuição de probabilidade, 70\% de probabilidade para a classe ``\textit{Zebra}'', 20\% para ``\textit{Horse}'' e 10\% para ``\textit{Dog}''.}
+    \caption{Arquitetura de uma CNN aplicada à classificação de imagens.}
     \label{fig:cnn}
+    \includegraphics[scale=0.35]{imagens/CNNs.png}
+    \par\vspace{2pt}
+    {\footnotesize Fonte: \citeonline{swapna2020cnn}.}
 \end{figure*}
 
 A arquitetura de uma CNN típica, ilustrada na Figura~\ref{fig:cnn}, organiza-se em dois grandes blocos funcionais: \textbf{extração de características} e \textbf{classificação}. No bloco de extração, camadas alternadas de \textbf{convolução} e \textbf{pooling} são empilhadas progressivamente. Cada camada de convolução aplica um conjunto de filtros aprendíveis à entrada, gerando \textbf{mapas de características} que codificam a presença de padrões específicos em cada região da imagem, em seguida, uma função de ativação não linear (\textit{Rectified Linear Unit}, ReLU) é aplicada elemento a elemento para introduzir não-linearidade ao modelo. As camadas de \textit{pooling} subsequentes reduzem a resolução espacial dos mapas, conferindo invariância a pequenas translações, de modo que pequenos deslocamentos do objeto na imagem  não alterem o resultado da classificação, e diminuindo o custo computacional das camadas seguintes. Ao longo desse bloco, as representações tornam-se progressivamente mais abstratas, as primeiras camadas tendem a capturar características de baixo nível (bordas e gradientes), enquanto as camadas mais profundas respondem a estruturas semânticas de alto nível.
@@ -233,9 +231,11 @@ Mais recentemente, o \textit{Vision Transformer} (ViT) \cite{dosovitskiy2021} tr
 
 \begin{figure*}[!htbp]
 	\centering
+	\caption{Arquitetura do \textit{Vision Transformer}.}
+	\label{fig:vit-arch}
 	\includegraphics[scale=0.5]{imagens/vit.png}
-    \caption{Arquitetura do \textit{Vision Transformer} \cite{dosovitskiy2021}.}
-    \label{fig:vit-arch}
+	\par\vspace{2pt}
+	{\footnotesize Fonte: \citeonline{dosovitskiy2021}.}
 \end{figure*}
 
 A Figura~\ref{fig:vit-arch} ilustra a arquitetura do ViT. O processo inicia-se com a divisão da imagem de entrada em \textit{patches} retangulares de tamanho fixo, que são linearizados e projetados em vetores de dimensão constante por meio de uma projeção linear. A cada vetor resultante é somado um \textit{embedding} de posição, que codifica a localização espacial de cada \textit{patch} na imagem original, preservando assim a informação posicional que seria perdida após a linearização. Concatena-se um \textit{token} especial, representado pela posição 0, que não corresponde a nenhuma região da imagem, mas percorre todo o \textit{encoder} acumulando uma representação global da entrada, cuja representação final será utilizada para a classificação. 
@@ -258,9 +258,11 @@ O VisualBERT \cite{visualbert2019} foi um marco ao fundir representações visua
 
 \begin{figure*}[!htbp]
 	\centering
+	\caption{Arquitetura do VisualBERT.}
+	\label{fig:visualbert-arch}
 	\includegraphics[scale=0.32]{imagens/visualbert.png}
-    \caption{Arquitetura do VisualBERT \cite{visualbert2019}.}
-    \label{fig:visualbert-arch}
+	\par\vspace{2pt}
+	{\footnotesize Fonte: \citeonline{visualbert2019}.}
 \end{figure*}
 
 Enquanto o VisualBERT utiliza a fusão precoce, integrando texto e imagem diretamente em um único \textit{Transformer}, o CLIP (\textit{Contrastive Language-Image Pre-training}) \cite{clip2021} adota a fusão tardia, processando cada modalidade separadamente antes de alinhar suas representações. O CLIP não é um modelo único, mas sim um \textit{framework} de aprendizado multimodal, com dois \textit{encoders} independentes, um visual em arquiteturas como o ViT, e outro textual, baseado na arquitetura \textit{Transformer}.
@@ -269,9 +271,11 @@ O CLIP foi treinado com aproximadamente 400 milhões de pares de imagem e texto 
 
 \begin{figure*}[!htbp]
 	\centering
+	\caption{\textit{Pipeline} de treinamento e uso do CLIP.}
+	\label{fig:clip-pipeline}
 	\includegraphics[scale=0.2]{imagens/CLIP.png}
-    \caption{\textit{Pipeline} de treinamento e uso do CLIP \cite{clip2021}.}
-    \label{fig:clip-pipeline}
+	\par\vspace{2pt}
+	{\footnotesize Fonte: \citeonline{clip2021}.}
 \end{figure*}
 
 A Figura~\ref{fig:clip-pipeline} ilustra o \textit{pipeline} do CLIP em duas fases. Na \textbf{Fase 1 (Pré-treinamento Contrastivo)}, pares de imagem e texto são processados simultaneamente, onde as imagens passam pelo \textit{Image Encoder}, que as converte em vetores de representação, enquanto as descrições textuais associadas passam pelo \textit{Text Encoder}, produzindo vetores no mesmo espaço latente. O treinamento otimiza a similaridade cosseno dos pares corretos, maximizando-a na diagonal da matriz de similaridade, enquanto penaliza os pares incorretos fora dela. Na \textbf{Fase 2 (Classificação \textit{Zero-Shot})}, uma nova imagem é codificada pelo \textit{Image Encoder} e seu vetor é comparado aos \textit{embeddings} de rótulos textuais candidatos, como \textit{``a photo of a dog''}, gerados pelo \textit{Text Encoder}. Sem nenhum treinamento adicional, o modelo seleciona a classe cuja representação textual apresenta maior similaridade com a representação visual da imagem, como ilustrado pelo exemplo do cachorro na figura. 
@@ -299,10 +303,7 @@ ocorre quando o modelo memoriza os dados de treinamento em vez de aprender
 padrões generalizáveis, resultando em desempenho degradado em dados não
 vistos \cite{goodfellow2016}.
 
-Para estruturar esse processo, o treinamento é organizado em épocas (\textit{epochs}), que
-corresponde a uma passagem completa do otimizador por todos os exemplos do
-conjunto de treinamento. Na prática, o conjunto de treinamento é dividido em
-pequenos subconjuntos de tamanho fixo, o gradiente é calculado e os
+Para estruturar esse processo, o treinamento é organizado em épocas (\textit{epochs}), que corresponde a uma passagem completa do otimizador por todos os exemplos do conjunto de treinamento. Na prática, o conjunto de treinamento é dividido em pequenos subconjuntos de tamanho fixo, o gradiente é calculado e os
 parâmetros são atualizados uma vez por subconjunto, de modo que uma única
 época é composta por múltiplas iterações de atualização. Ao final de cada
 época, o modelo é avaliado no conjunto de validação, permitindo monitorar
@@ -310,12 +311,9 @@ sua capacidade de generalização ao longo do treinamento. Um hiperparâmetro
 crítico nesse acompanhamento é a taxa de aprendizado, cuja configuração
 afeta diretamente a qualidade da convergência, ou seja, os parâmetros do modelo se estabilizam em valores que minimizam a função de perda.
 
-Manter a taxa de aprendizado constante ao longo das épocas não é ideal devido a um dilema, pois
-valores altos aceleram a convergência inicial, mas podem impedir que o
+Manter a taxa de aprendizado constante ao longo das épocas não é ideal devido a um dilema, pois valores altos aceleram a convergência inicial, mas podem impedir que o
 modelo se ajuste a mínimos precisos nas épocas finais; e valores baixos,
-por sua vez, tornam o aprendizado inicial lento
-\cite{loshchilov2017}. Os agendadores de taxa de aprendizado
-(\textit{learning rate schedulers}) resolvem esse problema ajustando esse hiperparâmetro automaticamente ao longo
+por sua vez, tornam o aprendizado inicial lento \cite{loshchilov2017}. Os agendadores de taxa de aprendizado (\textit{learning rate schedulers}) resolvem esse problema ajustando esse hiperparâmetro automaticamente ao longo
 do treinamento.
 
 O \textit{cosine annealing} \cite{loshchilov2017} por sua vez, reduz a taxa de
@@ -328,9 +326,11 @@ ajuste fino mais preciso, como ilustrado na Figura \ref{fig:cosine-annealing}.
 
 \begin{figure*}[!htbp]
 	\centering
+	\caption{Exemplo de \textit{cosine annealing}.}
+	\label{fig:cosine-annealing}
 	\includegraphics[scale=0.62]{imagens/cosine.png}
-    \caption{Exemplo de \textit{cosine annealing} \cite{loshchilov2017}.}
-    \label{fig:cosine-annealing}
+	\par\vspace{2pt}
+	{\footnotesize Fonte: Adaptado de \citeonline{loshchilov2017}.}
 \end{figure*}
 
 Enquanto os agendadores de taxa de aprendizado atuam sobre a dinâmica de
@@ -368,9 +368,11 @@ O algoritmo \textit{k}-médias (\textit{k-means}) \cite{macqueen1967} é um dos 
 
 \begin{figure*}[!htbp]
 	\centering
+	\caption{Exemplo de \textit{k-means}.}
+	\label{fig:k-means}
 	\includegraphics[scale=0.6]{imagens/k-means.png}
-    \caption{Exemplo de \textit{k-means} \cite{macqueen1967}.}
-    \label{fig:k-means}
+	\par\vspace{2pt}
+	{\footnotesize Fonte: Adaptado de \citeonline{macqueen1967}.}
 \end{figure*}
 
 O \textbf{DBSCAN} (\textit{Density-Based Spatial Clustering of Applications with Noise}) \cite{ester1996} é um algoritmo de agrupamento baseado em densidade que supera as limitações do \textit{k-means}. Em vez de assumir formas geométricas específicas, o DBSCAN define um agrupamento como uma região de alta densidade separada de outras regiões por zonas de baixa densidade. O algoritmo opera com dois hiperparâmetros: o raio de vizinhança e o número mínimo de pontos necessários para que uma região seja considerada densa. Cada ponto é classificado em uma de três categorias: (i) \textbf{ponto núcleo} (\textit{core point}), caso possua ao menos vizinhos dentro do raio; (ii) \textbf{ponto de borda} (\textit{border point}), caso esteja dentro do raio de um ponto núcleo mas não satisfaça o critério de densidade por si só; ou (iii) \textbf{ruído} (\textit{noise}), caso não pertença a nenhuma região densa e seja tratado como ponto fora do padrão (\textit{outlier}). O DBSCAN é capaz de descobrir agrupamentos de formas arbitrárias e identificar automaticamente anomalias, sem exigir que o número de grupos seja especificado previamente.
@@ -457,9 +459,11 @@ A \textbf{Curva ROC} (\textit{Receiver Operating Characteristic}) é construída
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[scale=0.6]{imagens/roc_auroc.png}
     \caption{Exemplo de curva ROC e área sob a curva (AUROC).}
     \label{fig:roc-auroc}
+    \includegraphics[scale=0.6]{imagens/roc_auroc.png}
+    \par\vspace{2pt}
+    {\footnotesize Fonte: Adaptado de \citeonline{bradley1997}.}
 \end{figure}
 
 A AUROC possui uma interpretação probabilística direta, correspondendo à probabilidade de que, dado um par composto por um exemplo positivo e um exemplo negativo escolhidos aleatoriamente, o modelo atribua escore mais alto ao exemplo positivo \cite{fawcett2006}. Essa propriedade torna a AUROC especialmente adequada para conjuntos de dados desbalanceados, como a métrica é calculada sobre toda a curva ROC, ela avalia o poder discriminativo do modelo independentemente da distribuição das classes. Em um conjunto com forte desbalanceamento, a escolha de um limiar padrão de 0,5 pode ser subótima, e a AUROC captura o desempenho relativo do modelo de forma invariante a essa escolha \cite{he2009}. Por essas razões, o \textit{Hateful Memes Challenge} adota a AUROC como métrica primária de avaliação \cite{ArticleHatefulMemesChallenge2020}.
@@ -470,6 +474,9 @@ A lógica \textit{fuzzy} \cite{Zadeh1965} estende a lógica booleana clássica a
 
 \begin{figure}[h]
 \centering
+\caption{Exemplo de funções de pertinência para uma variável 
+         genérica com cinco termos fuzzy.}
+\label{fig:fuzzy-variavel}
 \begin{tikzpicture}
 \begin{axis}[
     width=13cm, height=6cm,
@@ -537,9 +544,8 @@ A lógica \textit{fuzzy} \cite{Zadeh1965} estende a lógica booleana clássica a
 
 \end{axis}
 \end{tikzpicture}
-\caption{Exemplo de funções de pertinência para uma variável 
-         genérica com cinco termos fuzzy.}
-\label{fig:fuzzy-variavel}
+\par\vspace{2pt}
+{\footnotesize Fonte: Elaborada pela autora.}
 \end{figure}
 
 A primeira etapa na construção de um sistema \textit{fuzzy} é a \textbf{fuzzificação}, que consiste em definir as funções de pertinência que traduzem valores numéricos contínuos em graus de pertencimento a cada conjunto linguístico \cite{ross2010}. 
@@ -566,11 +572,15 @@ O conjunto é balanceado com as seguintes proporções:
     \item \textbf{10\%} memes não odiosos aleatórios.
 \end{itemize}
 
+% Exemplo ilustrativo de memes multimodais odiosos (esquerda), confounders de imagem benigna (centro) e confounders de texto benigno (direita). No meme odioso, o texto \textit{``love the way you smell today''} com imagem de gambá implica insulto; no confounder de imagem, uma rosa torna-o inofensivo; no confounder de texto, \textit{``skunks smell''} remove o sarcasmo.
+
 \begin{figure}[!htbp]
 	\centering
-	\includegraphics[width=\textwidth]{imagens/benign-confounders.png}
-	\caption{Exemplo ilustrativo de memes multimodais odiosos (esquerda), confounders de imagem benigna (centro) e confounders de texto benigno (direita). No meme odioso, o texto \textit{``love the way you smell today''} com imagem de gambá implica insulto; no confounder de imagem, uma rosa torna-o inofensivo; no confounder de texto, \textit{``skunks smell''} remove o sarcasmo. Adaptado de \cite{ArticleHatefulMemesChallenge2020}.}
+	\caption{Exemplo ilustrativo de memes multimodais odiosos.}
 	\label{fig:benign-confounders}
+	\includegraphics[width=\textwidth]{imagens/benign-confounders.png}
+	\par\vspace{2pt}
+	{\footnotesize Fonte: \citeonline{ArticleHatefulMemesChallenge2020}.}
 \end{figure}
 
 Os \textbf{confundidores benignos} são alterações mínimas (texto ou imagem) em memes odiosos que invertem a classificação para não odioso, forçando modelos a raciocinar multimodalmente e evitando vieses unimodais. Isso garante que classificadores puramente textuais ou visuais falhem.
@@ -579,31 +589,18 @@ Os \textbf{confundidores benignos} são alterações mínimas (texto ou imagem) 
 
 \subsection{\textit{The Hateful Memes Challenge}: Detecção de discurso de ódio em memes multimodais} 
 
-O trabalho realizado pelos pesquisadores da Meta AI \cite{ArticleHatefulMemesChallenge2020}
-propôs um desafio para a detecção de discurso de ódio em memes multimodais, realizando um
-\textit{benchmark} de modelos multimodais com diferentes níveis de sofisticação e criando um
-conjunto de dados projetado especificamente para avaliar a capacidade desses modelos multimodais.
+O trabalho realizado pelos pesquisadores da Meta AI \cite{ArticleHatefulMemesChallenge2020} propôs um desafio para a detecção de discurso de ódio em memes multimodais, realizando um \textit{benchmark} de modelos multimodais com diferentes níveis de sofisticação e criando um conjunto de dados projetado especificamente para avaliar a capacidade desses modelos multimodais.
 O trabalho parte da premissa de que memes são inerentemente multimodais, isto é, seu
-significado emerge da combinação entre imagem e texto, e que abordagens unimodais são
-insuficientes para capturar essa semântica.
+significado emerge da combinação entre imagem e texto, e que abordagens unimodais são insuficientes para capturar essa semântica.
 
-Os autores avaliaram uma série de modelos de fusão multimodal como \textit{baselines},
-incluindo abordagens de fusão por concatenação, como o \textit{VisualBERT}, utilizando a métrica
-AUROC como critério principal de comparação. Os resultados demonstraram que mesmo os modelos
-multimodais de alto desempenho em outras tarefas ficaram significativamente abaixo do
-desempenho humano, estimado em 84,7\% de AUROC, evidenciando a dificuldade do problema e
-motivando pesquisas futuras na área.
+Os autores avaliaram uma série de modelos de fusão multimodal como \textit{baselines}, incluindo abordagens de fusão por concatenação, como o \textit{VisualBERT}, utilizando a métrica AUROC como critério principal de comparação. Os resultados demonstraram que mesmo os modelos multimodais de alto desempenho em outras tarefas ficaram significativamente abaixo do desempenho humano, estimado em 84,7\% de AUROC, evidenciando a dificuldade do problema e motivando pesquisas futuras na área.
 
 \subsection{\textit{HateDetectron}: Detecção de discurso de ódio em memes por meio de abordagens de aprendizado profundo multimodal}
 
-O \textit{HateDetectron} \cite{velioglu2020} apresentou uma das soluções vencedoras do \textit{Hateful Memes Challenge}, empregando abordagens
-de aprendizado profundo multimodal para a detecção de discurso de ódio em memes. A proposta
-combina modelos pré-treinados de fusão multimodal, como VisualBERT,
-por meio de um conjunto de modelos ajustados ao conjunto de dados do desafio.
+O \textit{HateDetectron} \cite{velioglu2020} apresentou uma das soluções vencedoras do \textit{Hateful Memes Challenge}, empregando abordagens de aprendizado profundo multimodal para a detecção de discurso de ódio em memes. A proposta combina modelos pré-treinados de fusão multimodal, como VisualBERT, por meio de um conjunto de modelos ajustados ao conjunto de dados do desafio.
 
 Os autores exploraram estratégias de \textit{fine-tuning} em modelos que integram
-representações visuais e textuais, demonstrando que a combinação de múltiplos modelos
-multimodais supera abordagens individuais na tarefa de classificação de memes odiosos. O trabalho destaca a importância de métodos capazes de capturar a semântica conjunta entre imagem e texto e serve como referência de desempenho competitivo no benchmark do Hateful Memes Challenge, alcançando AUROC de 81,1%.
+representações visuais e textuais, demonstrando que a combinação de múltiplos modelos multimodais supera abordagens individuais na tarefa de classificação de memes odiosos. O trabalho destaca a importância de métodos capazes de capturar a semântica conjunta entre imagem e texto e serve como referência de desempenho competitivo no benchmark do Hateful Memes Challenge, alcançando AUROC de 81,1%.
 
 \subsection{\textit{Hate-CLIPper}: Classificação multimodal de memes odiosos com interação multimodal explícita das características CLIP}
 

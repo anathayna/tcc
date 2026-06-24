@@ -10,7 +10,7 @@ O CLIP ViT-L/14 em modo \textit{zero-shot} obteve acurácia de 53,85\% e AUCROC 
 \begin{figure}[htbp]
     \begin{minipage}{0.48\textwidth}
         \centering
-        \caption{figure}{Matriz de confusão — Experimento 1 (\textit{zero-shot}).}
+        \caption{Matriz de confusão — Experimento 1 (\textit{zero-shot}).}
         \label{fig:exp1_cm}
         \includegraphics[width=\textwidth]{imagens/exp1_confusion_matrix.png}
         \par\vspace{0.1cm}
@@ -20,7 +20,7 @@ O CLIP ViT-L/14 em modo \textit{zero-shot} obteve acurácia de 53,85\% e AUCROC 
     \hfill
     \begin{minipage}{0.48\textwidth}
         \centering
-        \caption{figure}{Curva ROC — Experimento 1 (\textit{zero-shot}).}
+        \caption{Curva ROC — Experimento 1 (\textit{zero-shot}).}
         \label{fig:exp1_roc}
         \includegraphics[width=\textwidth]{imagens/exp1_roc.png}
         \par\vspace{0.1cm}
@@ -33,21 +33,23 @@ A Figura~\ref{fig:exp1_cm} evidencia o comportamento típico de um classificador
 
 \begin{figure*}[htbp]
     \centering
-    \caption{Exemplos de classificação do Experimento 1. Imagens do \textit{Hateful Memes Dataset} \cite{ArticleHatefulMemesChallenge2020}.}
+    \caption{Exemplos de classificação do Experimento 1.}
     \label{fig:exp1_exemplos}
     \includegraphics[width=\textwidth]{imagens/exp1_exemplos.png}
     \\\vspace{0.2cm}
     \begin{minipage}{0.65\textwidth}
         \centering
-        {\small\textbf{Fonte:} Imagens do \textit{Hateful Memes Dataset} (adaptado pela autora).}
+        {\small\textbf{Fonte:} Adaptado das imagens do \textit{Hateful Memes Dataset} \cite{ArticleHatefulMemesChallenge2020}.}
     \end{minipage}
 \end{figure*}
 
 O estudo de ablação evidenciou um resultado contraintuitivo, onde a abordagem \textbf{Somente Texto} alcançou a maior acurácia (61,80\%), superando tanto \textbf{Somente Imagem} (53,05\%) quanto o modo \textbf{Multimodal} (53,85\%). Esse comportamento pode ser explicado por dois fatores. Primeiro, o encoder textual do CLIP é treinado sobre grandes dados de texto e desenvolve representações semânticas ricas que capturam associações entre termos pejorativos, grupos-alvo e estereótipos, associações que se manifestam de forma mais direta e imediata no texto do meme do que na imagem, especialmente quando o ódio é veiculado por linguagem explicitamente ofensiva. Segundo, a fusão multimodal sem ajuste fino pode introduzir ruído, quando o \textit{embedding} visual não contribui com informação discriminativa relevante, sua combinação com o \textit{embedding} textual dilui o sentido, prejudicando o desempenho em relação ao uso exclusivo do texto. Isso indica que, sem ajuste fino, o CLIP não consegue capturar a justaposição contraditória entre imagem e texto que caracteriza os memes de ódio.
 
+% Comparação de Acurácia, F1-Score e AUROC entre as modalidades texto, imagem e multimodal.
+
 \begin{figure}[htbp]
     \centering
-    \caption{Estudo de ablação unimodal — Experimento 1. Comparação de Acurácia, F1-Score e AUROC entre as modalidades texto, imagem e multimodal.}
+    \caption{Estudo de ablação unimodal — Experimento 1.}
     \label{fig:exp1_ablacao}
     \includegraphics[width=0.65\textwidth]{imagens/exp1_ablacao.png}
     \par\vspace{0.2cm}
@@ -59,9 +61,11 @@ O estudo de ablação evidenciou um resultado contraintuitivo, onde a abordagem 
 
 A aplicação do Classificador Fuzzy Unificado sobre as probabilidades do CLIP resultou em acurácia de 59,30\%. O sistema tornou-se mais conservador: a precisão para a classe de ódio subiu para 0,40, mas a revocação caiu acentuadamente para 0,17 (F1-Score de 0,24). Esse padrão é consequência direta da arquitetura fuzzy, que ao introduzir uma zona de ambiguidade explícita, o sistema reduz os falsos positivos às custas de aumentar os falsos negativos. Em outras palavras, o classificador somente emite predições de ódio quando a confiança do modelo base é elevada, o que melhora a precisão, mas deixa de detectar a maioria dos casos genuinamente odiosos. A distribuição das categorias revelou que 62,4\% das amostras foram alocadas em \textit{Ambiguidade/Moderado}, reflexo direto da alta entropia das predições \textit{zero-shot}, como o modelo opera sem supervisão específica, suas probabilidades de saída tendem a se concentrar em torno de 0,5, precisamente a região que o sistema fuzzy mapeia para a categoria intermediária. Esse resultado demonstra que a camada fuzzy, embora útil como mecanismo de controle de confiança em modelos bem calibrados, amplifica a indecisão de um modelo base já pouco informativo, a utilidade do Classificador Fuzzy Unificado depende da qualidade das probabilidades produzidas pelo \textit{encoder}.
 
+% A concentração em \textit{Ambiguidade/Moderado} reflete a incerteza do modelo \textit{zero-shot}
+
 \begin{figure}[htbp]
     \centering
-    \caption{Distribuição das categorias fuzzy — Experimento 1. A concentração em \textit{Ambiguidade/Moderado} reflete a incerteza do modelo \textit{zero-shot}.}
+    \caption{Distribuição das categorias fuzzy — Experimento 1.}
     \label{fig:exp1_fuzzy}
     \includegraphics[width=0.85\textwidth]{imagens/exp1_fuzzy.png}
     \par\vspace{0.2cm}
@@ -106,12 +110,12 @@ Em relação ao Experimento~1, a matriz de confusão da Figura~\ref{fig:exp2_cm}
 
 \begin{figure*}[htbp]
     \centering
-    \caption{Exemplos de classificação do Experimento 2. Imagens do \textit{Hateful Memes Dataset} \cite{ArticleHatefulMemesChallenge2020}.}
+    \caption{Exemplos de classificação do Experimento 2.}
     \label{fig:exp2_exemplos}
     \includegraphics[width=\textwidth]{imagens/exp2_exemplos.png}
     \par\vspace{0.2cm}
     \begin{minipage}{0.65\textwidth}
-        {\small\textbf{Fonte:} Imagens do \textit{Hateful Memes Dataset} (adaptado pela autora).}
+        {\small\textbf{Fonte:} Adaptado das imagens do \textit{Hateful Memes Dataset} \cite{ArticleHatefulMemesChallenge2020}.}
     \end{minipage}
 \end{figure*}
 
@@ -134,9 +138,11 @@ Modelo Completo   & \textbf{68,65\%} & \textbf{0,7336} & 0,63 & 0,49 \\
 \end{tabular}
 \end{table}
 
+% Comparação das cinco configurações por AUROC e F1-Score.
+
 \begin{figure}[htbp]
     \centering
-    \caption{Estudo de ablação — Experimento 2. Comparação das cinco configurações por AUROC e F1-Score.}
+    \caption{Estudo de ablação — Experimento 2.}
     \label{fig:exp2_ablacao}
     \includegraphics[width=0.9\textwidth]{imagens/exp2_ablacao.png}
     \par\vspace{0.2cm}
@@ -194,13 +200,13 @@ A matriz de confusão da Figura~\ref{fig:exp3_cm} reflete diretamente o efeito d
 
 \begin{figure*}[htbp]
     \centering
-    \caption{Exemplos de classificação do Experimento 3. Imagens do \textit{Hateful Memes Dataset} \cite{ArticleHatefulMemesChallenge2020}.}
+    \caption{Exemplos de classificação do Experimento 3.}
     \label{fig:exp3_exemplos}
     \includegraphics[width=\textwidth]{imagens/exp3_exemplos.png}
     \par\vspace{0.2cm}
     \begin{minipage}{0.65\textwidth}
         \centering
-        {\small\textbf{Fonte:} Imagens do \textit{Hateful Memes Dataset} (adaptado pela autora).}
+        {\small\textbf{Fonte:} Adaptado das imagens do \textit{Hateful Memes Dataset} \cite{ArticleHatefulMemesChallenge2020}.}
     \end{minipage}
 \end{figure*}
 
