@@ -16,27 +16,42 @@ A pesquisa foi estruturada em três experimentos progressivos. No \textbf{Experi
 
 \begin{figure*}[!htbp]
     \centering
-    \includegraphics[width=0.65\textwidth]{imagens/zero-shot-arch.png}
     \caption{Arquitetura do \textbf{Experimento 1} (\textit{zero-shot}).}
     \label{fig:zero-shot-arch}
+    \includegraphics[width=0.65\textwidth]{imagens/zero-shot-arch.png}
+    \par\vspace{0.2cm}
+    \begin{minipage}{0.65\textwidth}
+        \centering
+        {\small\textbf{Fonte:} Elaborado pela autora (2026).}
+    \end{minipage}
 \end{figure*}
 
 No \textbf{Experimento 2} (pré-processamento), ilustrado na Figura~\ref{fig:pre-process-arch}, a arquitetura é expandida com uma etapa de agrupamento semântico não supervisionado executada antes do treinamento. \textit{Embeddings} textuais e visuais dos memes de treino são agrupados separadamente pelo DBSCAN, gerando índices de \textit{cluster} para cada modalidade. Esses índices são incorporados como entradas adicionais ao \textbf{MultimodalModel}, um classificador supervisionado construído sobre o CLIP congelado que aprende representações compactas de cada grupo semântico. A saída opera nos mesmos dois caminhos complementares do Experimento~1: classificação binária avaliada por Acurácia, AUCROC e F1, e o \textbf{Classificador Fuzzy Unificado} com cinco categorias de ódio. O experimento também inclui um estudo de ablação com cinco configurações que isolam a contribuição incremental de cada componente, e uma interface de demonstração via \textit{Gradio} integrada ao \textit{Google Vision} OCR.
 
 \begin{figure*}[!htbp]
     \centering
-    \includegraphics[width=0.65\textwidth]{imagens/pre-process-arch.png}
     \caption{Arquitetura do \textbf{Experimento 2} (pré-processamento).}
     \label{fig:pre-process-arch}
+    \includegraphics[width=0.65\textwidth]{imagens/pre-process-arch.png}
+    \\\vspace{0.2cm}
+    \begin{minipage}{0.65\textwidth}
+        \centering
+        {\small\textbf{Fonte:} Elaborado pela autora (2026).}
+    \end{minipage}
 \end{figure*}
 
 No \textbf{Experimento 3} (\textit{final-shot}), ilustrado na Figura~\ref{fig:final-shot-arch}, é implementado o \textit{HateCLIPper} com adaptações como \textit{pipeline} principal. As representações visuais e textuais extraídas pelos encoders do CLIP são projetadas para um espaço comum e fundidas pela \textbf{FIM} (\textit{Feature Interaction Matrix}), que captura correlações entre cada dimensão das duas modalidades por meio de um produto externo. O classificador opera sobre essa representação conjunta e conta com cabeças auxiliares por modalidade, cuja as pontuações individuais alimentam o \textbf{Sistema Fuzzy Mamdani} para graduação contínua do ódio em cinco níveis. A saída opera nos mesmos dois caminhos dos experimentos anteriores: classificação binária avaliada por AUROC, Acurácia e F1-Score, e a graduação fuzzy. O experimento inclui também um estudo de ablação com quatro modos de fusão e uma interface de demonstração via \textit{Gradio} \cite{abid2019} integrada ao \textit{Google Vision} OCR.
 
 \begin{figure*}[!htbp]
     \centering
-    \includegraphics[width=0.65\textwidth]{imagens/final-shot-arch.png}
     \caption{Arquitetura do \textbf{Experimento 3} (\textit{final-shot}).}
     \label{fig:final-shot-arch}
+    \includegraphics[width=0.65\textwidth]{imagens/final-shot-arch.png}
+    \\\vspace{0.2cm}
+    \begin{minipage}{0.65\textwidth}
+        \centering
+        {\small\textbf{Fonte:} Elaborado pela autora (2026).}
+    \end{minipage}
 \end{figure*}
 
 \section{Coleta e tratamento de dados}
@@ -101,6 +116,8 @@ Um primeiro teste foi feito para fins de visualização, no qual uma amostra é 
 
 \begin{figure*}[!htbp]
     \centering
+    \caption{Primeiro teste de predição \textit{zero-shot} com uma amostra aleatória do conjunto \texttt{test\_unseen} acompanhado dos metadados de classificação.}
+    \label{fig:zero-shot-sample}
     \includegraphics[width=0.45\textwidth]{imagens/img_58760.png}
     \vspace{0.3cm}
     \small
@@ -113,8 +130,10 @@ Um primeiro teste foi feito para fins de visualização, no qual uma amostra é 
         Predição do Modelo & \textit{This is not a hateful meme} (Este não é um meme de ódio) \\ \hline
     \end{tabular}
     \vspace{0.3cm}
-    \caption{Primeiro teste de predição \textit{zero-shot} com uma amostra aleatória do conjunto \texttt{test\_unseen} acompanhado dos metadados de classificação.}
-    \label{fig:zero-shot-sample}
+    \begin{minipage}{0.65\textwidth}
+        \centering
+        {\small\textbf{Fonte:} Elaborado pela autora (2026).}
+    \end{minipage}
 \end{figure*}
 
 Para realizar a avaliação em larga escala do modelo em cenário \textit{zero-shot}, implementou-se uma rotina de processamento em lote sobre o conjunto \texttt{test\_unseen}. O script lê o arquivo JSON Lines e itera sobre cada meme, extraindo o caminho da imagem e seu texto. Cada imagem é pré-processada, codificada pelo \textit{encoder} visual do CLIP e normalizada. A similaridade entre o \textit{embedding} visual e os \textit{embeddings} textuais dos \textit{prompts} \textit{hateful} e \textit{non-hateful} é calculada por produto interno, escalonada pelo parâmetro de temperatura e convertida em probabilidades via \textit{Softmax}; a classe predita é então definida pela função \textit{argmax}. Ao final, as predições são consolidadas em um \textit{DataFrame} e exportadas para o arquivo
@@ -198,16 +217,26 @@ Uma interface Gradio permite a análise de memes externos ao \textit{dataset}. O
 
 \begin{figure*}[!htbp]
     \centering
-    \includegraphics[width=0.99\textwidth]{imagens/gradio_exp2_upload.png}
     \caption{Visualização da interface do \textbf{Experimento 2}. A imagem apresenta a captura de tela da interface do Gradio na aba de upload.}
     \label{fig:exp2-gradio-sample-upload}
+    \includegraphics[width=0.99\textwidth]{imagens/gradio_exp2_upload.png}
+    \\\vspace{0.2cm}
+    \begin{minipage}{0.65\textwidth}
+        \centering
+        {\small\textbf{Fonte:} Elaborado pela autora (2026).}
+    \end{minipage}
 \end{figure*}
 
 \begin{figure*}[!htbp]
     \centering
-    \includegraphics[width=0.99\textwidth]{imagens/gradio_exp2_random.png}
     \caption{Visualização da interface do \textbf{Experimento 2}. A imagem apresenta a captura de tela da interface do Gradio na aba de amostra aleatória.}
     \label{fig:exp2-gradio-sample-random}
+    \includegraphics[width=0.99\textwidth]{imagens/gradio_exp2_random.png}
+    \\\vspace{0.2cm}
+    \begin{minipage}{0.65\textwidth}
+        \centering
+        {\small\textbf{Fonte:} Elaborado pela autora (2026).}
+    \end{minipage}
 \end{figure*}
 
 \subsection{Experimento 3: Pipeline Completo}
@@ -233,16 +262,26 @@ A interface segue a mesma estrutura do Experimento~2, Gradio com OCR via Google 
 
 \begin{figure*}[!htbp]
     \centering
-    \includegraphics[width=0.99\textwidth]{imagens/gradio_exp3_upload.png}
     \caption{Visualização da interface do \textbf{Experimento 3}. A imagem apresenta a captura de tela da interface do Gradio na aba de upload.}
     \label{fig:exp3-gradio-sample-upload}
+    \includegraphics[width=0.99\textwidth]{imagens/gradio_exp3_upload.png}
+    \\\vspace{0.2cm}
+    \begin{minipage}{0.65\textwidth}
+        \centering
+        {\small\textbf{Fonte:} Elaborado pela autora (2026).}
+    \end{minipage}
 \end{figure*}
 
 \begin{figure*}[!htbp]
     \centering
-    \includegraphics[width=0.99\textwidth]{imagens/gradio_exp3_random.png}
     \caption{Visualização da interface do \textbf{Experimento 3}. A imagem apresenta a captura de tela da interface do Gradio na aba de amostra aleatória.}
     \label{fig:exp3-gradio-sample-random}
+    \includegraphics[width=0.99\textwidth]{imagens/gradio_exp3_random.png}
+    \\\vspace{0.2cm}
+    \begin{minipage}{0.65\textwidth}
+        \centering
+        {\small\textbf{Fonte:} Elaborado pela autora (2026).}
+    \end{minipage}
 \end{figure*}
 
 O modelo também foi disponibilizado no \textit{Hugging Face Spaces} em um repositório 

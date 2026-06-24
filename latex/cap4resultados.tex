@@ -8,19 +8,24 @@
 O CLIP ViT-L/14 em modo \textit{zero-shot} obteve acurácia de 53,85\% e AUCROC de 0,5392 sobre o conjunto \texttt{test\_unseen} (2.000 amostras). Para a classe de ódio, a precisão foi de 0,41, a revocação de 0,50 e o F1-Score de 0,45; o F1 macro entre as classes ficou em 0,53, apenas marginalmente acima do acaso. Esses resultados são esperados dado o caráter do problema, o CLIP foi pré-treinado para alinhar representações visuais e textuais em contextos semânticos convencionais, sem exposição a exemplos de discurso de ódio durante o treinamento. A classificação \textit{zero-shot} opera exclusivamente por meio da similaridade cosseno entre o \textit{embedding} da imagem combinada com o texto do meme e os \textit{embeddings} dos \textit{prompts} (\texttt{"a hateful meme"} e \texttt{"a not hateful meme"}), sem qualquer supervisão sobre o que constitui conteúdo odioso no domínio específico de memes. Em uma tarefa binária balanceada, uma acurácia próxima a 50\% é o limite inferior esperado para um classificador sem informação, e os 53,85\% obtidos indicam que o modelo captura algum sinal superficial, provavelmente léxico, como palavras explicitamente ofensivas, mas falha sistematicamente na detecção de ódio implícito ou contextualmente dependente.
 
 \begin{figure}[htbp]
-    \centering
     \begin{minipage}{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{imagens/exp1_confusion_matrix.png}
-        \caption{Matriz de confusão — Experimento 1 (\textit{zero-shot}).}
+        \caption{figure}{Matriz de confusão — Experimento 1 (\textit{zero-shot}).}
         \label{fig:exp1_cm}
+        \includegraphics[width=\textwidth]{imagens/exp1_confusion_matrix.png}
+        \par\vspace{0.1cm}
+        \centering
+        {\small\textbf{Fonte:} Elaborado pela autora (2026).}
     \end{minipage}
     \hfill
     \begin{minipage}{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{imagens/exp1_roc.png}
-        \caption{Curva ROC — Experimento 1 (\textit{zero-shot}).}
+        \caption{figure}{Curva ROC — Experimento 1 (\textit{zero-shot}).}
         \label{fig:exp1_roc}
+        \includegraphics[width=\textwidth]{imagens/exp1_roc.png}
+        \par\vspace{0.1cm}
+        \centering
+        {\small\textbf{Fonte:} Elaborado pela autora (2026).}
     \end{minipage}
 \end{figure}
 
@@ -28,27 +33,42 @@ A Figura~\ref{fig:exp1_cm} evidencia o comportamento típico de um classificador
 
 \begin{figure*}[htbp]
     \centering
-    \includegraphics[width=\textwidth]{imagens/exp1_exemplos.png}
     \caption{Exemplos de classificação do Experimento 1. Imagens do \textit{Hateful Memes Dataset} \cite{ArticleHatefulMemesChallenge2020}.}
     \label{fig:exp1_exemplos}
+    \includegraphics[width=\textwidth]{imagens/exp1_exemplos.png}
+    \\\vspace{0.2cm}
+    \begin{minipage}{0.65\textwidth}
+        \centering
+        {\small\textbf{Fonte:} Imagens do \textit{Hateful Memes Dataset} (adaptado pela autora).}
+    \end{minipage}
 \end{figure*}
 
 O estudo de ablação evidenciou um resultado contraintuitivo, onde a abordagem \textbf{Somente Texto} alcançou a maior acurácia (61,80\%), superando tanto \textbf{Somente Imagem} (53,05\%) quanto o modo \textbf{Multimodal} (53,85\%). Esse comportamento pode ser explicado por dois fatores. Primeiro, o encoder textual do CLIP é treinado sobre grandes dados de texto e desenvolve representações semânticas ricas que capturam associações entre termos pejorativos, grupos-alvo e estereótipos, associações que se manifestam de forma mais direta e imediata no texto do meme do que na imagem, especialmente quando o ódio é veiculado por linguagem explicitamente ofensiva. Segundo, a fusão multimodal sem ajuste fino pode introduzir ruído, quando o \textit{embedding} visual não contribui com informação discriminativa relevante, sua combinação com o \textit{embedding} textual dilui o sentido, prejudicando o desempenho em relação ao uso exclusivo do texto. Isso indica que, sem ajuste fino, o CLIP não consegue capturar a justaposição contraditória entre imagem e texto que caracteriza os memes de ódio.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.65\textwidth]{imagens/exp1_ablacao.png}
     \caption{Estudo de ablação unimodal — Experimento 1. Comparação de Acurácia, F1-Score e AUROC entre as modalidades texto, imagem e multimodal.}
     \label{fig:exp1_ablacao}
+    \includegraphics[width=0.65\textwidth]{imagens/exp1_ablacao.png}
+    \par\vspace{0.2cm}
+    \begin{minipage}{0.65\textwidth}
+        \centering
+        {\small\textbf{Fonte:} Elaborado pela autora (2026).}
+    \end{minipage}
 \end{figure}
 
 A aplicação do Classificador Fuzzy Unificado sobre as probabilidades do CLIP resultou em acurácia de 59,30\%. O sistema tornou-se mais conservador: a precisão para a classe de ódio subiu para 0,40, mas a revocação caiu acentuadamente para 0,17 (F1-Score de 0,24). Esse padrão é consequência direta da arquitetura fuzzy, que ao introduzir uma zona de ambiguidade explícita, o sistema reduz os falsos positivos às custas de aumentar os falsos negativos. Em outras palavras, o classificador somente emite predições de ódio quando a confiança do modelo base é elevada, o que melhora a precisão, mas deixa de detectar a maioria dos casos genuinamente odiosos. A distribuição das categorias revelou que 62,4\% das amostras foram alocadas em \textit{Ambiguidade/Moderado}, reflexo direto da alta entropia das predições \textit{zero-shot}, como o modelo opera sem supervisão específica, suas probabilidades de saída tendem a se concentrar em torno de 0,5, precisamente a região que o sistema fuzzy mapeia para a categoria intermediária. Esse resultado demonstra que a camada fuzzy, embora útil como mecanismo de controle de confiança em modelos bem calibrados, amplifica a indecisão de um modelo base já pouco informativo, a utilidade do Classificador Fuzzy Unificado depende da qualidade das probabilidades produzidas pelo \textit{encoder}.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.85\textwidth]{imagens/exp1_fuzzy.png}
     \caption{Distribuição das categorias fuzzy — Experimento 1. A concentração em \textit{Ambiguidade/Moderado} reflete a incerteza do modelo \textit{zero-shot}.}
     \label{fig:exp1_fuzzy}
+    \includegraphics[width=0.85\textwidth]{imagens/exp1_fuzzy.png}
+    \par\vspace{0.2cm}
+    \begin{minipage}{0.65\textwidth}
+        \centering
+        {\small\textbf{Fonte:} Elaborado pela autora (2026).}
+    \end{minipage}
 \end{figure}
 
 \subsection{Experimento 2 — Pré-processamento com Agrupamento Semântico}
@@ -59,16 +79,26 @@ O \texttt{MultimodalModel} com enriquecimento por \textit{clusters} obteve acur�
     \centering
     \begin{minipage}{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{imagens/exp2_confusion_matrix.png}
         \caption{Matriz de confusão — Experimento 2 (pré-processamento).}
         \label{fig:exp2_cm}
+        \includegraphics[width=\textwidth]{imagens/exp2_confusion_matrix.png}
+        \par\vspace{0.2cm}
+    \begin{minipage}{0.65\textwidth}
+        \centering
+        {\small\textbf{Fonte:} Elaborado pela autora (2026).}
+    \end{minipage}
     \end{minipage}
     \hfill
     \begin{minipage}{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{imagens/exp2_roc.png}
         \caption{Curva ROC — Experimento 2 (pré-processamento).}
         \label{fig:exp2_roc}
+        \includegraphics[width=\textwidth]{imagens/exp2_roc.png}
+        \par\vspace{0.2cm}
+    \begin{minipage}{0.65\textwidth}
+        \centering
+        {\small\textbf{Fonte:} Elaborado pela autora (2026).}
+    \end{minipage}
     \end{minipage}
 \end{figure}
 
@@ -76,9 +106,13 @@ Em relação ao Experimento~1, a matriz de confusão da Figura~\ref{fig:exp2_cm}
 
 \begin{figure*}[htbp]
     \centering
-    \includegraphics[width=\textwidth]{imagens/exp2_exemplos.png}
     \caption{Exemplos de classificação do Experimento 2. Imagens do \textit{Hateful Memes Dataset} \cite{ArticleHatefulMemesChallenge2020}.}
     \label{fig:exp2_exemplos}
+    \includegraphics[width=\textwidth]{imagens/exp2_exemplos.png}
+    \par\vspace{0.2cm}
+    \begin{minipage}{0.65\textwidth}
+        {\small\textbf{Fonte:} Imagens do \textit{Hateful Memes Dataset} (adaptado pela autora).}
+    \end{minipage}
 \end{figure*}
 
 O estudo de ablação com cinco configurações demonstrou a contribuição incremental de cada componente. A Tabela~\ref{tab:ablacao_exp2} e a Figura~\ref{fig:exp2_ablacao} apresentam os resultados comparativos. As configurações unimodais (\textbf{Somente Imagem}, 63,60\%; \textbf{Somente Texto}, 63,25\%) apresentam acurácia razoável mas F1 para a classe de ódio extremamente baixos (0,10 e 0,20, respectivamente), indicando que ambos os modelos atingem sua acurácia majoritariamente ao prever a classe negativa, por conta do conjunto de dados próximo do balanceado, oferece cerca de 50\% de acertos gratuitos, sem real capacidade discriminativa. O salto mais expressivo ocorre na transição para o \textbf{CLIP Multimodal}, acurácia de 67,60\% e F1 para ódio de 0,58, confirmando que a fusão dos embeddings visual e textual é o componente central do ganho de desempenho, pois permite capturar a interdependência semântica entre as duas modalidades que define os memes de ódio. A adição do \textbf{Cluster Texto} eleva ligeiramente a acurácia (67,90\%) mas reduz o F1 de ódio para 0,49. Uma interpretação possível é que as características de pertencimento a \textit{clusters} textuais deslocam a fronteira de decisão de forma a favorecer a classe negativa, melhorando a separabilidade global, mas introduzindo conservadorismo adicional na detecção de ódio. O \textbf{Modelo Completo}, que incorpora também as características de \textit{cluster} visual, atinge a maior acurácia (68,65\%) e o maior AUCROC (0,7336), embora o F1 de ódio permaneça em 0,49, sugerindo que o enriquecimento por \textit{clusters} contribui sobretudo para a confiança global do modelo, sem resolver o viés conservador herdado da configuração multimodal base.
@@ -102,9 +136,14 @@ Modelo Completo   & \textbf{68,65\%} & \textbf{0,7336} & 0,63 & 0,49 \\
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.9\textwidth]{imagens/exp2_ablacao.png}
     \caption{Estudo de ablação — Experimento 2. Comparação das cinco configurações por AUROC e F1-Score.}
     \label{fig:exp2_ablacao}
+    \includegraphics[width=0.9\textwidth]{imagens/exp2_ablacao.png}
+    \par\vspace{0.2cm}
+    \begin{minipage}{0.65\textwidth}
+        \centering
+        {\small\textbf{Fonte:} Elaborado pela autora (2026).}
+    \end{minipage}
 \end{figure}
 
 
@@ -112,9 +151,14 @@ Com a aplicação do Classificador Fuzzy Unificado, a acurácia binarizada mante
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.75\textwidth]{imagens/exp2_fuzzy.png}
     \caption{Distribuição das categorias fuzzy — Experimento 2.}
     \label{fig:exp2_fuzzy}
+    \includegraphics[width=0.75\textwidth]{imagens/exp2_fuzzy.png}
+    \par\vspace{0.2cm}
+    \begin{minipage}{0.65\textwidth}
+        \centering
+        {\small\textbf{Fonte:} Elaborado pela autora (2026).}
+    \end{minipage}
 \end{figure}
 
 \subsection{Experimento 3 — Pipeline Completo}
@@ -125,16 +169,24 @@ O HateCLIPper com fusão \textit{cross} (FIM) e limiar ótimo de 0,0119 (determi
     \centering
     \begin{minipage}{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{imagens/exp3_confusion_matrix.png}
         \caption{Matriz de confusão — Experimento 3 (\textit{final-shot}).}
         \label{fig:exp3_cm}
+        \includegraphics[width=\textwidth]{imagens/exp3_confusion_matrix.png}
+        \begin{minipage}{0.65\textwidth}
+            \centering
+            {\small\textbf{Fonte:} Elaborado pela autora (2026).}
+        \end{minipage}
     \end{minipage}
     \hfill
     \begin{minipage}{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{imagens/exp3_roc.png}
         \caption{Curva ROC — Experimento 3 (\textit{final-shot}).}
         \label{fig:exp3_roc}
+        \includegraphics[width=\textwidth]{imagens/exp3_roc.png}
+        \begin{minipage}{0.65\textwidth}
+            \centering
+            {\small\textbf{Fonte:} Elaborado pela autora (2026).}
+        \end{minipage}
     \end{minipage}
 \end{figure}
 
@@ -142,9 +194,14 @@ A matriz de confusão da Figura~\ref{fig:exp3_cm} reflete diretamente o efeito d
 
 \begin{figure*}[htbp]
     \centering
-    \includegraphics[width=\textwidth]{imagens/exp3_exemplos.png}
     \caption{Exemplos de classificação do Experimento 3. Imagens do \textit{Hateful Memes Dataset} \cite{ArticleHatefulMemesChallenge2020}.}
     \label{fig:exp3_exemplos}
+    \includegraphics[width=\textwidth]{imagens/exp3_exemplos.png}
+    \par\vspace{0.2cm}
+    \begin{minipage}{0.65\textwidth}
+        \centering
+        {\small\textbf{Fonte:} Imagens do \textit{Hateful Memes Dataset} (adaptado pela autora).}
+    \end{minipage}
 \end{figure*}
 
 O estudo de ablação avaliou quatro modos de fusão do HateCLIPper treinados nas mesmas condições. Os quatro modos diferem fundamentalmente na forma como combinam os \textit{embeddings} visual e textual produzidos pelos encoders do CLIP. A fusão \textbf{concat} realiza a concatenação direta, tratando as duas modalidades como independentes e delegando ao classificador \textit{downstream} a tarefa de aprender sua interação, é a abordagem mais simples, e também a de pior desempenho (AUROC de 0,7778), pois não modela explicitamente a relação entre os dois modos. A fusão \textbf{align} introduz uma etapa de alinhamento por similaridade cosseno entre os \textit{embeddings} antes da classificação, encorajando representações multimodais coerentes mas sem permitir que uma modalidade modifique seletivamente a outra. A fusão \textbf{cross} implementa o \textit{Feature Interaction Matrix} com atenção cruzada, onde cada \textit{embedding} atende aos elementos do outro, produzindo representações contextualizadas em que a imagem é reinterpretada à luz do texto e vice-versa. É justamente esse mecanismo que melhor captura a justaposição contraditória dos memes de ódio, explicando por que o modo \textit{cross} supera todas as demais configurações (AUROC de 0,8141, F1 macro de 0,6456). A configuração \textbf{align\_concat}, que combina alinhamento e concatenação, apresenta desempenho intermediário (AUROC de 0,7798), sugerindo que a combinação linear de duas estratégias sem interação profunda não é equivalente à atenção cruzada. A Tabela~\ref{tab:ablacao_exp3} e a Figura~\ref{fig:exp3_ablacao} apresentam a comparação completa entre os modos.
@@ -167,18 +224,28 @@ align\_concat  & 0,7529 & 0,7798 &    ---  &    --- \\
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.75\textwidth]{imagens/exp3_ablacao.png}
     \caption{Estudo de ablação — Experimento 3.}
     \label{fig:exp3_ablacao}
+    \includegraphics[width=0.75\textwidth]{imagens/exp3_ablacao.png}
+    \par\vspace{0.2cm}
+    \begin{minipage}{0.65\textwidth}
+        \centering
+        {\small\textbf{Fonte:} Elaborado pela autora (2026).}
+    \end{minipage}
 \end{figure}
 
 O Sistema Fuzzy Mamdani aplicado sobre os \textit{scores} visuais e textuais independentes do HateCLIPper produziu um limiar ótimo de 7,17 (escala de 0 a 100). Diferentemente do Classificador Fuzzy Unificado empregado nos experimentos anteriores, que operava diretamente sobre a probabilidade de saída de um único classificador binário, o Sistema Mamdani recebe como entradas dois \textit{scores} contínuos independentes, um do ramo visual e outro do ramo textual, e aplica conjuntos de regras sobre variáveis linguísticas e produz uma saída defuzzificada pelo método do centroide. Isso permite que o sistema capture configurações assimétricas, como alta toxicidade textual com imagem neutra, de forma mais expressiva do que um limiar escalar único sobre uma probabilidade combinada. O valor 7,17 em uma escala de 0 a 100 é notavelmente baixo, coerente com a tendência de alta revocação herdada do modelo base, onde o sistema classifica como ódio efetivo qualquer combinação de \textit{scores} cujo centroide defuzzificado supere esse limiar mínimo. A distribuição das categorias na Figura~\ref{fig:exp3_fuzzy} reflete a consequência direta desse comportamento, a proporção de amostras em \textit{Ambiguidade/Moderado} é substancialmente menor do que nos experimentos anteriores, o que indica que as probabilidades do HateCLIPper são mais polarizadas, o \textit{fine-tuning} supervisionado produziu um modelo cujas saídas tendem a se afastar do centro da escala, tornando as predições mais confiantes e reduzindo a zona de indecisão que dominava o Experimento~1. Comparado ao Classificador Fuzzy Unificado do Experimento~2, o Sistema Mamdani deste experimento mantém o perfil de alta revocação do modelo base, funcionando como uma camada de interpretação gradual que preserva a sensibilidade do HateCLIPper e agrega a expressividade das regras linguísticas para os casos intermediários.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.75\textwidth]{imagens/exp3_fuzzy.png}
     \caption{Distribuição das categorias fuzzy — Experimento 3.}
     \label{fig:exp3_fuzzy}
+    \includegraphics[width=0.75\textwidth]{imagens/exp3_fuzzy.png}
+    \par\vspace{0.2cm}
+    \begin{minipage}{0.65\textwidth}
+        \centering
+        {\small\textbf{Fonte:} Elaborado pela autora (2026).}
+    \end{minipage}
 \end{figure}
 
 \section{Análise crítica e comparação}
