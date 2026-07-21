@@ -59,9 +59,9 @@ As redes neurais artificiais são modelos computacionais inspirados, de forma ab
     \centering
     \caption{Estrutura de um neurônio artificial.}
     \label{fig:perceptron}
-    \includegraphics[scale=0.3]{imagens/perceptron.png}
+    \includegraphics[scale=0.2]{imagens/perceptron.png}
     \par\vspace{2pt}
-    {\footnotesize Fonte: \citeonline{perceptron}.}
+    {\footnotesize Fonte: Adaptado de \citeonline{perceptron}.}
 \end{figure*}
 
 O \textbf{viés} (\textit{bias}) desempenha um papel duplo, tecnicamente ele é um parâmetro somado à combinação linear das entradas antes da aplicação da função de ativação, funcionando como um limiar ajustável que permite ao neurônio disparar mesmo quando todas as entradas são nulas. Sem ele, a superfície de decisão do modelo seria obrigada a passar pela origem do espaço de características, reduzindo a capacidade de ajuste do modelo. Com ele, o modelo ganha um grau de liberdade a mais, tornando o aprendizado mais flexível e eficaz \cite{goodfellow2016}. Agora socialmente, carrega um sentido distinto e crítico chamado de \textbf{viés algorítmico}, que acontece quando os dados utilizados no treinamento refletem desigualdades sociais e estigmatizam grupos minorizados. Nesses casos, o modelo aprende, reproduz e amplifica as discriminações presentes na sociedade, causando impactos reais em contratações, concessão de crédito e reconhecimento facial \cite{barocas2023}. Assim, compreender o viés em redes neurais exige uma dupla leitura, a matemática que o torna indispensável para o modelo, e a ética que o coloca como um dos principais desafios para o desenvolvimento de sistemas de inteligência artificial justos e responsáveis.
