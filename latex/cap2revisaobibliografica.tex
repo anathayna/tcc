@@ -101,7 +101,7 @@ O aprendizado ocorre pelo ajuste iterativo dos pesos e vieses por meio do algori
     \label{fig:artificial-neural-network}
     \includegraphics[scale=0.25]{imagens/artificial-neural-network.png}
     \par\vspace{2pt}
-    {\footnotesize Fonte: \citeonline{geeksforgeeks2023ann}.}
+    {\footnotesize Fonte: Adaptado de \citeonline{geeksforgeeks2023ann}.}
 \end{figure}
 
 Embora as redes neurais sejam robustas, seu desempenho em tarefas de alta complexidade, como reconhecimento de imagens e processamento de linguagem natural, é limitado quando aplicadas diretamente a dados de alta dimensão. O aumento no número de camadas e neurônios, necessário para capturar tais padrões, torna o treinamento instável e computacionalmente inviável com as técnicas da época \cite{goodfellow2016}. Esses desafios motivaram o desenvolvimento de arquiteturas mais profundas e especializadas, consolidadas sob o termo aprendizado profundo.
@@ -172,7 +172,7 @@ gerado.
     \label{fig:attention-model}
     \includegraphics[scale=0.25]{imagens/attention_model.png}
     \par\vspace{2pt}
-    {\footnotesize Fonte: \citeonline{GoogleTeamTransformers}.}
+    {\footnotesize Fonte: Adaptado de \citeonline{GoogleTeamTransformers}.}
 \end{figure*}
 
 Embora o \textit{Transformer} tenha sido um avanço significativo, os modelos de linguagem da época ainda eram pré-treinados de forma unidirecional, da esquerda para a direita ou da direita para a esquerda, o que limitava a capacidade de capturar o contexto completo de cada \textit{token}. Isso motivou pesquisadores a explorar variantes da arquitetura voltadas exclusivamente à compreensão do texto, como modelos baseados exclusivamente no \textit{encoder}. É nesse cenário que surge o BERT.
@@ -187,9 +187,9 @@ O pré-treinamento do BERT é realizado por meio de dois objetivos. O primeiro �
     \centering
     \caption{Arquitetura do BERT.}
     \label{fig:bert-model}
-    \includegraphics[scale=0.45]{imagens/BERT.png}
+    \includegraphics[scale=0.23]{imagens/BERT.png}
     \par\vspace{2pt}
-    {\footnotesize Fonte: \citeonline{devlin2019bert}.}
+    {\footnotesize Fonte: Adaptado de \citeonline{devlin2019bert}.}
 \end{figure*}
 
 A Figura~\ref{fig:bert-model} ilustra as duas etapas do ciclo de vida do 
@@ -214,9 +214,9 @@ As redes neurais convolucionais (\textit{convolutional neural networks}) são um
     \centering
     \caption{Arquitetura de uma CNN aplicada à classificação de imagens.}
     \label{fig:cnn}
-    \includegraphics[scale=0.35]{imagens/CNNs.png}
+    \includegraphics[scale=0.25]{imagens/CNNs.png}
     \par\vspace{2pt}
-    {\footnotesize Fonte: \citeonline{swapna2020cnn}.}
+    {\footnotesize Fonte: Adaptado de \citeonline{swapna2020cnn}.}
 \end{figure*}
 
 A arquitetura de uma CNN típica, ilustrada na Figura~\ref{fig:cnn}, organiza-se em dois grandes blocos funcionais: \textbf{extração de características} e \textbf{classificação}. No bloco de extração, camadas alternadas de \textbf{convolução} e \textbf{pooling} são empilhadas progressivamente. Cada camada de convolução aplica um conjunto de filtros aprendíveis à entrada, gerando \textbf{mapas de características} que codificam a presença de padrões específicos em cada região da imagem, em seguida, uma função de ativação não linear (\textit{Rectified Linear Unit}, ReLU) é aplicada elemento a elemento para introduzir não-linearidade ao modelo. As camadas de \textit{pooling} subsequentes reduzem a resolução espacial dos mapas, conferindo invariância a pequenas translações, de modo que pequenos deslocamentos do objeto na imagem  não alterem o resultado da classificação, e diminuindo o custo computacional das camadas seguintes. Ao longo desse bloco, as representações tornam-se progressivamente mais abstratas, as primeiras camadas tendem a capturar características de baixo nível (bordas e gradientes), enquanto as camadas mais profundas respondem a estruturas semânticas de alto nível.
