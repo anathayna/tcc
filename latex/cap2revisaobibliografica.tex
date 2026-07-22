@@ -18,7 +18,7 @@ Os tipos de discurso de ódio são variados e se manifestam a partir de diferent
 
 Esse cenário é amparado, no plano jurídico brasileiro, por um conjunto de instrumentos normativos que evoluíram progressivamente para ampliar o combate ao racismo e ao discurso de ódio. A Lei do Crime Racial (Lei n.º 7.716/1989) tipificou os crimes resultantes de preconceito de raça e cor; a Lei n.º 9.459/1997 ampliou esse escopo para etnia, religião e origem nacional; e, mais recentemente, a Lei n.º 14.532/2023 incorporou a injúria racial ao rol dos crimes de racismo, equiparando-a em imprescritibilidade e inafiançabilidade, com pena de reclusão de dois a cinco anos e multa \cite{brasil2023lei14532}.
 
-Paralelamente, avança no Congresso Nacional um conjunto de iniciativas voltadas à regulação das plataformas digitais e da inteligência artificial, das quais se destacam o PL 2.630/2020 (Lei Brasileira de Liberdade, Responsabilidade e Transparência na Internet), que propõe obrigações de moderação de conteúdo e transparência algorítmica, e o PL 2.338/2023, que institui um marco regulatório para a inteligência artificial \cite{GovBR2025}. Essas propostas evidenciam a crescente pressão institucional por mecanismos de moderação mais eficazes e auditáveis.
+Paralelamente, avança no Congresso Nacional um conjunto de iniciativas voltadas à regulação das plataformas digitais e da inteligência artificial, ambas com implicações diretas para o enfrentamento do discurso de ódio \textit{on-line}. O PL 2.630/2020 institui a Lei Brasileira de Liberdade, Responsabilidade e Transparência na Internet, propõe obrigações de moderação de conteúdo, transparência algorítmica e mecanismos de combate a perfis falsos e contas automatizadas \cite{GovBR2025, camara2630}. Já o PL 2.338/2023, conhecido como Marco Legal da Inteligência Artificial, adota um modelo de regulação baseado em risco e estabelece direitos dos afetados por sistemas automatizados, além de um sistema nacional de governança de IA \cite{senado2338, camara2338}. Ambas as propostas evidenciam a crescente pressão institucional por mecanismos de moderação mais eficazes, auditáveis e tecnicamente informados, o que reforça a relevância de abordagens automatizadas de detecção tanto para apoiar o cumprimento de futuras exigências regulatórias quanto para qualificar o debate público sobre os limites da moderação de conteúdo.
 
 Nesse contexto, os memes representam um caso particularmente desafiador para as políticas de moderação de conteúdo. Sua eficácia comunicativa depende da combinação entre imagem e texto, cujo sentido muitas vezes só aparece da leitura conjunta dos dois elementos, e frequentemente recorre a ironia, humor e referências culturais compartilhadas apenas por determinados grupos \cite{anImage2023}. Essa ambiguidade dificulta tanto a detecção automática, quanto o julgamento humano, que precisa avaliar caso a caso o equilíbrio entre liberdade de expressão e proteção dos usuários. Por isso, compreender o papel dos memes como um novo meio de comunicação digital, e também como potencial vetor de disseminação do discurso de ódio em suas expressões visuais e humorísticas, torna-se um passo essencial para o desenvolvimento de abordagens de detecção mais robustas.
 
@@ -479,8 +479,7 @@ A lógica \textit{fuzzy} \cite{Zadeh1965} estende a lógica booleana clássica a
 
 \begin{figure}[h]
 \centering
-\caption{Exemplo de funções de pertinência para uma variável 
-         genérica com cinco termos fuzzy.}
+\caption{Exemplo de funções de pertinência fuzzy.}
 \label{fig:fuzzy-variavel}
 \begin{tikzpicture}
 \begin{axis}[
