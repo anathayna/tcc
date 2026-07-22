@@ -238,9 +238,9 @@ Mais recentemente, o \textit{Vision Transformer} (ViT) \cite{dosovitskiy2021} tr
 	\centering
 	\caption{Arquitetura do \textit{Vision Transformer}.}
 	\label{fig:vit-arch}
-	\includegraphics[scale=0.5]{imagens/vit.png}
+	\includegraphics[scale=0.3]{imagens/vit.png}
 	\par\vspace{2pt}
-	{\footnotesize Fonte: \citeonline{dosovitskiy2021}.}
+	{\footnotesize Fonte: Adaptado de \citeonline{dosovitskiy2021}.}
 \end{figure*}
 
 A Figura~\ref{fig:vit-arch} ilustra a arquitetura do ViT. O processo inicia-se com a divisão da imagem de entrada em \textit{patches} retangulares de tamanho fixo, que são linearizados e projetados em vetores de dimensão constante por meio de uma projeção linear. A cada vetor resultante é somado um \textit{embedding} de posição, que codifica a localização espacial de cada \textit{patch} na imagem original, preservando assim a informação posicional que seria perdida após a linearização. Concatena-se um \textit{token} especial, representado pela posição 0, que não corresponde a nenhuma região da imagem, mas percorre todo o \textit{encoder} acumulando uma representação global da entrada, cuja representação final será utilizada para a classificação. 
@@ -265,9 +265,9 @@ O VisualBERT \cite{visualbert2019} foi um marco ao fundir representações visua
 	\centering
 	\caption{Arquitetura do VisualBERT.}
 	\label{fig:visualbert-arch}
-	\includegraphics[scale=0.32]{imagens/visualbert.png}
+	\includegraphics[scale=0.21]{imagens/visualbert.png}
 	\par\vspace{2pt}
-	{\footnotesize Fonte: \citeonline{visualbert2019}.}
+	{\footnotesize Fonte: Adaptado de \citeonline{visualbert2019}.}
 \end{figure*}
 
 Enquanto o VisualBERT utiliza a fusão precoce, integrando texto e imagem diretamente em um único \textit{Transformer}, o CLIP (\textit{Contrastive Language-Image Pre-training}) \cite{clip2021} adota a fusão tardia, processando cada modalidade separadamente antes de alinhar suas representações. O CLIP não é um modelo único, mas sim um \textit{framework} de aprendizado multimodal, com dois \textit{encoders} independentes, um visual em arquiteturas como o ViT, e outro textual, baseado na arquitetura \textit{Transformer}.
@@ -280,7 +280,7 @@ O CLIP foi treinado com aproximadamente 400 milhões de pares de imagem e texto 
 	\label{fig:clip-pipeline}
 	\includegraphics[scale=0.2]{imagens/CLIP.png}
 	\par\vspace{2pt}
-	{\footnotesize Fonte: \citeonline{clip2021}.}
+	{\footnotesize Fonte: Adaptado de \citeonline{clip2021}.}
 \end{figure*}
 
 A Figura~\ref{fig:clip-pipeline} ilustra o \textit{pipeline} do CLIP em duas fases. Na \textbf{Fase 1 (Pré-treinamento Contrastivo)}, pares de imagem e texto são processados simultaneamente, onde as imagens passam pelo \textit{Image Encoder}, que as converte em vetores de representação, enquanto as descrições textuais associadas passam pelo \textit{Text Encoder}, produzindo vetores no mesmo espaço latente. O treinamento otimiza a similaridade cosseno dos pares corretos, maximizando-a na diagonal da matriz de similaridade, enquanto penaliza os pares incorretos fora dela. Na \textbf{Fase 2 (Classificação \textit{Zero-Shot})}, uma nova imagem é codificada pelo \textit{Image Encoder} e seu vetor é comparado aos \textit{embeddings} de rótulos textuais candidatos, como \textit{``a photo of a dog''}, gerados pelo \textit{Text Encoder}. Sem nenhum treinamento adicional, o modelo seleciona a classe cuja representação textual apresenta maior similaridade com a representação visual da imagem, como ilustrado pelo exemplo do cachorro na figura. 
@@ -597,7 +597,7 @@ O trabalho realizado pelos pesquisadores da Meta AI \cite{ArticleHatefulMemesCha
 O trabalho parte da premissa de que memes são inerentemente multimodais, isto é, seu
 significado emerge da combinação entre imagem e texto, e que abordagens unimodais são insuficientes para capturar essa semântica.
 
-Os autores avaliaram uma série de modelos de fusão multimodal como \textit{baselines}, incluindo abordagens de fusão por concatenação, como o \textit{VisualBERT}, utilizando a métrica AUROC como critério principal de comparação. Os resultados demonstraram que mesmo os modelos multimodais de alto desempenho em outras tarefas ficaram significativamente abaixo do desempenho humano, estimado em 84,7\% de AUROC, evidenciando a dificuldade do problema e motivando pesquisas futuras na área.
+Os autores avaliaram uma série de modelos de fusão multimodal como \textit{baselines}, incluindo abordagens de fusão por concatenação, como o \textit{VisualBERT}, utilizando a métrica AUROC como critério principal de comparação. Os resultados demonstraram que mesmo os modelos multimodais de alto desempenho em outras tarefas ficaram significativamente abaixo do desempenho humano, estimado em 0,847 de AUROC, evidenciando a dificuldade do problema e motivando pesquisas futuras na área.
 
 \subsection{\textit{HateDetectron}: Detecção de discurso de ódio em memes por meio de abordagens de aprendizado profundo multimodal}
 
