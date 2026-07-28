@@ -14,9 +14,9 @@ O discurso de ódio nas redes sociais é um fenômeno complexo e multidimensiona
 
 Esse tipo de manifestação busca incitar hostilidade, violência ou discriminação contra determinados grupos sociais \cite{fortuna2018}, e tem amplo impacto, gerando estresse psicológico, exclusão social e contribuindo para a polarização de comunidades \textit{on-line} \cite{waseem2017}. Os tipos de discursos de ódio se manifestam a partir de diferentes eixos, e segundo o Relatório de Recomendações para o Enfrentamento ao Discurso de Ódio e ao Extremismo no Brasil \cite{SECOM2023}, destacam-se o racismo contra pessoas negras e indígenas, a misoginia, o ódio contra a população LGBTQIA+, a intolerância religiosa e a xenofobia. No ambiente digital brasileiro, o racismo é a categoria mais incidente, presente em 97,6\% dos comentários negativos mapeados, seguido por discurso político, preconceito de classe, aparência física, homofobia e intolerância religiosa \cite{comunicaquemuda2016}.
 
-No plano jurídico brasileiro, esse cenário é amparado por um conjunto de leis que evoluíram progressivamente para ampliar o combate ao racismo e ao discurso de ódio. A Lei do Crime Racial (Lei n.º 7.716/1989) tipificou os crimes resultantes de preconceito de raça e cor. A Lei n.º 9.459/1997 ampliou esse escopo para etnia, religião e origem nacional. Recentemente, a Lei n.º 14.532/2023 incorporou a injúria racial ao rol dos crimes de racismo, tornando-a imprescritível e inafiançável \cite{brasil2023lei14532}.
+No plano jurídico brasileiro, esse cenário é amparado por um conjunto de leis que evoluíram progressivamente para ampliar o combate ao racismo e ao discurso de ódio. A Lei do Crime Racial (Lei n.º 7.716/1989) tipificou os crimes resultantes de preconceito de raça e cor, e a Lei n.º 9.459/1997 ampliou esse escopo para etnia, religião e origem nacional. Recentemente, a Lei n.º 14.532/2023 incorporou a injúria racial ao rol dos crimes de racismo, tornando-a imprescritível e inafiançável \cite{brasil2023lei14532}.
 
-Paralelamente, avança no Congresso Nacional um conjunto de iniciativas voltadas à regulação das plataformas digitais e da inteligência artificial, ambas com implicações diretas para o enfrentamento do discurso de ódio \textit{on-line}. O PL 2.630/2020 (Lei Brasileira de Liberdade, Responsabilidade e Transparência na Internet), que propõe obrigações de moderação e transparência algorítmica \cite{GovBR2025, camara2630}, e o PL 2.338/2023 (Marco Legal da IA), que adota regulação baseada em risco e prevê um sistema nacional de governança \cite{senado2338, camara2338}. Ambas as propostas reforçam a pressão institucional por mecanismos de moderação mais eficazes e auditáveis, o que valoriza abordagens automatizadas de detecção e contribui para a definição de regras seguindo a lei.
+No Congresso Nacional há um conjunto de iniciativas voltadas à regulação das plataformas digitais e da inteligência artificial, ambas com implicações diretas para o enfrentamento do discurso de ódio \textit{on-line}. O PL 2.630/2020 (Lei Brasileira de Liberdade, Responsabilidade e Transparência na Internet), que propõe obrigações de moderação e transparência algorítmica \cite{GovBR2025, camara2630}, e o PL 2.338/2023 (Marco Legal da IA), que adota regulação baseada em risco e prevê um sistema nacional de governança \cite{senado2338, camara2338}. Ambas as propostas reforçam a pressão institucional por mecanismos de moderação mais eficazes e auditáveis, o que reforça a relevância de abordagens automatizadas de detecção capazes de operar em conformidade com os requisitos legais e regulatórios que vêm sendo definidos.
 
 Em resposta, as plataformas de redes sociais têm adotado políticas de moderação de conteúdo que envolvem detecção automática, remoção de publicações e divulgação de relatórios de transparência. Contudo, a eficácia dessas medidas tem sido limitada, pois as decisões variam conforme o tipo de conteúdo, o contexto e os critérios internos de cada plataforma \cite{dergacheva2023}.
 
@@ -238,7 +238,7 @@ Mais recentemente, o \textit{Vision Transformer} (ViT) \cite{dosovitskiy2021} tr
 	\centering
 	\caption{Arquitetura do \textit{Vision Transformer}.}
 	\label{fig:vit-arch}
-	\includegraphics[scale=0.3]{imagens/vit.png}
+	\includegraphics[scale=0.25]{imagens/vit.png}
 	\par\vspace{2pt}
 	{\footnotesize Fonte: Adaptado de \citeonline{dosovitskiy2021}.}
 \end{figure*}
@@ -249,7 +249,19 @@ A sequência de \textit{tokens} resultante é então alimentada no \textit{Trans
 
 \subsection{Reconhecimento Óptico de Caracteres}
 
-O reconhecimento óptico de caracteres (\textit{optical character recognition}, OCR) é uma técnica de visão computacional que automatiza a extração de texto a partir de imagens, convertendo representações visuais de caracteres em sequências de texto codificadas digitalmente \cite{mori1992}. Soluções modernas de OCR combinam redes neurais convolucionais para localização e segmentação de regiões de texto com modelos sequenciais para decodificação dos caracteres, atingindo alta precisão em fontes e estilos variados.
+No contexto da detecção de memes odiosos, grande parte da informação textual 
+não está disponível como metadado, mas embutida diretamente na imagem, o que 
+exige uma etapa de extração antes que o texto possa ser processado pelos 
+modelos de linguagem descritos anteriormente. 
+
+O reconhecimento óptico de 
+caracteres (\textit{optical character recognition}, OCR) é a técnica de visão 
+computacional responsável por essa extração, automatizando a conversão de 
+representações visuais de caracteres em sequências de texto codificadas 
+digitalmente \cite{mori1992}. Soluções modernas de OCR combinam redes neurais 
+convolucionais para localização e segmentação de regiões de texto com modelos 
+sequenciais para decodificação dos caracteres, atingindo alta precisão em 
+fontes e estilos variados.
 
 \section{Aprendizado Multimodal}
 
@@ -295,7 +307,7 @@ Na prática, o aprendizado envolve duas fases: o \textbf{pré-treinamento}, onde
 
 A forma de adaptação varia conforme os recursos disponíveis e a similaridade entre as tarefas. Na \textbf{extração de características} (\textit{feature extraction}), os pesos do modelo pré-treinado são completamente congelados e apenas uma camada de classificação adicionada ao topo é treinada, e o modelo funciona apenas como extrator de representações. No \textbf{ajuste fino} (\textit{fine-tuning}), todos os parâmetros são atualizados de forma supervisionada, permitindo que o modelo adapte suas representações internas à tarefa-alvo. Uma variante intermediária é o \textbf{descongelamento progressivo} (\textit{progressive unfreezing}), em que apenas as últimas camadas do modelo são liberadas para atualização, preservando as representações gerais aprendidas nas camadas mais profundas e reduzindo o risco de sobreajuste. Por fim, no \textbf{aprendizado \textit{zero-shot}}, o modelo pré-treinado é aplicado diretamente a novas tarefas sem qualquer ajuste adicional, generalizando para classes ou domínios não vistos durante o treinamento com base na riqueza de suas representações.
 
-\section{Técnicas de Otimização e Regularização}
+\section{Técnicas de Otimização e Regularização} 
  
 O processo de treinamento de uma rede neural consiste em ajustar
 iterativamente seus parâmetros para minimizar uma função de perda
@@ -353,7 +365,7 @@ Para tarefas de classificação binária, a função de perda mais utilizada é 
 
 %O \textbf{Adam} (\textit{Adaptive Moment Estimation}) \cite{kingma2015} é um otimizador adaptativo que mantém, para cada parâmetro, estimativas da média e da variância dos gradientes recentes e as utiliza para escalar individualmente cada atualização, permitindo convergência mais estável com menor sensibilidade à escolha da taxa de aprendizado inicial. O \textbf{AdamW} \cite{loshchilov2019} estende o Adam ao desacoplar a regularização $L_2$ do cálculo do gradiente: em vez de incorporar a penalização de peso na função de perda, ela é aplicada diretamente na regra de atualização dos parâmetros. Esse desacoplamento corrige uma inconsistência do Adam com a regularização $L_2$ convencional e melhora a capacidade de generalização, tornando o AdamW o otimizador padrão em modelos de grande escala baseados em \textit{Transformer}.
 
-\subsection{Agrupamento e DBSCAN}
+\section{Busca por Similaridade}
 
 O agrupamento (\textit{clustering}) é uma técnica de aprendizado não supervisionado que organiza um conjunto de dados em grupos de tal forma que os elementos de um mesmo grupo apresentem alta similaridade entre si e baixa similaridade em relação aos demais \cite{jain1999}, o algoritmo descobre automaticamente a estrutura latente dos dados a partir de uma medida de distância ou densidade.
 
@@ -374,7 +386,7 @@ Um conceito associado ao agrupamento é o de \textbf{medoide}, o ponto de um gru
 
 O \textit{K-Nearest Neighbors} (KNN) \cite{cover1967} é um algoritmo baseado em instâncias que, dado um novo exemplo, identifica os $k$ pontos mais próximos no espaço de características segundo alguma métrica de distância, como a distância euclidiana ou a similaridade de cosseno. Por não construir um modelo explícito durante o treinamento, o KNN é descrito como um método de aprendizado preguiçoso (\textit{lazy learning}), toda a computação é adiada para o momento da predição. No contexto de sistemas de recuperação por similaridade semântica, o KNN é amplamente utilizado para encontrar os exemplos mais similares a uma consulta no espaço de \textit{embeddings}, permitindo, por exemplo, atribuir novos exemplos ao grupo de treinamento mais próximo.
 
-\subsection{Estudo de Ablação}
+\section{Estudo de Ablação}
 
 O estudo de ablação (\textit{ablation study}) é uma metodologia experimental amplamente utilizada em aprendizado profundo para avaliar a contribuição individual de cada componente de um modelo ou sistema \cite{meyes2019}. Inspirado em técnicas de neurociência experimental, o procedimento consiste em remover ou desativar sistematicamente um componente por vez e medir o impacto dessa remoção no desempenho final. Essa análise permite identificar quais elementos são essenciais e quais apresentam contribuição marginal, embasando decisões de projeto e validando as escolhas arquiteturais realizadas. Em trabalhos multimodais, o estudo de ablação frequentemente avalia o papel de cada modalidade de forma isolada, quantificando o ganho obtido pela integração em relação às abordagens unimodais.
 
@@ -463,7 +475,19 @@ A AUROC possui uma interpretação probabilística direta, correspondendo à pro
 
 \section{Lógica Fuzzy e classificação gradual}
 
-A lógica \textit{fuzzy} \cite{Zadeh1965} estende a lógica booleana clássica ao permitir verdades parciais, representando graus de pertinência $\mu(x) \in [0,1]$ que variam de ``completamente falso'' (0) a ``completamente verdadeiro'' (1). Essa abordagem é particularmente adequada para modelar fenômenos ambíguos, com ironia por exemplo.
+Classificadores binários convencionais reduzem a saída do modelo a uma 
+decisão rígida por meio de um limiar fixo (tipicamente 0,5), tratando um 
+escore de 0,51 e um escore de 0,99 como equivalentes, ambos``odiosos''. Essa 
+simplificação descarta uma informação valiosa, como o grau de confiança da 
+predição. Para um sistema de moderação de conteúdo, essa distinção é 
+relevante na prática, pois casos de alta confiança podem ser encaminhados 
+para remoção automática, enquanto casos de confiança intermediária, 
+justamente onde a ambiguidade do humor e da ironia se concentra, podem ser 
+priorizados para revisão humana. A lógica \textit{fuzzy} \cite{Zadeh1965} 
+oferece um formalismo adequado para essa gradação, ao estender a lógica 
+booleana clássica e permitir verdades parciais, representando graus de 
+pertinência $\mu(x) \in [0,1]$ que variam de ``completamente falso'' (0) a 
+``completamente verdadeiro'' (1).
 
 \begin{figure}[h]
 \centering
@@ -585,15 +609,15 @@ O trabalho realizado pelos pesquisadores da Meta AI \cite{ArticleHatefulMemesCha
 O trabalho parte da premissa de que memes são inerentemente multimodais, isto é, seu
 significado emerge da combinação entre imagem e texto, e que abordagens unimodais são insuficientes para capturar essa semântica.
 
-Os autores avaliaram uma série de modelos de fusão multimodal como \textit{baselines}, incluindo abordagens de fusão por concatenação, como o \textit{VisualBERT}, utilizando a métrica AUROC como critério principal de comparação. Os resultados demonstraram que mesmo os modelos multimodais de alto desempenho em outras tarefas ficaram significativamente abaixo do desempenho humano, estimado em 84,7\% de acurácia \cite{ArticleHatefulMemesChallenge2020}, e em termos de AUROC, o desempenho humano é estimado em 82,65 \cite{metaai2020}.
+Os autores avaliaram uma série de modelos de fusão multimodal como \textit{baselines}, incluindo abordagens de fusão por concatenação, como o \textit{VisualBERT}, utilizando a métrica AUROC como critério principal de comparação. Os resultados demonstraram que mesmo os modelos multimodais de alto desempenho em outras tarefas ficaram significativamente abaixo do desempenho humano, estimado em 84,7\% de acurácia \cite{ArticleHatefulMemesChallenge2020}, e em termos de AUROC, o desempenho humano é estimado em 0,8265 \cite{metaai2020}.
 
 \subsection{\textit{HateDetectron}: Detecção de discurso de ódio em memes por meio de abordagens de aprendizado profundo multimodal}
 
 O \textit{HateDetectron} \cite{velioglu2020} apresentou uma das soluções vencedoras do \textit{Hateful Memes Challenge}, empregando abordagens de aprendizado profundo multimodal para a detecção de discurso de ódio em memes. A proposta combina modelos pré-treinados de fusão multimodal, como VisualBERT, por meio de um conjunto de modelos ajustados ao conjunto de dados do desafio.
 
 Os autores exploraram estratégias de \textit{fine-tuning} em modelos que integram
-representações visuais e textuais, demonstrando que a combinação de múltiplos modelos multimodais supera abordagens individuais na tarefa de classificação de memes odiosos. O trabalho destaca a importância de métodos capazes de capturar a semântica conjunta entre imagem e texto e serve como referência de desempenho competitivo no benchmark do Hateful Memes Challenge, alcançando AUROC de 81,1%.
+representações visuais e textuais, demonstrando que a combinação de múltiplos modelos multimodais supera abordagens individuais na tarefa de classificação de memes odiosos. O trabalho destaca a importância de métodos capazes de capturar a semântica conjunta entre imagem e texto e serve como referência de desempenho competitivo no benchmark do Hateful Memes Challenge, alcançando AUROC de 0,811.
 
 \subsection{\textit{Hate-CLIPper}: Classificação multimodal de memes odiosos com interação multimodal explícita das características CLIP}
 
-A arquitetura do \textit{Hate-CLIPper} \cite{kumar2022} para classificação de memes odiosos explora a interação explícita entre as representações visuais e textuais extraídas pelo CLIP. A motivação central do trabalho é que estratégias convencionais de fusão multimodal, como concatenação simples ou soma ponderada dos vetores de cada modalidade, capturam de forma superficial a relação semântica entre imagem e texto, sendo insuficientes para o raciocínio fino exigido pela detecção de discurso de ódio em memes. Para superar essa limitação, os autores introduzem um mecanismo de interação \textit{cross-modal} explícita baseado no produto externo entre os vetores de características de imagem e texto obtidos pelo CLIP. Essa operação produz a \textit{Feature Interaction Matrix} (FIM), que captura correlações par a par entre cada dimensão das duas modalidades, representando de forma mais rica como conceitos visuais e linguísticos se relacionam dentro de um mesmo meme. Ao ser avaliado no \textit{benchmark} do \textit{Hateful Memes Challenge} (HMC), o \textit{Hate-CLIPper} alcançou AUROC de 85,8.
+A arquitetura do \textit{Hate-CLIPper} \cite{kumar2022} para classificação de memes odiosos explora a interação explícita entre as representações visuais e textuais extraídas pelo CLIP. A motivação central do trabalho é que estratégias convencionais de fusão multimodal, como concatenação simples ou soma ponderada dos vetores de cada modalidade, capturam de forma superficial a relação semântica entre imagem e texto, sendo insuficientes para o raciocínio fino exigido pela detecção de discurso de ódio em memes. Para superar essa limitação, os autores introduzem um mecanismo de interação \textit{cross-modal} explícita baseado no produto externo entre os vetores de características de imagem e texto obtidos pelo CLIP. Essa operação produz a \textit{Feature Interaction Matrix} (FIM), que captura correlações par a par entre cada dimensão das duas modalidades, representando de forma mais rica como conceitos visuais e linguísticos se relacionam dentro de um mesmo meme. Ao ser avaliado no \textit{benchmark} do \textit{Hateful Memes Challenge} (HMC), o \textit{Hate-CLIPper} alcançou AUROC de 0,858.
