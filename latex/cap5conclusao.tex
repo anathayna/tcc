@@ -7,13 +7,38 @@ Esta pesquisa investigou a identificação automatizada de discurso de ódio em 
 
 A lógica \textit{fuzzy}, integrada em todos os experimentos e evoluindo de um classificador baseado em entropia de Shannon para um sistema Mamdani com antecedentes visuais e textuais independentes, demonstrou que a gradação linguística do ódio é computacionalmente viável. Mais do que melhorar métricas, o \textit{fuzzy} qualifica a decisão: ao distribuir casos de alta incerteza em categorias como \textit{Ambiguidade/Moderado}, o sistema sinaliza quais memes demandam revisão humana em vez de forçar uma classificação binária sobre conteúdo inerentemente ambíguo.
 
-Demonstrar que a fusão cruzada supervisionada com representações normalizadas por modalidade, complementada por interpretabilidade \textit{fuzzy}, produz um sistema competitivo com a literatura usando uma arquitetura replicável e recursos computacionais acessíveis. O código, os \textit{notebooks} e os resultados estão documentados de forma reproduzível, o que permite que trabalhos futuros partam diretamente dos \textit{checkpoints} treinados.
+Retomando o objetivo geral desta pesquisa, os resultados demonstram que a fusão cruzada supervisionada, com representações normalizadas por modalidade e complementada por interpretabilidade \textit{fuzzy}, produz um sistema competitivo com a literatura (AUROC de 0,8121, frente a 0,8265 de desempenho humano e 0,858 do Hate-CLIPper original), utilizando uma arquitetura replicável e recursos computacionais acessíveis. Além dos resultados experimentais, este trabalho produziu um artefato prático utilizável: o modelo do Experimento~3 foi disponibilizado publicamente no \textit{Hugging Face Spaces}, com interface interativa que permite a qualquer usuário submeter um meme e obter tanto a classificação binária quanto a graduação \textit{fuzzy} do grau de ódio, demonstrando a viabilidade prática da abordagem para além do ambiente experimental do Google Colab. O código, os \textit{notebooks} e os resultados estão documentados de forma reproduzível, o que permite que trabalhos futuros partam diretamente dos \textit{checkpoints} treinados.
 
-Os desafios que permanecem em aberto delineiam caminhos naturais para pesquisas futuras.
+Para contextualizar o desempenho do Experimento~3 em relação ao estado da arte, a Tabela~\ref{tab:comparacao-literatura} compara o AUROC do modelo proposto com resultados reportados na literatura.
 
-O \textit{Hateful Memes Dataset} é composto exclusivamente por memes em inglês com referências culturais ocidentais, o que limita a generalização para contextos como o brasileiro, onde gírias regionais, ironia contextual e referências políticas locais alteram substancialmente o significado do conteúdo. A construção de \textit{datasets} multilíngues e multiculturais anotados, é um passo necessário para tornar sistemas como este viáveis em escala global.
+\begin{table}[htbp]
+\centering
+\caption{Comparação do resultado final com a literatura.}
+\label{tab:comparacao-literatura}
+\begin{tabular}{lc}
+\hline
+\textbf{Referência} & \textbf{AUROC} \\
+\hline
+Desempenho humano \cite{metaai2020} & 0,8265 \\
+VisualBERT \cite{ArticleHatefulMemesChallenge2020} & 0,730 \\
+HateDetectron \cite{velioglu2020} & 0,811 \\
+\textbf{Este trabalho (Experimento 3)} & \textbf{0,8121} \\
+Hate-CLIPper original \cite{kumar2022} & 0,858 \\
+\hline
+\end{tabular}
+\end{table}
 
-A baixa revocação para a classe de ódio em todos os experimentos revela que o modelo ainda não captura adequadamente a justaposição semântica contraditória entre imagem e texto. Modelos de Linguagem de Grande Porte multimodais (GPT-4V, LLaVA, Gemini) representam a próxima fronteira natural, pois combinam compreensão profunda de contexto com capacidade de explicar a classificação, o que endereçaria simultaneamente os problemas de sarcasmo e interpretabilidade.
+Os desafios que permanecem em aberto delineiam três caminhos naturais para pesquisas futuras:
+
+\begin{itemize}
+    \item construção de \textit{datasets} multilíngues e multiculturais, especialmente para o contexto brasileiro;
+    \item exploração de modelos de linguagem multimodais de grande porte (GPT-4V, LLaVA, Gemini) para lidar com sarcasmo e ganhar interpretabilidade;
+    \item incorporação de técnicas de \textit{debiasing} e auditoria de equidade por subgrupo demográfico.
+\end{itemize}
+
+O \textit{Hateful Memes Dataset} é composto exclusivamente por memes em inglês com referências culturais ocidentais, o que limita a generalização para contextos como o brasileiro, onde gírias regionais, ironia contextual e referências políticas locais alteram substancialmente o significado do conteúdo. A construção de \textit{datasets} multilíngues e multiculturais anotados é um passo necessário para tornar sistemas como este viáveis em escala global.
+
+Nos Experimentos~1 e~2, a baixa revocação para a classe de ódio evidenciou que o modelo deixava de detectar a maioria dos casos genuinamente odiosos. O Experimento~3 inverteu esse padrão ao otimizar o limiar para maximizar a revocação (0,86), às custas de uma precisão mais moderada (0,55), uma escolha adequada para cenários de triagem, mas que ainda reflete uma limitação comum a todos os experimentos: mesmo quando detecta o conteúdo odioso, o modelo não captura adequadamente a justaposição semântica contraditória entre imagem e texto por meio de raciocínio explícito, apoiando-se em correlações estatísticas aprendidas em vez de compreensão contextual genuína. Modelos de Linguagem de Grande Porte multimodais (GPT-4V, LLaVA, Gemini) representam a próxima fronteira natural, pois combinam compreensão profunda de contexto com capacidade de explicar a classificação, o que endereçaria simultaneamente os problemas de sarcasmo e interpretabilidade.
 
 Um risco central em sistemas de moderação automatizada é a reprodução e amplificação de preconceitos presentes nos dados de treinamento. No contexto de detecção de ódio, \textit{datasets} desbalanceados podem levar o modelo a associar características identitárias a conteúdo ofensivo, gerando falsos positivos desproporcionais para grupos historicamente marginalizados. Trabalhos futuros podem incorporar técnicas de \textit{debiasing}, auditorias de equidade por subgrupo e avaliação de calibração por classe demográfica.
 
