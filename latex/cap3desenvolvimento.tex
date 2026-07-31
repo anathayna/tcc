@@ -57,7 +57,7 @@ No \textbf{Experimento 3} (\textit{final-shot}), ilustrado na Figura~\ref{fig:fi
 \section{Coleta e tratamento de dados}
 % Explique como os dados foram coletados (logs, sensores, APIs), armazenados e preparados (limpeza, normalização, anonimização). Registre ferramentas usadas no pré-processamento.
 
-O banco de dados utilizado nesta pesquisa é o \textit{Hateful Memes}, disponibilizado pela Meta AI no âmbito do \textit{Hateful Memes Challenge}. O conjunto é composto por 12.140 imagens de memes em inglês, cobrindo temas como gênero, raça, religião, orientação sexual e classe social.
+O banco de dados utilizado nesta pesquisa é o \textit{Hateful Memes}, disponibilizado pela Meta AI no âmbito do \textit{Hateful Memes Challenge}. O conjunto é composto por 12140 imagens de memes em inglês, cobrindo temas como gênero, raça, religião, orientação sexual e classe social.
 
 A escolha desse conjunto de dados justifica-se por sua relevância como principal \textit{benchmark} para a detecção de discurso de ódio em conteúdo multimodal, reunindo exemplos em que o sentido ofensivo emerge especificamente da combinação entre elementos visuais e textuais. Essa característica o torna particularmente adequado para avaliar a capacidade de modelos multimodais de identificar conteúdo odioso em contextos nos quais o humor e o sarcasmo podem mascarar a intenção agressiva da mensagem \cite{ArticleHatefulMemesChallenge2020}. Embora o cenário jurídico e social discutido na fundamentação teórica esteja centrado no contexto brasileiro, a utilização do \textit{Hateful Memes} também permite a comparação direta dos resultados com trabalhos relacionados, por se tratar do conjunto de dados mais amplamente adotado na literatura para essa tarefa. Reconhece-se, contudo, como limitação deste trabalho, a inexistência de um conjunto de dados equivalente, amplamente validado, em língua portuguesa.
 
@@ -82,13 +82,13 @@ A Tabela~\ref{tab:dataset-splits} apresenta a distribuição de amostras e rótu
 \hline
 \textbf{Arquivo} & \textbf{Total} & \textbf{Odioso} & \textbf{Não odioso} & \textbf{Rótulo} \\
 \hline
-\texttt{train.jsonl}        & 8.500 & 3.019 (35,5\%) & 5.481 (64,5\%) & Sim \\
+\texttt{train.jsonl}        & 8500 & 3.019 (35,5\%) & 5.481 (64,5\%) & Sim \\
 \texttt{dev\_seen.jsonl}    &   500 &   250 (50,0\%) &   250 (50,0\%) & Sim \\
 \texttt{dev\_unseen.jsonl}  &   540 &   340 (63,0\%) &   200 (37,0\%) & Sim \\
-\texttt{test\_seen.jsonl}   & 1.000 &   500 (50,0\%) &   500 (50,0\%) & Sim \\
-\texttt{test\_unseen.jsonl} & 2.000 &   1.250 (62,5\%) & 750 (37,5\%) & Sim \\
+\texttt{test\_seen.jsonl}   & 1000 &   500 (50,0\%) &   500 (50,0\%) & Sim \\
+\texttt{test\_unseen.jsonl} & 2000 &   1250 (62,5\%) & 750 (37,5\%) & Sim \\
 \hline
-\textbf{Total}              & \textbf{12.140*} & & & \\
+\textbf{Total}              & \textbf{12140*} & & & \\
 \hline
 \end{tabular}
 \par\vspace{2pt}
@@ -137,7 +137,7 @@ Um primeiro teste foi feito para fins de visualização, no qual uma amostra é 
         \textbf{Propriedade} & \textbf{Valor / Resultado} \\ \hline
         Tradução do Texto & \textit{``Pare os imigrantes ilegais, eles estão tomando as terras que roubamos''} \\
         Rótulo Verdadeiro & 1 (\textit{Hateful meme}) \\
-        Probabilidades Calculadas & \begin{tabular}[c]{@{}l@{}}Este é um meme de ódio: 0.2974\\ Este não é um meme de ódio: 0.7026\end{tabular} \\
+        Probabilidades Calculadas & \begin{tabular}[c]{@{}l@{}}Este é um meme de ódio: 0,2974\\ Este não é um meme de ódio: 0,7026\end{tabular} \\
         Predição do Modelo & \textit{This is not a hateful meme} (Este não é um meme de ódio) \\ \hline
     \end{tabular}
     \vspace{0.3cm}
@@ -182,9 +182,9 @@ A fusão é realizada por concatenação
 (64d) e \textit{embedding} de cluster de imagem (64d), resultando em um vetor
 unificado de $768 \times 2 + 64 \times 2 = 1{.}664$ dimensões. Esse vetor
 passa sequencialmente por uma camada de \textit{BatchNorm1d}, uma camada de
-\textit{Dropout} com taxa de 0.2, para mitigar o sobreajuste, e uma camada
+\textit{Dropout} com taxa de 0,2, para mitigar o sobreajuste, e uma camada
 linear totalmente conectada que produz um único \textit{logit} de saída. Na
-inferência, aplica-se a função sigmoide com limiar 0.5 para a classificação final.
+inferência, aplica-se a função sigmoide com limiar 0,5 para a classificação final.
 
 Apenas as camadas de \textit{embedding},
 normalização em lote e classificação linear são otimizadas. A função de perda
@@ -211,7 +211,7 @@ exemplo mais similar.
 
 Com todas as características definidas, os dados são organizados em \textit{batches} e
 repassados à rede multimodal treinada. Os \textit{logits} são convertidos em probabilidades pelo
-\textit{sigmoide} e classificados com limiar de 0.5: amostras acima de 50\% recebem rótulo
+\textit{sigmoide} e classificados com limiar de 0,5: amostras acima de 50\% recebem rótulo
 ``discurso de ódio'' (1), as demais ``não ódio'' (0). Os resultados e probabilidades
 brutas são armazenados para avaliação de métricas e aplicação da lógica Fuzzy.
 
@@ -259,10 +259,10 @@ A fusão é realizada pela \textbf{FIM} (\textit{Feature Interaction Matrix}), q
 
 O modelo conta com duas cabeças auxiliares independentes, uma visual e uma textual, cada uma com a mesma estrutura de projeção operando sobre os vetores de 256 dimensões de cada modalidade. As perdas auxiliares são somadas à perda multimodal principal com pesos configuráveis (\texttt{w\_image\_loss} e \texttt{w\_text\_loss}). A função de perda é \texttt{BCEWithLogitsLoss} com \texttt{pos\_weight} calculado dinamicamente como a razão entre exemplos negativos e positivos no conjunto de treinamento, compensando o desbalanceamento de classes.
 
-O modelo é otimizado com \textbf{AdamW}, um otimizador adaptativo que incorpora regularização por \textit{weight decay} desacoplado dos gradientes, por até 20 épocas, com \textit{scheduler} \textit{CosineAnnealingLR} que reduz a taxa de aprendizado suavemente ao longo do treinamento. O treinamento utiliza precisão mista para reduzir consumo de memória, e o gradiente é truncado a 0.1 por passo para estabilidade numérica. Ao longo do treinamento, as últimas camadas dos \textit{encoders} são descongeladas progressivamente para permitir ajuste fino parcial. O \textit{early stopping} interrompe o treinamento após 5 épocas consecutivas sem melhoria no AUROC de validação (\texttt{dev\_seen}), com salvamento automático do melhor modelo.
+O modelo é otimizado com \textbf{AdamW}, um otimizador adaptativo que incorpora regularização por \textit{weight decay} desacoplado dos gradientes, por até 20 épocas, com \textit{scheduler} \textit{CosineAnnealingLR} que reduz a taxa de aprendizado suavemente ao longo do treinamento. O treinamento utiliza precisão mista para reduzir consumo de memória, e o gradiente é truncado a 0,1 por passo para estabilidade numérica. Ao longo do treinamento, as últimas camadas dos \textit{encoders} são descongeladas progressivamente para permitir ajuste fino parcial. O \textit{early stopping} interrompe o treinamento após 5 épocas consecutivas sem melhoria no AUROC de validação (\texttt{dev\_seen}), com salvamento automático do melhor modelo.
 
 Após o treinamento, o limiar de classificação é otimizado sobre o conjunto \texttt{dev\_seen} pelo índice de Youden~J, equivalente à distância vertical máxima entre
-a curva ROC e a diagonal aleatória. Esse critério seleciona o limiar que maximiza simultaneamente a sensibilidade e a especificidade do modelo, em vez do limiar padrão de~0.5. Esse limiar otimizado é então aplicado na avaliação final sobre \texttt{test\_seen} e \texttt{test\_unseen}.
+a curva ROC e a diagonal aleatória. Esse critério seleciona o limiar que maximiza simultaneamente a sensibilidade e a especificidade do modelo, em vez do limiar padrão de~0,5. Esse limiar otimizado é então aplicado na avaliação final sobre \texttt{test\_seen} e \texttt{test\_unseen}.
 
 Quatro modos de fusão do HateCLIPper são avaliados nas mesmas condições de treinamento: \textit{align} (produto elemento a elemento entre os vetores normalizados), \textit{concat} (concatenação), \textit{cross} (FIM por produto externo) e \textit{align\_concat} (combinação de \textit{align} e \textit{concat}). O modo \textit{cross} foi selecionado por apresentar o melhor AUROC de validação e F1 no conjunto de teste.
 
